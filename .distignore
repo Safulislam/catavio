@@ -1,0 +1,38 @@
+# Everything listed here is excluded from the WordPress.org distribution zip.
+# Read by bin/build-release.sh, which is the only supported way to build it.
+#
+# src/ is intentionally NOT excluded: WordPress.org requires human-readable
+# source for the compiled build/ bundle, and package.json is kept with it so a
+# reviewer has the build tooling too.
+#
+# composer.json ships for the same reason. The plugin has no production
+# dependencies — vendor/ holds nothing but the generated autoloader — but the
+# file is what declares that, and the Plugin Directory asks to see the Composer
+# manifest of any plugin whose tree shows Composer was used. composer.lock is
+# still withheld: it pins only the dev toolchain, 93KB of it, and nothing in the
+# release reads it.
+
+.git
+.github
+.DS_Store
+.distignore
+.editorconfig
+.eslintrc.json
+.gitignore
+.nvmrc
+.phpcs.cache
+.phpunit.result.cache
+composer.lock
+package-lock.json
+phpcs.xml.dist
+phpunit.xml.dist
+jest.config.js
+webpack.config.js
+bin
+dist
+node_modules
+tests
+docs
+catavio-development-docs
+.gitkeep
+.wordpress-org

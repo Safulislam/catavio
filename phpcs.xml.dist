@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+<ruleset name="Catavio">
+	<description>WordPress Coding Standards for the Catavio plugin.</description>
+
+	<!-- Scan the plugin's own PHP only. -->
+	<file>.</file>
+
+	<exclude-pattern>/vendor/*</exclude-pattern>
+	<exclude-pattern>/node_modules/*</exclude-pattern>
+	<exclude-pattern>/build/*</exclude-pattern>
+	<exclude-pattern>/languages/*</exclude-pattern>
+	<exclude-pattern>/catavio-development-docs/*</exclude-pattern>
+
+	<arg name="extensions" value="php"/>
+	<arg name="basepath" value="."/>
+	<arg name="colors"/>
+	<arg name="parallel" value="8"/>
+	<arg value="sp"/>
+
+	<!-- PHP version floor (Phase 2 compatibility requirement). -->
+	<config name="testVersion" value="7.4-"/>
+	<rule ref="PHPCompatibilityWP"/>
+
+	<!-- WordPress minimum supported version, used by the deprecation sniffs. -->
+	<config name="minimum_wp_version" value="6.4"/>
+
+	<rule ref="WordPress">
+		<!--
+			includes/ uses Composer PSR-4 autoloading, which requires StudlyCase
+			file names that match the class name. This is the only place the
+			WordPress file-naming convention is waived; see
+			docs/ARCHITECTURE.md section "Autoloading".
+		-->
+		<exclude name="WordPress.Files.FileName"/>
+	</rule>
+
+	<!-- Re-apply the file-naming rule everywhere except the autoloaded tree. -->
+	<rule ref="WordPress.Files.FileName">
+		<exclude-pattern>/includes/*</exclude-pattern>
+		<exclude-pattern>/tests/*</exclude-pattern>
+	</rule>
+
+	<!-- All user-facing strings must use this text domain. -->
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="catavio"/>
+			</property>
+		</properties>
+	</rule>
+
+	<!-- All global symbols must carry a plugin prefix. -->
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array">
+				<element value="catavio"/>
+				<element value="Catavio"/>
+			</property>
+		</properties>
+	</rule>
+
+	<!--
+		Sniffs that are structurally inapplicable to the unit test scaffolding.
+
+		The unit tests run without WordPress loaded and stub the handful of
+		WordPress functions the rules touch. Those stubs must carry WordPress's
+		own names, and the wp_strip_all_tags() stub must call strip_tags() to
+		implement it. None of this code is shipped: tests/ is excluded from the
+		distribution archive. Everything else in the ruleset still applies here,
+		and production code is held to the full standard with no exclusions.
+	-->
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<exclude-pattern>/tests/*</exclude-pattern>
+	</rule>
+	<rule ref="WordPress.WP.AlternativeFunctions">
+		<exclude-pattern>/tests/*</exclude-pattern>
+	</rule>
+	<rule ref="WordPress.WP.GlobalVariablesOverride">
+		<exclude-pattern>/tests/*</exclude-pattern>
+	</rule>
+
+	<!-- Test doubles live beside the test that uses them. -->
+	<rule ref="Generic.Files.OneObjectStructurePerFile">
+		<exclude-pattern>/tests/*</exclude-pattern>
+	</rule>
+
+	<!-- Exception messages in test helpers never reach a browser. -->
+	<rule ref="WordPress.Security.EscapeOutput">
+		<exclude-pattern>/tests/*</exclude-pattern>
+	</rule>
+</ruleset>

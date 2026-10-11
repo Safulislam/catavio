@@ -1,0 +1,1232 @@
+/**
+ * Catavio — admin styles.
+ *
+ * The UI is built from @wordpress/components, so it inherits core's behaviour
+ * and its type. This file supplies what core has no opinion about: the layout
+ * of the dashboard, the three data marks it draws, and one shared set of
+ * tokens so the screens agree with each other.
+ *
+ * Colour is never the only carrier of meaning here. Every severity and every
+ * health bucket is also labelled in words, so these colours can be removed
+ * entirely and the screen still reads correctly. That is not only a preference:
+ * the WordPress status trio sits close together for a protanope — green against
+ * amber measures a ΔE of about 6.6 — which is legible only because each mark is
+ * paired with its name and separated from its neighbour by a gap in the surface
+ * colour rather than by hue alone.
+ */
+
+/* Tokens ----------------------------------------------------------------- */
+
+:root {
+
+	/* Surfaces and ink, from the wp-admin palette. */
+	--catavio-surface: #fff;
+	--catavio-plane: #f6f7f7;
+	--catavio-border: #e0e2e4;
+	--catavio-border-strong: #c3c4c7;
+	--catavio-ink: #1d2327;
+	--catavio-ink-muted: #50575e;
+	--catavio-ink-faint: #787c82;
+
+	/* One accent hue, and a lighter step of the same ramp for its tracks. */
+	--catavio-accent: #2271b1;
+	--catavio-accent-wash: #e6f0f8;
+
+	/* Status. Reserved for health and severity; never used as decoration. */
+	--catavio-healthy: #00a32a;
+	--catavio-attention: #dba617;
+	--catavio-critical: #d63638;
+	--catavio-info: #2271b1;
+
+	--catavio-radius: 8px;
+	--catavio-radius-sm: 4px;
+	--catavio-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.04);
+	--catavio-shadow-lift: 0 2px 4px rgba(0, 0, 0, 0.05), 0 10px 24px rgba(0, 0, 0, 0.07);
+
+	/* The segmented control the views are chosen with. */
+	--catavio-track: #e6e7e9;
+	--catavio-track-border: #d7d8db;
+}
+
+.catavio-admin-root {
+	max-width: 1120px;
+	margin-top: 20px;
+	color: var(--catavio-ink);
+}
+
+/* Tabs ------------------------------------------------------------------- */
+
+/*
+ * A segmented control: one recessed track holding the two views, with the
+ * current one raised out of it. It sizes to its labels rather than ruling a
+ * line across the page, so the eye goes to the figures below rather than to
+ * the navigation. Quiet chrome, loud data.
+ */
+.catavio-tabs {
+
+	/* Block level so it clears the inline heading, but only as wide as its
+	   labels. */
+	display: flex;
+	width: fit-content;
+	max-width: 100%;
+	align-items: center;
+	gap: 2px;
+	margin: 14px 0 0;
+	padding: 3px;
+	border: 1px solid var(--catavio-track-border);
+	border-radius: 10px;
+	background: var(--catavio-track);
+}
+
+.catavio-tabs__tab {
+	display: inline-flex;
+	align-items: center;
+	padding: 6px 16px;
+	border-radius: 7px;
+	font-size: 13px;
+	font-weight: 500;
+	line-height: 20px;
+	color: var(--catavio-ink-muted);
+	text-decoration: none;
+	white-space: nowrap;
+	transition: background-color 120ms ease, color 120ms ease;
+}
+
+.catavio-tabs__tab:hover {
+	background: rgba(255, 255, 255, 0.55);
+	color: var(--catavio-ink);
+}
+
+/*
+ * Raised, darker and heavier: three signals, so the current view is not left
+ * resting on a background tint that a high contrast mode may discard.
+ */
+.catavio-tabs__tab--current,
+.catavio-tabs__tab--current:hover {
+	background: var(--catavio-surface);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.09), 0 1px 1px rgba(0, 0, 0, 0.04);
+	color: var(--catavio-ink);
+	font-weight: 600;
+}
+
+.catavio-tabs__tab:focus-visible {
+	outline: 2px solid var(--catavio-accent);
+	outline-offset: 1px;
+}
+
+/* Cards ------------------------------------------------------------------ */
+
+/*
+ * The dashboard is a grid rather than a stack: on a wide screen the issues
+ * table and the scan panel sit side by side, which keeps the one number that
+ * matters — the headline — above the fold on a laptop.
+ */
+.catavio-dashboard {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 16px;
+	align-items: start;
+}
+
+@media (min-width: 1100px) {
+
+	.catavio-dashboard {
+		grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+	}
+
+	.catavio-dashboard .catavio-card--hero {
+		grid-column: 1 / -1;
+	}
+}
+
+/*
+ * Card, CardHeader and CardBody are styled by @wordpress/components with
+ * emotion, and the Card root carries no stable class of its own. So every card
+ * part here is given an .catavio-card* class of its own rather than reaching for a
+ * core one, and these rules are written two classes deep: emotion injects its
+ * <style> after this stylesheet, so an equally specific selector would lose.
+ */
+.catavio-admin-root .catavio-card {
+	border: 1px solid var(--catavio-border);
+	border-radius: var(--catavio-radius);
+	box-shadow: var(--catavio-shadow);
+}
+
+.catavio-admin-root .catavio-card__header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 4px 16px;
+	padding: 14px 20px;
+	border-bottom-color: var(--catavio-border);
+	background: linear-gradient(180deg, #fbfcfd 0%, var(--catavio-surface) 100%);
+}
+
+.catavio-admin-root .catavio-card__body {
+	padding: 20px;
+}
+
+.catavio-card__title {
+	margin: 0;
+	font-size: 14px;
+	font-weight: 600;
+	letter-spacing: 0.1px;
+}
+
+.catavio-card__link {
+	font-size: 13px;
+	text-decoration: none;
+}
+
+.catavio-card__link:hover,
+.catavio-card__link:focus {
+	text-decoration: underline;
+}
+
+.catavio-card__note {
+	margin: 0 0 16px;
+	color: var(--catavio-ink-muted);
+}
+
+.catavio-card__body--centred {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 120px;
+}
+
+/* Headline score --------------------------------------------------------- */
+
+/*
+ * Score and breakdown are one story, so they share a card — but side by side,
+ * not stacked behind a rule. Stacking made the card tall, ran the meter to a
+ * needless 1000px, and put a horizontal divider through a single thought.
+ */
+.catavio-hero {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 28px;
+}
+
+@media (min-width: 900px) {
+
+	.catavio-hero {
+		grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+		gap: 40px;
+
+		/* The score is shorter than the breakdown beside it; centring it keeps
+		   the two columns balanced instead of leaving a void under the meter. */
+		align-items: center;
+	}
+
+	.catavio-hero__breakdown {
+		padding-left: 40px;
+		border-left: 1px solid var(--catavio-border);
+	}
+}
+
+.catavio-headline {
+	display: flex;
+	align-items: baseline;
+	flex-wrap: wrap;
+	gap: 4px 14px;
+	margin: 0 0 16px;
+}
+
+/*
+ * The one number the page leads with. Proportional figures, not tabular ones:
+ * at this size tabular digits give every glyph the width of a zero, and a
+ * number like 121 reads loose and machine-set.
+ */
+.catavio-headline__value {
+	font-size: 56px;
+	font-weight: 300;
+	line-height: 1;
+	letter-spacing: -1.5px;
+	color: var(--catavio-ink);
+}
+
+.catavio-headline__label {
+	max-width: 24em;
+	color: var(--catavio-ink-muted);
+}
+
+.catavio-meta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 2px 10px;
+	margin: 0;
+	font-size: 13px;
+	color: var(--catavio-ink-muted);
+}
+
+/* Separate the meta items visually without gluing them into one string, so each
+   stays its own translatable sentence. The separator trails its item rather
+   than leading the next one, so a wrap never starts a line with a stray dot. */
+.catavio-meta__item:not(:last-child)::after {
+	content: "\00b7";
+	margin-left: 7px;
+	color: var(--catavio-ink-faint);
+}
+
+/* Meter ------------------------------------------------------------------ */
+
+/*
+ * A ratio against a fixed limit of 100. The fill grows from a baseline on the
+ * left, so that end stays square and only the data end is rounded; the track is
+ * a lighter step of the fill's own hue, so the whole bar reads as one object.
+ */
+.catavio-meter__track {
+	position: relative;
+	height: 10px;
+	border-radius: 0 var(--catavio-radius-sm) var(--catavio-radius-sm) 0;
+	background: var(--catavio-accent-wash);
+	overflow: hidden;
+}
+
+.catavio-meter__fill {
+	height: 100%;
+	min-width: 2px;
+	border-radius: 0 var(--catavio-radius-sm) var(--catavio-radius-sm) 0;
+	background: var(--catavio-accent);
+	transition: width 500ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/*
+ * A toned meter still pairs hue with a track one step lighter from the same
+ * ramp, so the fill and the space it has left to run read as one object rather
+ * than as two unrelated colours.
+ */
+.catavio-meter--healthy .catavio-meter__track {
+	background: rgba(0, 163, 42, 0.14);
+}
+
+.catavio-meter--healthy .catavio-meter__fill {
+	background: var(--catavio-healthy);
+}
+
+.catavio-meter--attention .catavio-meter__track {
+	background: rgba(219, 166, 23, 0.18);
+}
+
+.catavio-meter--attention .catavio-meter__fill {
+	background: var(--catavio-attention);
+}
+
+.catavio-meter--critical .catavio-meter__track {
+	background: rgba(214, 54, 56, 0.14);
+}
+
+.catavio-meter--critical .catavio-meter__fill {
+	background: var(--catavio-critical);
+}
+
+/* Catalog breakdown ------------------------------------------------------ */
+
+.catavio-breakdown__title {
+	margin: 0 0 10px;
+	font-size: 11px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.6px;
+	color: var(--catavio-ink-faint);
+}
+
+/*
+ * Part to whole. The 2px gap is the surface showing through: it is what keeps
+ * two touching segments distinct, which a border around each segment would do
+ * by adding ink that is not data.
+ */
+.catavio-distribution {
+	display: flex;
+	gap: 2px;
+	height: 14px;
+	margin-bottom: 14px;
+}
+
+.catavio-distribution__segment {
+	min-width: 3px;
+	border-radius: 0;
+	background: var(--catavio-ink-faint);
+}
+
+.catavio-distribution__segment:first-child {
+	border-radius: var(--catavio-radius-sm) 0 0 var(--catavio-radius-sm);
+}
+
+.catavio-distribution__segment:last-child {
+	border-radius: 0 var(--catavio-radius-sm) var(--catavio-radius-sm) 0;
+}
+
+.catavio-distribution__segment--healthy {
+	background: var(--catavio-healthy);
+}
+
+.catavio-distribution__segment--attention {
+	background: var(--catavio-attention);
+}
+
+.catavio-distribution__segment--critical {
+	background: var(--catavio-critical);
+}
+
+/* Bucket figures --------------------------------------------------------- */
+
+/*
+ * A legend for the bar above, not three boxes. Boxed tiles inside a card put a
+ * white surface on a white surface and made the counts compete with the
+ * headline score, which is the one number this screen leads with.
+ */
+.catavio-figures {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.catavio-figure {
+	display: grid;
+	grid-template-columns: 10px minmax(0, 1fr) auto;
+	align-items: baseline;
+	gap: 0 10px;
+	padding: 9px 0;
+}
+
+.catavio-figure + .catavio-figure {
+	border-top: 1px solid var(--catavio-border);
+}
+
+.catavio-figure__key {
+	width: 10px;
+	height: 10px;
+	border-radius: 3px;
+	background: var(--catavio-ink-faint);
+}
+
+.catavio-figure--healthy .catavio-figure__key {
+	background: var(--catavio-healthy);
+}
+
+.catavio-figure--attention .catavio-figure__key {
+	background: var(--catavio-attention);
+}
+
+.catavio-figure--critical .catavio-figure__key {
+	background: var(--catavio-critical);
+}
+
+.catavio-figure__label {
+	font-weight: 500;
+	color: var(--catavio-ink);
+}
+
+.catavio-figure__value {
+	font-size: 20px;
+	font-weight: 600;
+	line-height: 1.1;
+	font-variant-numeric: tabular-nums;
+	color: var(--catavio-ink);
+}
+
+/* Second line, under the label and clear of the key. */
+.catavio-figure__share {
+	grid-column: 2 / -1;
+	margin-top: 2px;
+	font-size: 12px;
+	color: var(--catavio-ink-faint);
+}
+
+/* Severity --------------------------------------------------------------- */
+
+/*
+ * A pill, not a plain word: it gives the dot and the label one shape so the
+ * pair cannot be read apart. The text keeps its ink colour — a status hue is a
+ * mark, never a typeface colour — and the tint is the same hue at a wash.
+ */
+.catavio-severity {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 2px 10px 2px 8px;
+	border-radius: 999px;
+	background: rgba(140, 143, 148, 0.1);
+	font-size: 12px;
+	font-weight: 500;
+	line-height: 20px;
+	color: var(--catavio-ink-muted);
+	white-space: nowrap;
+}
+
+.catavio-severity__dot {
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: var(--catavio-ink-faint);
+	flex: none;
+}
+
+.catavio-severity--critical {
+	background: rgba(214, 54, 56, 0.1);
+}
+
+.catavio-severity--critical .catavio-severity__dot {
+	background: var(--catavio-critical);
+}
+
+.catavio-severity--warning {
+	background: rgba(219, 166, 23, 0.14);
+}
+
+.catavio-severity--warning .catavio-severity__dot {
+	background: var(--catavio-attention);
+}
+
+.catavio-severity--info {
+	background: rgba(34, 113, 177, 0.1);
+}
+
+.catavio-severity--info .catavio-severity__dot {
+	background: var(--catavio-info);
+}
+
+/* Score badge ------------------------------------------------------------ */
+
+.catavio-score {
+	display: inline-flex;
+	align-items: baseline;
+	gap: 1px;
+	font-variant-numeric: tabular-nums;
+	font-weight: 600;
+}
+
+.catavio-score__out-of {
+	color: var(--catavio-ink-faint);
+	font-size: 0.85em;
+	font-weight: 400;
+}
+
+.catavio-score--healthy .catavio-score__value {
+	color: #007017;
+}
+
+.catavio-score--attention .catavio-score__value {
+	color: #8a6116;
+}
+
+.catavio-score--critical .catavio-score__value {
+	color: #b32d2e;
+}
+
+.catavio-score--large .catavio-score__value {
+	font-size: 32px;
+	font-weight: 400;
+}
+
+/* Tables ----------------------------------------------------------------- */
+
+/* Sit flush inside a card: the card already draws the edge, and widefat's own
+   border would double it. */
+.catavio-admin-root .catavio-table {
+	width: 100%;
+	border: 0;
+	border-collapse: collapse;
+	background: transparent;
+}
+
+/*
+ * Let a wide table scroll sideways on a narrow screen rather than forcing the
+ * whole page wider. Scoped to the WordPress admin's own mobile breakpoint:
+ * display:block stops an element behaving as a table, so applying it at every
+ * width would break column sizing on the screens most people use.
+ */
+@media (max-width: 782px) {
+
+	.catavio-table {
+		display: block;
+		overflow-x: auto;
+	}
+}
+
+.catavio-table__number {
+	text-align: right;
+	font-variant-numeric: tabular-nums;
+}
+
+/* Counts, with a bar for magnitude --------------------------------------- */
+
+.catavio-count {
+	display: inline-flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 10px;
+	width: 100%;
+}
+
+.catavio-count__track {
+	flex: 0 1 96px;
+	height: 6px;
+	border-radius: 0 3px 3px 0;
+	background: var(--catavio-accent-wash);
+	overflow: hidden;
+}
+
+.catavio-count__fill {
+	display: block;
+	height: 100%;
+	min-width: 2px;
+	border-radius: 0 3px 3px 0;
+	background: var(--catavio-accent);
+}
+
+.catavio-count__value {
+	min-width: 3ch;
+	font-variant-numeric: tabular-nums;
+	font-weight: 500;
+}
+
+@media (max-width: 782px) {
+
+	.catavio-count__track {
+		display: none;
+	}
+}
+
+/* Scan ------------------------------------------------------------------- */
+
+.catavio-scan__facts {
+	margin: 0 0 10px;
+}
+
+.catavio-scan__progress {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+/* The count and the percentage share a line, one at each end, above the bar
+   they describe. */
+.catavio-scan__status {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 12px;
+}
+
+.catavio-scan__label {
+	margin: 0;
+	font-weight: 500;
+}
+
+.catavio-scan__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.catavio-scan__bar {
+	appearance: none;
+	width: 100%;
+	height: 10px;
+	border: 0;
+	border-radius: 0 var(--catavio-radius-sm) var(--catavio-radius-sm) 0;
+	background: var(--catavio-accent-wash);
+	overflow: hidden;
+}
+
+.catavio-scan__bar::-webkit-progress-bar {
+	background: var(--catavio-accent-wash);
+}
+
+.catavio-scan__bar::-webkit-progress-value {
+	border-radius: 0 var(--catavio-radius-sm) var(--catavio-radius-sm) 0;
+	background: var(--catavio-accent);
+	transition: width 400ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.catavio-scan__bar::-moz-progress-bar {
+	border-radius: 0 var(--catavio-radius-sm) var(--catavio-radius-sm) 0;
+	background: var(--catavio-accent);
+}
+
+.catavio-scan__percent {
+	margin: 0;
+	font-variant-numeric: tabular-nums;
+	font-weight: 600;
+	color: var(--catavio-ink-muted);
+}
+
+.catavio-scan .components-notice {
+	margin: 0 0 12px;
+	border-radius: var(--catavio-radius-sm);
+}
+
+/* Empty states ----------------------------------------------------------- */
+
+.catavio-empty {
+	padding: 16px 0;
+	text-align: center;
+}
+
+.catavio-empty__title {
+	margin: 0 0 6px;
+	font-size: 15px;
+}
+
+.catavio-empty__description {
+	margin: 0 auto 20px;
+	max-width: 42em;
+	color: var(--catavio-ink-muted);
+}
+
+.catavio-empty .catavio-scan__progress {
+	align-items: center;
+}
+
+/* Respect a reduced motion preference in the components we control. */
+@media (prefers-reduced-motion: reduce) {
+
+	.catavio-meter__fill,
+	.catavio-figure,
+	.catavio-tabs__tab,
+	.catavio-scan__bar::-webkit-progress-value,
+	.catavio-products .catavio-table[aria-busy="true"] {
+		transition: none;
+	}
+}
+
+/*
+ * In a forced-colours mode the fills are replaced by the system palette, which
+ * would flatten every bar into one shape. Outline each mark so the geometry
+ * survives even when the hue does not.
+ */
+@media (forced-colors: active) {
+
+	.catavio-distribution__segment,
+	.catavio-meter__fill,
+	.catavio-count__fill,
+	.catavio-figure__key {
+		border: 1px solid CanvasText;
+	}
+
+	.catavio-severity {
+		border: 1px solid CanvasText;
+	}
+
+	/* The raised surface is dropped in this mode, so outline the current tab. */
+	.catavio-tabs__tab--current {
+		border: 1px solid CanvasText;
+	}
+}
+
+/* Product list ----------------------------------------------------------- */
+
+/*
+ * Filters, table and pagination share one card. They are one object — a set of
+ * results and the controls that shape it — and two stacked panels made them
+ * read as two.
+ */
+.catavio-filters {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-end;
+	gap: 14px 18px;
+	padding: 16px 20px;
+	border-bottom: 1px solid var(--catavio-border);
+	background: linear-gradient(180deg, #fbfcfd 0%, var(--catavio-surface) 100%);
+}
+
+.catavio-filters__field {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+	margin: 0;
+}
+
+.catavio-filters__label {
+	display: block;
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
+	color: var(--catavio-ink-faint);
+}
+
+.catavio-filters__control {
+	display: flex;
+	gap: 6px;
+}
+
+/* One height and one corner radius across search, selects and the button, so
+   the row reads as a single control strip. */
+.catavio-filters select,
+.catavio-filters input[type="search"] {
+	min-height: 36px;
+	min-width: 168px;
+	padding: 0 10px;
+	border: 1px solid var(--catavio-border-strong);
+	border-radius: var(--catavio-radius-sm);
+	background-color: var(--catavio-surface);
+	box-shadow: none;
+	color: var(--catavio-ink);
+	line-height: 34px;
+}
+
+.catavio-filters__search input[type="search"] {
+	min-width: 230px;
+}
+
+.catavio-filters select:hover,
+.catavio-filters input[type="search"]:hover {
+	border-color: var(--catavio-ink-faint);
+}
+
+.catavio-filters select:focus,
+.catavio-filters input[type="search"]:focus {
+	border-color: var(--catavio-accent);
+	box-shadow: 0 0 0 1px var(--catavio-accent);
+	outline: 2px solid transparent;
+}
+
+.catavio-filters .components-button {
+	min-height: 36px;
+	border-radius: var(--catavio-radius-sm);
+}
+
+/* Pushed to the far end: it undoes the row rather than adding to it. */
+.catavio-filters__clear {
+	margin-left: auto;
+}
+
+/*
+ * Changing a filter refetches, and until it lands the table is showing the
+ * previous answer. Fading it says so; without it the screen looks like it
+ * simply ignored the change.
+ */
+.catavio-products .catavio-table[aria-busy="true"] {
+	opacity: 0.45;
+	transition: opacity 120ms ease;
+}
+
+.catavio-products .catavio-table {
+	margin-bottom: 4px;
+}
+
+.catavio-products__name {
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.catavio-products__name:hover,
+.catavio-products__name:focus {
+	text-decoration: underline;
+}
+
+/* Secondary information: present, and quieter than the product it describes. */
+.catavio-products__type {
+	display: inline-block;
+	padding: 2px 8px;
+	border: 1px solid var(--catavio-border);
+	border-radius: 4px;
+	background: var(--catavio-plane);
+	font-size: 12px;
+	color: var(--catavio-ink-muted);
+	white-space: nowrap;
+}
+
+.catavio-products__checked {
+	color: var(--catavio-ink-muted);
+	white-space: nowrap;
+}
+
+.catavio-products__health {
+	display: flex;
+	align-items: baseline;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.catavio-products__bucket {
+	font-size: 12px;
+	color: var(--catavio-ink-muted);
+}
+
+/* A short meter under the number, so a column of scores can be scanned by
+   length as well as read one at a time. */
+.catavio-products .catavio-meter {
+	max-width: 120px;
+	margin-top: 6px;
+}
+
+.catavio-products .catavio-meter__track {
+	height: 4px;
+}
+
+/* Tinted rather than filled with a flat neutral: widefat stripes every other
+   row in the same grey, which would make the chip vanish on half the table. */
+.catavio-products__issues {
+	display: inline-block;
+	min-width: 30px;
+	padding: 2px 9px;
+	border-radius: 999px;
+	background: rgba(30, 41, 51, 0.07);
+	font-weight: 600;
+	font-variant-numeric: tabular-nums;
+	text-align: center;
+}
+
+.catavio-products__action {
+	font-weight: 500;
+	text-decoration: none;
+	white-space: nowrap;
+}
+
+.catavio-products__action:hover,
+.catavio-products__action:focus {
+	text-decoration: underline;
+}
+
+.catavio-products__no-action {
+	color: var(--catavio-ink-faint);
+}
+
+.catavio-pagination {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 12px;
+	margin-top: 4px;
+	padding-top: 14px;
+	border-top: 1px solid var(--catavio-border);
+}
+
+/* The count belongs to the result set, the controls to the position in it. */
+.catavio-pagination__count {
+	margin-right: auto;
+	font-weight: 500;
+	color: var(--catavio-ink-muted);
+}
+
+.catavio-pagination__position {
+	font-variant-numeric: tabular-nums;
+	color: var(--catavio-ink-muted);
+}
+
+/* Product detail --------------------------------------------------------- */
+
+/*
+ * Same grid as the dashboard: the report opens with who the product is and
+ * where it stands, then puts the arithmetic beside the issues it explains.
+ */
+.catavio-detail {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 16px;
+	align-items: start;
+}
+
+@media (min-width: 1100px) {
+
+	.catavio-detail {
+		grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+	}
+
+	.catavio-detail > .catavio-card--hero,
+	.catavio-detail > .catavio-card--checks {
+		grid-column: 1 / -1;
+	}
+}
+
+/* A breadcrumb leads the heading rather than trailing the actions, which is
+   where the eye looks for a way back. */
+.catavio-detail__breadcrumb {
+	margin: 0 0 12px;
+}
+
+.catavio-detail__back {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	font-size: 13px;
+	font-weight: 500;
+	text-decoration: none;
+}
+
+.catavio-detail__back:hover,
+.catavio-detail__back:focus {
+	text-decoration: underline;
+}
+
+/* A drawn chevron, not a typed one: generated text can be announced. */
+.catavio-detail__back::before {
+	content: "";
+	width: 6px;
+	height: 6px;
+	border: solid currentcolor;
+	border-width: 0 0 1.5px 1.5px;
+	transform: rotate(45deg);
+}
+
+.catavio-detail__identity {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 12px 24px;
+	margin-bottom: 20px;
+}
+
+.catavio-detail__naming {
+	min-width: 0;
+}
+
+.catavio-detail__unscanned {
+	margin: 0 0 16px;
+	color: var(--catavio-ink-muted);
+}
+
+.catavio-detail__title {
+	margin: 0 0 8px;
+	font-size: 22px;
+	font-weight: 600;
+	letter-spacing: -0.3px;
+}
+
+/* The heading receives focus on arrival; show that clearly rather than
+   suppressing the outline. */
+.catavio-detail__title:focus {
+	outline: 2px solid var(--catavio-accent);
+	outline-offset: 3px;
+	border-radius: 2px;
+}
+
+/*
+ * A band across the foot of the header rather than a box beside it: the score
+ * is the report's headline, and the meter reads better with the width to run
+ * in. Tinted by the bucket it is already labelled with — the tint restates,
+ * it never states.
+ */
+.catavio-detail__scoreboard {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 10px 28px;
+	padding: 16px 20px;
+	border: 1px solid var(--catavio-border);
+	border-radius: var(--catavio-radius-sm);
+	background: var(--catavio-plane);
+}
+
+.catavio-detail__scoreboard .catavio-meter {
+	flex: 1 1 240px;
+}
+
+.catavio-detail__scoreboard--healthy {
+	border-color: rgba(0, 163, 42, 0.25);
+	background: rgba(0, 163, 42, 0.06);
+}
+
+.catavio-detail__scoreboard--attention {
+	border-color: rgba(219, 166, 23, 0.3);
+	background: rgba(219, 166, 23, 0.08);
+}
+
+.catavio-detail__scoreboard--critical {
+	border-color: rgba(214, 54, 56, 0.25);
+	background: rgba(214, 54, 56, 0.06);
+}
+
+.catavio-detail__score {
+	display: flex;
+	align-items: baseline;
+	flex: 0 0 auto;
+	gap: 10px;
+	margin: 0;
+}
+
+.catavio-detail__bucket {
+	font-weight: 500;
+	color: var(--catavio-ink-muted);
+}
+
+.catavio-detail__group + .catavio-detail__group {
+	margin-top: 24px;
+}
+
+.catavio-detail__group-title {
+	margin: 0 0 8px;
+	font-size: 11px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.6px;
+	color: var(--catavio-ink-faint);
+}
+
+/* A severity pill carries its own casing; the group heading must not restyle
+   the word inside it. */
+.catavio-detail__group-title .catavio-severity {
+	font-size: 12px;
+	letter-spacing: 0;
+	text-transform: none;
+}
+
+.catavio-detail__group-note {
+	margin: 0 0 10px;
+	color: var(--catavio-ink-muted);
+}
+
+.catavio-detail__issues {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+/* The accent repeats the group's severity, which the heading above has already
+   named in words. */
+.catavio-detail__issue {
+	padding: 9px 0 9px 14px;
+	border-left: 3px solid var(--catavio-border-strong);
+}
+
+.catavio-detail__issue + .catavio-detail__issue {
+	margin-top: 6px;
+}
+
+.catavio-detail__group--critical .catavio-detail__issue {
+	border-left-color: var(--catavio-critical);
+}
+
+.catavio-detail__group--warning .catavio-detail__issue {
+	border-left-color: var(--catavio-attention);
+}
+
+.catavio-detail__group--info .catavio-detail__issue {
+	border-left-color: var(--catavio-info);
+}
+
+.catavio-detail__issue-label {
+	display: block;
+	font-weight: 600;
+}
+
+.catavio-detail__issue-message {
+	display: block;
+	margin-top: 1px;
+	color: var(--catavio-ink-muted);
+}
+
+.catavio-detail__checks {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	gap: 4px 16px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.catavio-detail__check {
+	position: relative;
+	padding-left: 24px;
+	line-height: 24px;
+}
+
+/*
+ * The markers are drawn, not typed. A "✓" in generated content can be read out
+ * as a word by some screen readers, and these lists are already labelled by
+ * the heading above them, so the marker must stay purely visual.
+ */
+.catavio-detail__checks--passed .catavio-detail__check::before {
+	content: "";
+	position: absolute;
+	top: 7px;
+	left: 5px;
+	width: 5px;
+	height: 9px;
+	border: solid var(--catavio-healthy);
+	border-width: 0 2px 2px 0;
+	transform: rotate(45deg);
+}
+
+.catavio-detail__checks--skipped .catavio-detail__check::before {
+	content: "";
+	position: absolute;
+	top: 11px;
+	left: 3px;
+	width: 11px;
+	height: 2px;
+	border-radius: 1px;
+	background: var(--catavio-ink-faint);
+}
+
+.catavio-detail__none {
+	margin: 0;
+	color: var(--catavio-ink-muted);
+}
+
+/* A deduction, not a quantity: it reads as the thing that took points away. */
+.catavio-detail__penalty {
+	font-weight: 600;
+	color: var(--catavio-critical);
+}
+
+.catavio-detail__maths-total th,
+.catavio-detail__maths-total td {
+	font-weight: 600;
+	border-top: 2px solid var(--catavio-border-strong);
+}
+
+/* Table chrome ----------------------------------------------------------- */
+
+/*
+ * Last in the file on purpose. These selectors are more specific than the row
+ * rules above that also end in a bare th or td, and a stylesheet reads cleanly
+ * only when specificity climbs as it goes down.
+ */
+.catavio-admin-root .catavio-table thead th {
+	font-size: 11px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	color: var(--catavio-ink-faint);
+}
+
+.catavio-admin-root .catavio-table td {
+	vertical-align: middle;
+}
+
+/* Align the outer columns with the card's own padding rather than indenting
+   the table inside it by widefat's cell padding. */
+.catavio-admin-root .catavio-table tr > :first-child {
+	padding-left: 0;
+}
+
+.catavio-admin-root .catavio-table tr > :last-child {
+	padding-right: 0;
+}
+
+.catavio-admin-root .catavio-table tbody tr:hover {
+	background: #f0f6fc;
+}
+
+/* Right alignment for a numeric column has to outrank widefat's own
+   `text-align: left` on a header cell, which is more specific than the class
+   on its own. */
+.catavio-admin-root .catavio-table .catavio-table__number {
+	text-align: right;
+}
+
+/*
+ * Column rhythm for the product table. A cell set to 1% in an auto layout
+ * table collapses to its content, which hands the leftover width to the two
+ * columns that actually vary: the product name and its health.
+ */
+.catavio-admin-root .catavio-table--products tr > :nth-child(2),
+.catavio-admin-root .catavio-table--products tr > :nth-child(4),
+.catavio-admin-root .catavio-table--products tr > :nth-child(5),
+.catavio-admin-root .catavio-table--products tr > :nth-child(6) {
+	width: 1%;
+	white-space: nowrap;
+}
+
+.catavio-admin-root .catavio-table--products tr > :nth-child(3) {
+	width: 190px;
+}

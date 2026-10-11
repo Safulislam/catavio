@@ -1,0 +1,49 @@
+{
+	"name": "thdevs/catavio",
+	"description": "WooCommerce product quality checker for WordPress. Scans products for missing or incomplete information and reports a transparent health score.",
+	"type": "wordpress-plugin",
+	"license": "GPL-2.0-or-later",
+	"keywords": [
+		"wordpress",
+		"woocommerce",
+		"product-catalog"
+	],
+	"require": {
+		"php": ">=7.4"
+	},
+	"require-dev": {
+		"dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+		"phpcompatibility/phpcompatibility-wp": "^2.1",
+		"phpunit/phpunit": "^9.6",
+		"squizlabs/php_codesniffer": "^3.9",
+		"wp-coding-standards/wpcs": "^3.1",
+		"yoast/phpunit-polyfills": "^2.0"
+	},
+	"autoload": {
+		"psr-4": {
+			"Catavio\\": "includes/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"Catavio\\Tests\\": "tests/php/"
+		}
+	},
+	"config": {
+		"optimize-autoloader": true,
+		"sort-packages": true,
+		"platform": {
+			"php": "7.4.33"
+		},
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true
+		}
+	},
+	"scripts": {
+		"lint": "phpcs",
+		"fix": "phpcbf",
+		"test": "phpunit",
+		"compat": "phpcs --standard=PHPCompatibilityWP --runtime-set testVersion 7.4- includes/ *.php",
+		"lint:floor": "bin/lint-php-floor.sh"
+	}
+}

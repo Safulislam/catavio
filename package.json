@@ -1,0 +1,39 @@
+{
+	"name": "catavio",
+	"version": "1.0.0",
+	"description": "Admin interface for the Catavio WordPress plugin.",
+	"license": "GPL-2.0-or-later",
+	"private": true,
+	"engines": {
+		"node": ">=20"
+	},
+	"scripts": {
+		"build": "wp-scripts build",
+		"release": "bin/build-release.sh",
+		"start": "wp-scripts start",
+		"lint:js": "wp-scripts lint-js",
+		"lint:css": "wp-scripts lint-style",
+		"format": "wp-scripts format",
+		"test:js": "wp-scripts test-unit-js --config jest.config.js",
+		"makepot": "wp i18n make-pot . languages/catavio.pot --slug=catavio --domain=catavio --exclude=node_modules,vendor,tests,catavio-development-docs,bin,docs,dist",
+		"makejson": "wp i18n make-json languages --no-purge",
+		"i18n": "npm run build && npm run makepot && npm run makejson"
+	},
+	"devDependencies": {
+		"@testing-library/dom": "^10.4.2",
+		"@testing-library/jest-dom": "^6.9.1",
+		"@testing-library/react": "^16.3.3",
+		"@testing-library/user-event": "^14.6.7",
+		"@wordpress/a11y": "^4.56.0",
+		"@wordpress/api-fetch": "^7.56.0",
+		"@wordpress/components": "^41.0.0",
+		"@wordpress/element": "^8.8.0",
+		"@wordpress/i18n": "^6.29.0",
+		"@wordpress/scripts": "^30.0.0",
+		"@wordpress/url": "^4.56.0",
+		"jest-axe": "^9.0.0",
+		"react": "^18.3.1",
+		"react-dom": "^18.3.1",
+		"typescript": "^5.9.0"
+	}
+}

@@ -1,0 +1,28 @@
+{
+	"extends": [
+		"plugin:@wordpress/eslint-plugin/recommended"
+	],
+	"env": {
+		"browser": true
+	},
+	"globals": {
+		"catavioAdmin": "readonly"
+	},
+	"ignorePatterns": [
+		"build/",
+		"vendor/",
+		"node_modules/"
+	],
+	"overrides": [
+		{
+			"files": [
+				"tests/js/**/*.js",
+				"jest.config.js"
+			],
+			"env": {
+				"jest": true,
+				"node": true
+			}
+		}
+	]
+}

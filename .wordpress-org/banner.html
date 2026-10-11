@@ -1,0 +1,199 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Catavio — directory banner source</title>
+<!--
+  Source of banner-772x250.png and banner-1544x500.png.
+
+  The layout below is authored once at 772x250 and scaled by 2 for the retina
+  render, which is what keeps the two files "exactly twice" each other rather
+  than two drawings that have to be kept in agreement by hand.
+
+  Rebuild both with:  .wordpress-org/build-banners.sh
+-->
+<style>
+	* { margin: 0; padding: 0; box-sizing: border-box; }
+
+	html, body {
+		width: 1544px;
+		height: 500px;
+		overflow: hidden;
+		background: #0a2c4d;
+	}
+
+	/* Authored at 1x, rendered at 2x. */
+	.banner {
+		width: 772px;
+		height: 250px;
+		transform: scale(2);
+		transform-origin: 0 0;
+		position: relative;
+		display: flex;
+		align-items: center;
+		gap: 30px;
+		padding: 0 44px;
+		background:
+			radial-gradient( 120% 150% at 18% 8%, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0) 55% ),
+			linear-gradient( 100deg, #092a49 0%, #0f4269 42%, #1b5f97 100% );
+		font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, "Helvetica Neue", Arial, sans-serif;
+		-webkit-font-smoothing: antialiased;
+	}
+
+	/* ---- left column ---- */
+
+	.lede { flex: 1 1 auto; min-width: 0; }
+
+	.brandline {
+		display: flex;
+		align-items: center;
+		gap: 14px;
+		margin-bottom: 13px;
+	}
+
+	.tile {
+		width: 46px;
+		height: 46px;
+		flex: 0 0 46px;
+		border-radius: 11px;
+		background: linear-gradient( 140deg, #4295da 0%, #1e6aa8 45%, #0c3a63 100% );
+		box-shadow: 0 2px 7px rgba(4, 20, 36, 0.38), inset 0 1px 0 rgba(255,255,255,0.34);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.tile svg { width: 27px; height: 27px; display: block; }
+
+	.brand {
+		font-size: 34px;
+		font-weight: 700;
+		letter-spacing: -0.7px;
+		color: #fff;
+		line-height: 1;
+	}
+
+	.descriptor {
+		font-size: 14.5px;
+		font-weight: 600;
+		letter-spacing: 0.1px;
+		color: #8fc2e8;
+		margin-bottom: 9px;
+	}
+
+	.blurb {
+		font-size: 13px;
+		font-weight: 400;
+		line-height: 1.5;
+		color: rgba(255, 255, 255, 0.82);
+		max-width: 360px;
+	}
+
+	/* ---- right card ---- */
+
+	.card {
+		flex: 0 0 289px;
+		height: 170px;
+		border-radius: 10px;
+		background: #fff;
+		box-shadow: 0 5px 18px rgba(4, 20, 36, 0.3);
+		padding: 17px 18px;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.card__label {
+		font-size: 9px;
+		font-weight: 700;
+		letter-spacing: 1.1px;
+		text-transform: uppercase;
+		color: #6b7785;
+	}
+
+	.card__score {
+		font-size: 40px;
+		font-weight: 300;
+		letter-spacing: -1.4px;
+		color: #10212e;
+		line-height: 1.15;
+		margin: 2px 0 11px;
+	}
+
+	.track {
+		height: 7px;
+		border-radius: 3.5px;
+		background: #dfeaf4;
+		overflow: hidden;
+	}
+
+	.track__fill { width: 82%; height: 100%; background: #2271b1; }
+
+	.split {
+		display: flex;
+		height: 7px;
+		border-radius: 3.5px;
+		overflow: hidden;
+		margin-top: 13px;
+	}
+
+	.split span:nth-child(1) { width: 30%; background: #00a32a; }
+	.split span:nth-child(2) { width: 61%; background: #dba617; }
+	.split span:nth-child(3) { width:  9%; background: #d63638; }
+
+	.legend {
+		display: flex;
+		gap: 15px;
+		margin-top: 11px;
+		font-size: 10.5px;
+		font-weight: 500;
+		color: #4a5560;
+	}
+
+	.legend span { display: flex; align-items: center; gap: 5px; }
+
+	.legend i {
+		width: 7px;
+		height: 7px;
+		border-radius: 50%;
+		display: block;
+	}
+
+	.legend span:nth-child(1) i { background: #00a32a; }
+	.legend span:nth-child(2) i { background: #dba617; }
+	.legend span:nth-child(3) i { background: #d63638; }
+</style>
+
+<div class="banner">
+	<div class="lede">
+		<div class="brandline">
+			<div class="tile">
+				<!-- The icon mark, matching icon.svg: a bag carrying a completeness meter. -->
+				<svg viewBox="0 0 256 256" aria-hidden="true">
+					<path d="M101 92V76a27 27 0 0 1 54 0v16" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round"/>
+					<path d="M60 92h136a11 11 0 0 1 11 11.6l-8.4 98a17 17 0 0 1-17 15.4H74.4a17 17 0 0 1-17-15.4l-8.4-98A11 11 0 0 1 60 92z" fill="#fff"/>
+					<rect x="79" y="137" width="104" height="23" rx="11.5" fill="#0c3a63" fill-opacity="0.15"/>
+					<rect x="79" y="137" width="84" height="23" rx="11.5" fill="#00a32a"/>
+					<rect x="79" y="176" width="68" height="13" rx="6.5" fill="#0c3a63" fill-opacity="0.13"/>
+				</svg>
+			</div>
+			<div class="brand">Catavio</div>
+		</div>
+
+		<div class="descriptor">Catalog Health for WooCommerce</div>
+
+		<p class="blurb">Find the products missing information across your catalog, then fix them in the editor you already use.</p>
+	</div>
+
+	<div class="card">
+		<div class="card__label">Product health</div>
+		<div class="card__score">82%</div>
+
+		<div class="track"><div class="track__fill"></div></div>
+
+		<div class="split"><span></span><span></span><span></span></div>
+
+		<div class="legend">
+			<span><i></i>Healthy</span>
+			<span><i></i>Attention</span>
+			<span><i></i>Critical</span>
+		</div>
+	</div>
+</div>

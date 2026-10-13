@@ -24,13 +24,14 @@ defined( 'WP_UNINSTALL_PLUGIN' ) || exit;
 /**
  * Options written by the plugin.
  *
- * Mirrors Lifecycle::VERSION_OPTION, Summary::OPTION and ScanState::OPTION.
+ * Mirrors Lifecycle options, Summary::OPTION and ScanState::OPTION.
  *
  * @return string[]
  */
 function catavio_uninstall_option_names() {
 	return array(
 		'catavio_version',
+		'catavio_onboarding_pending',
 		'catavio_summary',
 		'catavio_scan_state',
 	);

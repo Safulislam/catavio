@@ -118,6 +118,7 @@ if ( ! load_autoloader() ) {
 
 register_activation_hook( __FILE__, array( Lifecycle::class, 'activate' ) );
 register_deactivation_hook( __FILE__, array( Lifecycle::class, 'deactivate' ) );
+add_action( 'admin_init', array( Lifecycle::class, 'maybe_redirect_to_onboarding' ) );
 
 /**
  * Declare compatibility with WooCommerce High-Performance Order Storage.

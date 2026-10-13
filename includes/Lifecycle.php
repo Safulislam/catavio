@@ -24,6 +24,13 @@ class Lifecycle {
 	const VERSION_OPTION = 'catavio_version';
 
 	/**
+	 * One-time handoff to the first-run guide.
+	 *
+	 * @var string
+	 */
+	const ONBOARDING_OPTION = 'catavio_onboarding_pending';
+
+	/**
 	 * Run on plugin activation.
 	 *
 	 * Activation deliberately does not require WooCommerce. The plugin stays
@@ -44,7 +51,12 @@ class Lifecycle {
 			);
 		}
 
+		$is_first_install = false === get_option( self::VERSION_OPTION, false );
+
 		update_option( self::VERSION_OPTION, CATAVIO_VERSION, false );
+		if ( $is_first_install ) {
+			add_option( self::ONBOARDING_OPTION, '1', '', false );
+		}
 	}
 
 	/**
@@ -58,5 +70,28 @@ class Lifecycle {
 	 */
 	public static function deactivate() {
 		delete_option( 'catavio_scan_state' );
+	}
+
+	/**
+	 * Send a newly installed site to Catavio once after activation.
+	 *
+	 * The option is added only on first activation, so reactivation does not
+	 * interrupt an existing site's normal workflow.
+	 *
+	 * @return void
+	 */
+	public static function maybe_redirect_to_onboarding() {
+		if ( ! get_option( self::ONBOARDING_OPTION ) || ! Capabilities::current_user_can_manage() ) {
+			return;
+		}
+
+		global $pagenow;
+		if ( 'plugins.php' !== $pagenow || wp_doing_ajax() ) {
+			return;
+		}
+
+		delete_option( self::ONBOARDING_OPTION );
+		wp_safe_redirect( admin_url( 'admin.php?page=catavio' ) );
+		exit;
 	}
 }

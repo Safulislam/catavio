@@ -19,6 +19,7 @@ import { addQueryArgs } from '@wordpress/url';
 import { errorMessage, getSummary } from '../api';
 import DistributionBar from '../components/DistributionBar';
 import EmptyState from '../components/EmptyState';
+import FirstRunWizard from '../components/FirstRunWizard';
 import HealthMeter from '../components/HealthMeter';
 import ScanPanel from '../components/ScanPanel';
 import SeverityTag from '../components/SeverityTag';
@@ -82,6 +83,15 @@ export default function Dashboard( { settings } ) {
 	const [ summary, setSummary ] = useState( null );
 	const [ loading, setLoading ] = useState( true );
 	const [ loadError, setLoadError ] = useState( '' );
+	const [ welcomeHidden, setWelcomeHidden ] = useState( () => {
+		try {
+			return (
+				'1' === window.localStorage.getItem( 'catavio-welcome-hidden' )
+			);
+		} catch ( error ) {
+			return false;
+		}
+	} );
 
 	const load = useCallback( async () => {
 		try {
@@ -160,28 +170,53 @@ export default function Dashboard( { settings } ) {
 
 	// Products exist, but nothing has been scanned yet.
 	if ( ! summary.hasScan ) {
+		if ( welcomeHidden ) {
+			return (
+				<Card className="catavio-card">
+					<CardBody className="catavio-card__body">
+						<EmptyState
+							title={ __( 'No scan yet', 'catavio' ) }
+							description={ __(
+								'Run a scan to check your product catalog.',
+								'catavio'
+							) }
+						>
+							<ScanPanel
+								scan={ scan }
+								running={ running }
+								interrupted={ interrupted }
+								error={ error }
+								onRun={ run }
+								onResume={ resume }
+								onStop={ stop }
+							/>
+						</EmptyState>
+					</CardBody>
+				</Card>
+			);
+		}
+
 		return (
-			<Card className="catavio-card">
-				<CardBody className="catavio-card__body">
-					<EmptyState
-						title={ __( 'No scan yet', 'catavio' ) }
-						description={ __(
-							'Run a scan to check your product catalog.',
-							'catavio'
-						) }
-					>
-						<ScanPanel
-							scan={ scan }
-							running={ running }
-							interrupted={ interrupted }
-							error={ error }
-							onRun={ run }
-							onResume={ resume }
-							onStop={ stop }
-						/>
-					</EmptyState>
-				</CardBody>
-			</Card>
+			<FirstRunWizard
+				scan={ scan }
+				running={ running }
+				interrupted={ interrupted }
+				error={ error }
+				onRun={ run }
+				onResume={ resume }
+				onStop={ stop }
+				onDismiss={ () => {
+					try {
+						window.localStorage.setItem(
+							'catavio-welcome-hidden',
+							'1'
+						);
+					} catch ( storageError ) {
+						// Keep the dismissal for this view even when storage is unavailable.
+					}
+					setWelcomeHidden( true );
+				} }
+			/>
 		);
 	}
 

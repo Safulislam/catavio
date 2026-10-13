@@ -5,7 +5,7 @@ Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 7.4
 Requires Plugins: woocommerce
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -207,10 +207,15 @@ One menu item: **Catalog Health**. No extra submenu duplicates, no dashboard wid
 
 == Changelog ==
 
+= 1.0.1 =
+* Added a first-run guide for new users with products that have not been scanned.
+* Added a one-time dashboard handoff after first activation; the guide is optional and can be hidden.
+* Polished the dashboard section tabs with a smooth active-state transition.
+
 = 1.0.0 =
 * Initial release: catalog scan, thirteen product-type-aware checks, transparent health score, Dashboard and Product Health screens.
 
 == Upgrade Notice ==
 
-= 1.0.0 =
-First release. After activation, open Catalog Health and run a scan.
+= 1.0.1 =
+Adds an optional first-run guide and smoother dashboard section tabs.

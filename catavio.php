@@ -3,7 +3,7 @@
  * Plugin Name:          Catavio – Catalog Health for WooCommerce
  * Plugin URI:           https://github.com/Safulislam/catavio
  * Description:          Find and fix common product information issues across your WooCommerce catalog from one simple dashboard.
- * Version:              1.0.0
+ * Version:              1.0.1
  * Requires at least:    6.4
  * Requires PHP:         7.4
  * Requires Plugins:     woocommerce
@@ -48,7 +48,7 @@ namespace Catavio;
 
 defined( 'ABSPATH' ) || exit;
 
-const VERSION = '1.0.0';
+const VERSION = '1.0.1';
 
 define( 'CATAVIO_VERSION', VERSION );
 define( 'CATAVIO_PLUGIN_FILE', __FILE__ );

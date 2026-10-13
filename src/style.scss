@@ -43,6 +43,9 @@
 	--catavio-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.04);
 	--catavio-shadow-lift: 0 2px 4px rgba(0, 0, 0, 0.05), 0 10px 24px rgba(0, 0, 0, 0.07);
 
+	/* One shared curve, so every transition in the screens settles the same way. */
+	--catavio-ease: cubic-bezier(0.4, 0, 0.2, 1);
+
 	/* The segmented control the views are chosen with. */
 	--catavio-track: #e6e7e9;
 	--catavio-track-border: #d7d8db;
@@ -54,13 +57,23 @@
 	color: var(--catavio-ink);
 }
 
+/* No drawn focus state on links: they keep the shape they already have. */
+.catavio-admin-root a:focus {
+	border-radius: inherit;
+	outline: none;
+	box-shadow: none;
+}
+
 /* Tabs ------------------------------------------------------------------- */
 
 /*
- * A segmented control: one recessed track holding the two views, with the
- * current one raised out of it. It sizes to its labels rather than ruling a
- * line across the page, so the eye goes to the figures below rather than to
- * the navigation. Quiet chrome, loud data.
+ * A segmented control: one recessed track holding the views, with the current
+ * one raised out of it. The track is modelled in light rather than in lines —
+ * a faint inner shadow at the top and a highlight along the bottom edge read
+ * as depth, and the raised pill answers with a gradient surface, a hairline
+ * ring and a soft cast. It sizes to its labels rather than ruling a line
+ * across the page, so the eye goes to the figures below rather than to the
+ * navigation. Quiet chrome, loud data.
  */
 .catavio-tabs {
 
@@ -70,48 +83,75 @@
 	width: fit-content;
 	max-width: 100%;
 	align-items: center;
-	gap: 2px;
+	gap: 8px;
 	margin: 14px 0 0;
-	padding: 3px;
+	padding: 4px;
 	border: 1px solid var(--catavio-track-border);
-	border-radius: 10px;
-	background: var(--catavio-track);
+	border-radius: 12px;
+	background: linear-gradient(180deg, #edeff1 0%, #e4e6e9 100%);
+	box-shadow:
+		inset 0 1px 2px rgba(0, 0, 0, 0.04),
+		inset 0 -1px 0 rgba(255, 255, 255, 0.7);
 }
 
 .catavio-tabs__tab {
 	display: inline-flex;
 	align-items: center;
-	padding: 6px 16px;
-	border-radius: 7px;
+	padding: 7px 18px;
+	border-radius: 9px;
 	font-size: 13px;
 	font-weight: 500;
 	line-height: 20px;
+	letter-spacing: 0.01em;
 	color: var(--catavio-ink-muted);
 	text-decoration: none;
 	white-space: nowrap;
-	transition: background-color 120ms ease, color 120ms ease;
-}
-
-.catavio-tabs__tab:hover {
-	background: rgba(255, 255, 255, 0.55);
-	color: var(--catavio-ink);
+	transition:
+		background-color 160ms var(--catavio-ease),
+		box-shadow 160ms var(--catavio-ease),
+		color 160ms var(--catavio-ease),
+		transform 160ms var(--catavio-ease);
 }
 
 /*
- * Raised, darker and heavier: three signals, so the current view is not left
- * resting on a background tint that a high contrast mode may discard.
+ * Focus draws nothing — not the browser's outline, not anything wp-admin
+ * hangs on a focused link. The current tab is exempt from the box-shadow
+ * reset because its raised pill *is* a shadow; its own rule below restates
+ * it, so a focused current tab keeps its elevation.
  */
-.catavio-tabs__tab--current,
-.catavio-tabs__tab--current:hover {
-	background: var(--catavio-surface);
-	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.09), 0 1px 1px rgba(0, 0, 0, 0.04);
-	color: var(--catavio-ink);
-	font-weight: 600;
+.catavio-tabs__tab:focus {
+	border-radius: inherit;
+	outline: none;
+	box-shadow: none;
+	text-decoration: none;
 }
 
-.catavio-tabs__tab:focus-visible {
-	outline: 2px solid var(--catavio-accent);
-	outline-offset: 1px;
+.catavio-tabs__tab:hover {
+	background: rgba(255, 255, 255, 0.65);
+	color: var(--catavio-ink);
+}
+
+/* A half-pixel settle on press: small, but it reads as mechanical, not flat. */
+.catavio-tabs__tab:active {
+	transform: translateY(0.5px);
+}
+
+/*
+ * Raised, darker and heavier: four signals — an elevated gradient surface, a
+ * hairline ring, a layered cast and the accent on the label — so the current
+ * view is not left resting on a background tint that a high contrast mode may
+ * discard.
+ */
+.catavio-tabs__tab--current,
+.catavio-tabs__tab--current:hover,
+.catavio-tabs__tab--current:focus {
+	background: linear-gradient(180deg, #ffffff 0%, #fbfcfd 100%);
+	box-shadow:
+		0 0 0 1px rgba(0, 0, 0, 0.045),
+		0 1px 2px rgba(0, 0, 0, 0.07),
+		0 3px 8px rgba(0, 0, 0, 0.06);
+	color: var(--catavio-accent);
+	font-weight: 600;
 }
 
 /* Cards ------------------------------------------------------------------ */
@@ -150,6 +190,7 @@
 	border: 1px solid var(--catavio-border);
 	border-radius: var(--catavio-radius);
 	box-shadow: var(--catavio-shadow);
+	overflow: hidden;
 }
 
 .catavio-admin-root .catavio-card__header {
@@ -179,8 +220,7 @@
 	text-decoration: none;
 }
 
-.catavio-card__link:hover,
-.catavio-card__link:focus {
+.catavio-card__link:hover, {
 	text-decoration: underline;
 }
 
@@ -792,6 +832,16 @@
 	border-radius: var(--catavio-radius-sm);
 }
 
+/*
+ * Core draws its focus ring on any focus, mouse clicks included. The plugin
+ * draws none on its own controls; hold the components to the same rule. The
+ * chain matches core's selector so the override wins on specificity.
+ */
+.catavio-admin-root .components-button:focus:not(:disabled):not([aria-disabled="true"]):not(.is-secondary):not(.is-tertiary):not(.is-link) {
+	outline: none;
+	box-shadow: none;
+}
+
 /* Pushed to the far end: it undoes the row rather than adding to it. */
 .catavio-filters__clear {
 	margin-left: auto;
@@ -816,8 +866,7 @@
 	text-decoration: none;
 }
 
-.catavio-products__name:hover,
-.catavio-products__name:focus {
+.catavio-products__name:hover, {
 	text-decoration: underline;
 }
 
@@ -880,8 +929,7 @@
 	white-space: nowrap;
 }
 
-.catavio-products__action:hover,
-.catavio-products__action:focus {
+.catavio-products__action:hover, {
 	text-decoration: underline;
 }
 
@@ -951,8 +999,7 @@
 	text-decoration: none;
 }
 
-.catavio-detail__back:hover,
-.catavio-detail__back:focus {
+.catavio-detail__back:hover, {
 	text-decoration: underline;
 }
 
@@ -991,12 +1038,10 @@
 	letter-spacing: -0.3px;
 }
 
-/* The heading receives focus on arrival; show that clearly rather than
-   suppressing the outline. */
+/* The heading receives focus on arrival; the plugin draws no focus ring,
+   so nothing is shown for it either. */
 .catavio-detail__title:focus {
-	outline: 2px solid var(--catavio-accent);
-	outline-offset: 3px;
-	border-radius: 2px;
+	outline: none;
 }
 
 /*

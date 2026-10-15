@@ -1,8 +1,6 @@
 /vendor/
 /node_modules/
 /build/
-/languages/*.mo
-/languages/*.json
 .DS_Store
 .phpcs.cache
 .phpunit.result.cache

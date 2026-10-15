@@ -1,0 +1,303 @@
+{
+	"translation-revision-date": "2026-10-15 15:30+0000",
+	"generator": "WP-CLI/2.12.0",
+	"source": "build/index.js",
+	"domain": "messages",
+	"locale_data": {
+		"messages": {
+			"": {
+				"domain": "messages",
+				"lang": "de_DE",
+				"plural-forms": "nplurals=2; plural=(n != 1);"
+			},
+			"Critical": [
+				"Kritisch"
+			],
+			"Needs attention": [
+				"Braucht Aufmerksamkeit"
+			],
+			"Healthy": [
+				"Gesund"
+			],
+			"Scanning product %1$d of %2$d": [
+				"Produkt %1$d von %2$d wird gescannt"
+			],
+			"A scan was interrupted before it finished. You can continue it, or stop it and start again.": [
+				"Ein Scan wurde unterbrochen, bevor er abgeschlossen war. Du kannst ihn fortsetzen oder stoppen und neu starten."
+			],
+			"scan progress\u0004%d%%": [
+				"%d%%"
+			],
+			"Continue scan": [
+				"Scan fortsetzen"
+			],
+			"Stop scan": [
+				"Scan stoppen"
+			],
+			"Run scan": [
+				"Scan starten"
+			],
+			"A clear view of your catalog": [
+				"Ein klarer Blick auf deinen Katalog"
+			],
+			"Let’s take a first look.": [
+				"Werfen wir einen ersten Blick."
+			],
+			"Your first catalog check": [
+				"Deine erste Katalogprüfung"
+			],
+			"Catavio checks product details for common gaps and saves health findings for a report. It won’t edit product titles, descriptions, prices, or other storefront content.": [
+				"Catavio prüft Produktdetails auf häufige Lücken und speichert die Ergebnisse für einen Gesundheitsbericht. Es bearbeitet keine Produkttitel, Beschreibungen, Preise oder andere Shop-Inhalte."
+			],
+			"This check reads your product details and records findings for the dashboard. It won’t edit the content shoppers see.": [
+				"Diese Prüfung liest deine Produktdetails und erfasst die Ergebnisse für das Dashboard. Sie bearbeitet keine Inhalte, die im Shop angezeigt werden."
+			],
+			"Setup steps": [
+				"Einrichtungsschritte"
+			],
+			"Review": [
+				"Überblick"
+			],
+			"Choose to scan": [
+				"Scan durchführen"
+			],
+			"Continue": [
+				"Weiter"
+			],
+			"Hide this guide": [
+				"Diese Anleitung ausblenden"
+			],
+			"Back": [
+				"Zurück"
+			],
+			"Product health could not be loaded.": [
+				"Produkt-Gesundheit konnte nicht geladen werden."
+			],
+			"Resuming scan.": [
+				"Scan wird fortgesetzt."
+			],
+			"The scan could not be resumed.": [
+				"Der Scan konnte nicht fortgesetzt werden."
+			],
+			"Scan started.": [
+				"Scan gestartet."
+			],
+			"Scan cancelled.": [
+				"Scan abgebrochen."
+			],
+			"Scan complete. %d products checked.": [
+				"Scan abgeschlossen. %d Produkte geprüft."
+			],
+			"The scan could not be completed.": [
+				"Der Scan konnte nicht abgeschlossen werden."
+			],
+			"The scan could not be cancelled.": [
+				"Der Scan konnte nicht abgebrochen werden."
+			],
+			"Loading product health.": [
+				"Produkt-Gesundheit wird geladen."
+			],
+			"No products yet": [
+				"Noch keine Produkte"
+			],
+			"No WooCommerce products were found.": [
+				"Es wurden keine WooCommerce-Produkte gefunden."
+			],
+			"No scan yet": [
+				"Noch kein Scan"
+			],
+			"Run a scan to check your product catalog.": [
+				"Führe einen Scan aus, um deinen Produktkatalog zu prüfen."
+			],
+			"%d%% of scanned products": [
+				"%d%% der gescannten Produkte"
+			],
+			"Product health": [
+				"Produkt-Gesundheit"
+			],
+			"average health score\u0004%d%%": [
+				"%d%%"
+			],
+			"Average product information completeness": [
+				"Durchschnittliche Vollständigkeit der Produktinformationen"
+			],
+			"Catalog breakdown": [
+				"Katalog-Aufschlüsselung"
+			],
+			"Top issues": [
+				"Top-Probleme"
+			],
+			"No issues were found in your catalog.": [
+				"In deinem Katalog wurden keine Probleme gefunden."
+			],
+			"Issues found, by number of products affected": [
+				"Gefundene Probleme, nach Anzahl betroffener Produkte"
+			],
+			"Issue": [
+				"Problem"
+			],
+			"Severity": [
+				"Schweregrad"
+			],
+			"Products": [
+				"Produkte"
+			],
+			"Scan": [
+				"Scan"
+			],
+			"Based on %d products scanned": [
+				"Basierend auf %d gescannten Produkten"
+			],
+			"%d skipped": [
+				"%d übersprungen"
+			],
+			"Last scan %s": [
+				"Letzter Scan: %s"
+			],
+			"Run a scan again after editing products to bring these figures up to date.": [
+				"Führe nach dem Bearbeiten von Produkten erneut einen Scan aus, um diese Zahlen auf den neuesten Stand zu bringen."
+			],
+			"No issues were found for this product.": [
+				"Für dieses Produkt wurden keine Probleme gefunden."
+			],
+			"Health score %1$d out of 100, %2$s": [
+				"Gesundheitswert %1$d von 100, %2$s"
+			],
+			"/100": [
+				"/100"
+			],
+			"This product report could not be loaded.": [
+				"Dieser Produktbericht konnte nicht geladen werden."
+			],
+			"Loading product report.": [
+				"Produktbericht wird geladen."
+			],
+			"Back to product health": [
+				"Zurück zur Produkt-Gesundheit"
+			],
+			"Edit product": [
+				"Produkt bearbeiten"
+			],
+			"This product has not been scanned yet. Run a scan to see its health report.": [
+				"Dieses Produkt wurde noch nicht gescannt. Führe einen Scan aus, um seinen Gesundheitsbericht zu sehen."
+			],
+			"Last checked %s": [
+				"Zuletzt geprüft: %s"
+			],
+			"How this score was reached": [
+				"Wie dieser Wert berechnet wurde"
+			],
+			"Each deduction applied to this product, and the resulting score": [
+				"Jeder Abzug für dieses Produkt und der daraus resultierende Wert"
+			],
+			"Check": [
+				"Prüfung"
+			],
+			"Points": [
+				"Punkte"
+			],
+			"Running score": [
+				"Kumulierter Wert"
+			],
+			"Starting score": [
+				"Startwert"
+			],
+			"−%d": [
+				"−%d"
+			],
+			"Health score": [
+				"Gesundheitswert"
+			],
+			"Issues": [
+				"Probleme"
+			],
+			"Checks": [
+				"Prüfungen"
+			],
+			"Passed": [
+				"Bestanden"
+			],
+			"Not checked": [
+				"Nicht geprüft"
+			],
+			"These checks do not apply to this product type, so they did not affect the score.": [
+				"Diese Prüfungen treffen bei diesem Produkttyp nicht zu und beeinflussen den Wert daher nicht."
+			],
+			"Search products": [
+				"Produkte suchen"
+			],
+			"Search": [
+				"Suchen"
+			],
+			"Health": [
+				"Gesundheit"
+			],
+			"Any health": [
+				"Alle"
+			],
+			"Any issue": [
+				"Alle Probleme"
+			],
+			"Product type": [
+				"Produkttyp"
+			],
+			"Any type": [
+				"Alle Typen"
+			],
+			"Clear filters": [
+				"Filter zurücksetzen"
+			],
+			"Product list pages": [
+				"Seiten der Produktliste"
+			],
+			"%d products": [
+				"%d Produkte"
+			],
+			"Previous page": [
+				"Vorherige Seite"
+			],
+			"Page %1$d of %2$d": [
+				"Seite %1$d von %2$d"
+			],
+			"Next page": [
+				"Nächste Seite"
+			],
+			"The product list could not be loaded.": [
+				"Die Produktliste konnte nicht geladen werden."
+			],
+			"Loading products.": [
+				"Produkte werden geladen."
+			],
+			"No matching products": [
+				"Keine passenden Produkte"
+			],
+			"No products match the filters you selected.": [
+				"Keine Produkte entsprechen deinen ausgewählten Filtern."
+			],
+			"Nothing scanned yet": [
+				"Noch nichts gescannt"
+			],
+			"Scanned products and their health": [
+				"Gescannte Produkte und ihr Gesundheitszustand"
+			],
+			"Product": [
+				"Produkt"
+			],
+			"Type": [
+				"Typ"
+			],
+			"Last checked": [
+				"Zuletzt geprüft"
+			],
+			"Actions": [
+				"Aktionen"
+			],
+			"View only": [
+				"Nur ansehen"
+			],
+			"Unknown screen.": [
+				"Unbekannter Bildschirm."
+			]
+		}
+	}
+}

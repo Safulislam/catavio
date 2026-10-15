@@ -27,9 +27,11 @@ defined( 'ABSPATH' ) || exit;
  * Boot order matters: nothing that depends on WooCommerce is constructed until
  * WooCommerce has been confirmed present and supported.
  *
- * Translations are not loaded here. WordPress.org serves this plugin's language
- * packs and loads them just in time under the plugin slug, so calling
- * load_plugin_textdomain() would be redundant work on every request.
+ * Translations load on init: WordPress.org serves language packs for the
+ * plugin slug, and the German translation bundled in /languages covers sites
+ * that are offline or ahead of the pack. The .mo files are small enough that
+ * loading them here costs less than a plugin-locale switch mid-request, which
+ * is what loading any earlier would risk.
  */
 class Plugin {
 
@@ -105,6 +107,8 @@ class Plugin {
 
 		$this->booted = true;
 
+		add_action( 'init', array( $this, 'load_textdomain' ) );
+
 		if ( ! Requirements::are_met() ) {
 			Requirements::register_notices();
 			return;
@@ -131,6 +135,23 @@ class Plugin {
 
 		$assets = new Assets( $this->menu );
 		$assets->register();
+	}
+
+	/**
+	 * Load the plugin's text domain.
+	 *
+	 * Bundled translations live in /languages; WordPress.org language packs
+	 * take precedence for locales this plugin does not ship, because the
+	 * pack's .mo is loaded first and the bundled file only fills the gaps.
+	 *
+	 * @return void
+	 */
+	public function load_textdomain() {
+		load_plugin_textdomain(
+			'catavio',
+			false,
+			dirname( CATAVIO_PLUGIN_BASENAME ) . '/languages'
+		);
 	}
 
 	/**

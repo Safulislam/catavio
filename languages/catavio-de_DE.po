@@ -1,0 +1,800 @@
+# Copyright (C) 2026 Saiful Islam
+# This file is distributed under the GPL-2.0-or-later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Catavio – Catalog Health for WooCommerce 1.0.1\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/catavio\n"
+"Last-Translator: Saiful Islam <https://profiles.wordpress.org/saiful09/>\n"
+"Language-Team: German (Germany) <https://translate.wordpress.org/locale/de/default/wp-plugins/catavio>\n"
+"Language: de_DE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2026-10-15 15:30+0000\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Domain: catavio\n"
+
+#. Plugin Name of the plugin
+#: catavio.php
+msgid "Catavio – Catalog Health for WooCommerce"
+msgstr "Catavio – Katalog-Gesundheit für WooCommerce"
+
+#. Plugin URI of the plugin
+#: catavio.php
+msgid "https://github.com/Safulislam/catavio"
+msgstr ""
+
+#. Description of the plugin
+#: catavio.php
+msgid "Find and fix common product information issues across your WooCommerce catalog from one simple dashboard."
+msgstr ""
+"Finde und behebe häufige Probleme mit Produktinformationen in deinem "
+"gesamten WooCommerce-Katalog – alles aus einem einfachen Dashboard."
+
+#. Author of the plugin
+#: catavio.php
+msgid "Saiful Islam"
+msgstr "Saiful Islam"
+
+#. Author URI of the plugin
+#: catavio.php
+msgid "https://profiles.wordpress.org/saiful09/"
+msgstr ""
+
+#: catavio.php:111
+msgid "Catavio could not start because its autoloader is missing. Run \"composer install\" in the plugin directory, or install the packaged release."
+msgstr ""
+"Catavio konnte nicht gestartet werden, weil der Autoloader fehlt. Führe "
+"„composer install“ im Plugin-Verzeichnis aus oder installiere das "
+"fertige Release-Paket."
+
+#: includes/Admin/Menu.php:62
+#: includes/Admin/Screen.php:110
+#: includes/Admin/Screen.php:123
+msgid "Catalog Health"
+msgstr "Katalog-Gesundheit"
+
+#: includes/Admin/Screen.php:107
+#: includes/Admin/Screen.php:154
+msgid "Product Health"
+msgstr "Produkt-Gesundheit"
+
+#: includes/Admin/Screen.php:157
+msgid "Dashboard"
+msgstr "Dashboard"
+
+#: includes/Admin/Screen.php:172
+msgid "You do not have permission to view this page."
+msgstr "Du hast keine Berechtigung, diese Seite anzuzeigen."
+
+#: includes/Admin/Screen.php:184
+msgid "Catavio needs JavaScript to display product health results."
+msgstr ""
+"Catavio benötigt JavaScript, um die Ergebnisse der Produkt-Gesundheit "
+"anzuzeigen."
+
+#: includes/Admin/Screen.php:215
+msgid "Catalog Health sections"
+msgstr "Katalog-Gesundheit-Bereiche"
+
+#: includes/Assets.php:124
+msgid "The Catavio admin assets have not been built. Run \"npm install && npm run build\" in the plugin directory."
+msgstr ""
+"Die Catavio-Admin-Assets wurden nicht erstellt. Führe „npm install && "
+"npm run build“ im Plugin-Verzeichnis aus."
+
+#: includes/Checks/CategoryCheck.php:43
+msgid "Product category"
+msgstr "Produktkategorie"
+
+#: includes/Checks/CategoryCheck.php:55
+msgid "The product is not assigned to a category."
+msgstr "Das Produkt ist keiner Kategorie zugeordnet."
+
+#: includes/Checks/DescriptionCheck.php:37
+msgid "Description"
+msgstr "Beschreibung"
+
+#: includes/Checks/DescriptionCheck.php:61
+msgid "The product description is missing."
+msgstr "Die Produktbeschreibung fehlt."
+
+#: includes/Checks/DownloadableFilesCheck.php:37
+msgid "Downloadable files"
+msgstr "Herunterladbare Dateien"
+
+#: includes/Checks/DownloadableFilesCheck.php:61
+msgid "This downloadable product has no files attached."
+msgstr "Mit diesem herunterladbaren Produkt sind keine Dateien verknüpft."
+
+#: includes/Checks/ExternalUrlCheck.php:37
+msgid "Product URL"
+msgstr "Produkt-URL"
+
+#: includes/Checks/ExternalUrlCheck.php:61
+msgid "This external product has no product URL."
+msgstr "Dieses externe Produkt hat keine Produkt-URL."
+
+#: includes/Checks/FeaturedImageCheck.php:37
+msgid "Featured image"
+msgstr "Beitragsbild"
+
+#: includes/Checks/FeaturedImageCheck.php:49
+msgid "The product has no featured image."
+msgstr "Das Produkt hat kein Beitragsbild."
+
+#: includes/Checks/ImageAltTextCheck.php:41
+msgid "Featured image alt text"
+msgstr "Alt-Text des Beitragsbilds"
+
+#: includes/Checks/ImageAltTextCheck.php:65
+msgid "The featured image has no alt text."
+msgstr "Das Beitragsbild hat keinen Alt-Text."
+
+#: includes/Checks/PriceCheck.php:44
+msgid "Price"
+msgstr "Preis"
+
+#: includes/Checks/PriceCheck.php:67
+msgid "No variation of this product has a price."
+msgstr "Keine Variante dieses Produkts hat einen Preis."
+
+#: includes/Checks/PriceCheck.php:70
+msgid "The product has no price."
+msgstr "Das Produkt hat keinen Preis."
+
+#: includes/Checks/ShortDescriptionCheck.php:37
+msgid "Short description"
+msgstr "Kurzbeschreibung"
+
+#: includes/Checks/ShortDescriptionCheck.php:49
+msgid "The short description is missing."
+msgstr "Die Kurzbeschreibung fehlt."
+
+#: includes/Checks/SkuCheck.php:37
+msgid "SKU"
+msgstr "SKU"
+
+#: includes/Checks/SkuCheck.php:49
+msgid "The product has no SKU."
+msgstr "Das Produkt hat keine SKU."
+
+#: includes/Checks/StockCheck.php:42
+msgid "Stock configuration"
+msgstr "Bestandskonfiguration"
+
+#: includes/Checks/StockCheck.php:53
+msgid "Stock management is enabled but no stock quantity is set."
+msgstr ""
+"Die Bestandsverwaltung ist aktiviert, aber es wurde keine Bestandsmenge "
+"festgelegt."
+
+#: includes/Checks/StockCheck.php:56
+msgid "The product has no stock status."
+msgstr "Das Produkt hat keinen Bestandsstatus."
+
+#: includes/Checks/TitleCheck.php:37
+msgid "Product title"
+msgstr "Produkttitel"
+
+#: includes/Checks/TitleCheck.php:61
+msgid "The product title is missing."
+msgstr "Der Produkttitel fehlt."
+
+#: includes/Checks/VariationAttributesCheck.php:43
+msgid "Variation attributes"
+msgstr "Variantenattribute"
+
+#: includes/Checks/VariationAttributesCheck.php:67
+msgid "This variable product has no attribute marked for variations."
+msgstr "Für dieses variable Produkt ist kein Attribut für Varianten markiert."
+
+#: includes/Checks/VariationsCheck.php:37
+msgid "Variations"
+msgstr "Varianten"
+
+#: includes/Checks/VariationsCheck.php:61
+msgid "This variable product has no variations."
+msgstr "Dieses variable Produkt hat keine Varianten."
+
+#: includes/Lifecycle.php:49
+msgid "Plugin activation failed"
+msgstr "Plugin-Aktivierung fehlgeschlagen"
+
+#. translators: 1: required PHP version, 2: PHP version in use.
+#: includes/Requirements.php:36
+#, php-format
+msgid "Catavio requires PHP %1$s or newer. This site runs PHP %2$s."
+msgstr "Catavio benötigt PHP %1$s oder neuer. Diese Website verwendet PHP %2$s."
+
+#. translators: 1: required WordPress version, 2: WordPress version in use.
+#: includes/Requirements.php:45
+#, php-format
+msgid "Catavio requires WordPress %1$s or newer. This site runs WordPress %2$s."
+msgstr ""
+"Catavio benötigt WordPress %1$s oder neuer. Diese Website verwendet "
+"WordPress %2$s."
+
+#: includes/Requirements.php:160
+msgid "Catavio requires WooCommerce to be active."
+msgstr "Catavio benötigt ein aktives WooCommerce."
+
+#: includes/Requirements.php:164
+msgid "unknown"
+msgstr "unbekannt"
+
+#. translators: 1: required WooCommerce version, 2: WooCommerce version in use.
+#: includes/Requirements.php:168
+#, php-format
+msgid "Catavio requires WooCommerce %1$s or newer. This site runs WooCommerce %2$s."
+msgstr ""
+"Catavio benötigt WooCommerce %1$s oder neuer. Diese Website verwendet "
+"WooCommerce %2$s."
+
+#: includes/Rest/Controller.php:51
+msgid "You do not have permission to manage product health."
+msgstr "Du hast keine Berechtigung, die Produkt-Gesundheit zu verwalten."
+
+#: includes/Rest/Controller.php:77
+msgid "WooCommerce is not active."
+msgstr "WooCommerce ist nicht aktiv."
+
+#: includes/Rest/ProductsController.php:144
+#: includes/Rest/ProductsController.php:154
+msgid "That product could not be found."
+msgstr "Dieses Produkt konnte nicht gefunden werden."
+
+#. translators: %s: human readable time difference, for example "5 mins".
+#: includes/Rest/ProductsController.php:624
+#: includes/Rest/SummaryController.php:224
+#, php-format
+msgid "%s ago"
+msgstr "vor %s"
+
+#: includes/Rest/ScanController.php:119
+msgid "There is no scan in progress."
+msgstr "Es läuft derzeit kein Scan."
+
+#: includes/Rest/SummaryController.php:183
+#: includes/Rest/SummaryController.php:201
+#: build/index.js:6
+#: src/screens/Dashboard.jsx:343
+msgid "Critical"
+msgstr "Kritisch"
+
+#: includes/Rest/SummaryController.php:187
+msgid "Warning"
+msgstr "Warnung"
+
+#: includes/Rest/SummaryController.php:190
+msgid "Info"
+msgstr "Info"
+
+#: includes/Rest/SummaryController.php:205
+#: build/index.js:6
+#: src/screens/Dashboard.jsx:334
+msgid "Needs attention"
+msgstr "Braucht Aufmerksamkeit"
+
+#: includes/Rest/SummaryController.php:208
+#: build/index.js:6
+#: src/screens/Dashboard.jsx:325
+msgid "Healthy"
+msgstr "Gesund"
+
+#. translators: 1: products scanned so far, 2: total products to scan.
+#: build/index.js:2
+#: src/components/ScanPanel.jsx:32
+#, js-format
+msgid "Scanning product %1$d of %2$d"
+msgstr "Produkt %1$d von %2$d wird gescannt"
+
+#: build/index.js:2
+#: src/components/ScanPanel.jsx:47
+msgid "A scan was interrupted before it finished. You can continue it, or stop it and start again."
+msgstr ""
+"Ein Scan wurde unterbrochen, bevor er abgeschlossen war. Du kannst ihn "
+"fortsetzen oder stoppen und neu starten."
+
+#. translators: %d: how much of the scan is complete, as a percentage.
+#: build/index.js:3
+#: src/components/ScanPanel.jsx:66
+#, js-format
+msgctxt "scan progress"
+msgid "%d%%"
+msgstr "%d%%"
+
+#: build/index.js:3
+#: src/components/ScanPanel.jsx:87
+msgid "Continue scan"
+msgstr "Scan fortsetzen"
+
+#: build/index.js:3
+#: src/components/ScanPanel.jsx:94
+msgid "Stop scan"
+msgstr "Scan stoppen"
+
+#: build/index.js:3
+#: src/components/ScanPanel.jsx:100
+msgid "Run scan"
+msgstr "Scan starten"
+
+#: build/index.js:3
+#: src/components/FirstRunWizard.jsx:39
+msgid "A clear view of your catalog"
+msgstr "Ein klarer Blick auf deinen Katalog"
+
+#: build/index.js:3
+#: src/components/FirstRunWizard.jsx:43
+msgid "Let’s take a first look."
+msgstr "Werfen wir einen ersten Blick."
+
+#: build/index.js:3
+#: src/components/FirstRunWizard.jsx:44
+msgid "Your first catalog check"
+msgstr "Deine erste Katalogprüfung"
+
+#: build/index.js:3
+#: src/components/FirstRunWizard.jsx:48
+msgid "Catavio checks product details for common gaps and saves health findings for a report. It won’t edit product titles, descriptions, prices, or other storefront content."
+msgstr ""
+"Catavio prüft Produktdetails auf häufige Lücken und speichert die "
+"Ergebnisse für einen Gesundheitsbericht. Es bearbeitet keine "
+"Produkttitel, Beschreibungen, Preise oder andere Shop-Inhalte."
+
+#: build/index.js:3
+#: src/components/FirstRunWizard.jsx:52
+msgid "This check reads your product details and records findings for the dashboard. It won’t edit the content shoppers see."
+msgstr ""
+"Diese Prüfung liest deine Produktdetails und erfasst die Ergebnisse für "
+"das Dashboard. Sie bearbeitet keine Inhalte, die im Shop angezeigt "
+"werden."
+
+#: build/index.js:3
+#: src/components/FirstRunWizard.jsx:59
+msgid "Setup steps"
+msgstr "Einrichtungsschritte"
+
+#: build/index.js:3
+#: src/components/FirstRunWizard.jsx:67
+msgid "Review"
+msgstr "Überblick"
+
+#: build/index.js:3
+#: src/components/FirstRunWizard.jsx:71
+msgid "Choose to scan"
+msgstr "Scan durchführen"
+
+#: build/index.js:3
+#: src/components/FirstRunWizard.jsx:80
+msgid "Continue"
+msgstr "Weiter"
+
+#: build/index.js:3
+#: src/components/FirstRunWizard.jsx:86
+msgid "Hide this guide"
+msgstr "Diese Anleitung ausblenden"
+
+#: build/index.js:3
+#: src/components/FirstRunWizard.jsx:104
+msgid "Back"
+msgstr "Zurück"
+
+#: build/index.js:3
+#: src/screens/Dashboard.jsx:105
+msgid "Product health could not be loaded."
+msgstr "Produkt-Gesundheit konnte nicht geladen werden."
+
+#: build/index.js:3
+#: src/hooks/useScan.js:89
+msgid "Resuming scan."
+msgstr "Scan wird fortgesetzt."
+
+#: build/index.js:3
+#: src/hooks/useScan.js:101
+msgid "The scan could not be resumed."
+msgstr "Der Scan konnte nicht fortgesetzt werden."
+
+#: build/index.js:3
+#: src/hooks/useScan.js:128
+msgid "Scan started."
+msgstr "Scan gestartet."
+
+#: build/index.js:3
+#: src/hooks/useScan.js:138
+msgid "Scan cancelled."
+msgstr "Scan abgebrochen."
+
+#. translators: %d: number of products scanned.
+#: build/index.js:4
+#: src/hooks/useScan.js:145
+#, js-format
+msgid "Scan complete. %d products checked."
+msgstr "Scan abgeschlossen. %d Produkte geprüft."
+
+#: build/index.js:4
+#: src/hooks/useScan.js:163
+msgid "The scan could not be completed."
+msgstr "Der Scan konnte nicht abgeschlossen werden."
+
+#: build/index.js:4
+#: src/hooks/useScan.js:191
+msgid "The scan could not be cancelled."
+msgstr "Der Scan konnte nicht abgebrochen werden."
+
+#: build/index.js:4
+#: src/screens/Dashboard.jsx:131
+msgid "Loading product health."
+msgstr "Produkt-Gesundheit wird geladen."
+
+#: build/index.js:4
+#: src/screens/Dashboard.jsx:157
+msgid "No products yet"
+msgstr "Noch keine Produkte"
+
+#: build/index.js:4
+#: src/screens/Dashboard.jsx:161
+msgid "No WooCommerce products were found."
+msgstr "Es wurden keine WooCommerce-Produkte gefunden."
+
+#: build/index.js:4
+#: src/screens/Dashboard.jsx:178
+msgid "No scan yet"
+msgstr "Noch kein Scan"
+
+#: build/index.js:4
+#: build/index.js:14
+#: src/screens/Dashboard.jsx:179
+#: src/screens/ProductList.jsx:155
+msgid "Run a scan to check your product catalog."
+msgstr "Führe einen Scan aus, um deinen Produktkatalog zu prüfen."
+
+#. translators: %d: share of the scanned products, as a percentage.
+#: build/index.js:5
+#: src/screens/Dashboard.jsx:241
+#, js-format
+msgid "%d%% of scanned products"
+msgstr "%d%% der gescannten Produkte"
+
+#: build/index.js:5
+#: src/screens/Dashboard.jsx:269
+msgid "Product health"
+msgstr "Produkt-Gesundheit"
+
+#. translators: %d: average health score, out of 100.
+#: build/index.js:6
+#: src/screens/Dashboard.jsx:279
+#, js-format
+msgctxt "average health score"
+msgid "%d%%"
+msgstr "%d%%"
+
+#: build/index.js:6
+#: src/screens/Dashboard.jsx:288
+msgid "Average product information completeness"
+msgstr "Durchschnittliche Vollständigkeit der Produktinformationen"
+
+#: build/index.js:6
+#: src/screens/Dashboard.jsx:299
+msgid "Catalog breakdown"
+msgstr "Katalog-Aufschlüsselung"
+
+#: build/index.js:6
+#: src/screens/Dashboard.jsx:357
+msgid "Top issues"
+msgstr "Top-Probleme"
+
+#: build/index.js:6
+#: src/screens/Dashboard.jsx:363
+msgid "No issues were found in your catalog."
+msgstr "In deinem Katalog wurden keine Probleme gefunden."
+
+#: build/index.js:6
+#: src/screens/Dashboard.jsx:371
+msgid "Issues found, by number of products affected"
+msgstr "Gefundene Probleme, nach Anzahl betroffener Produkte"
+
+#: build/index.js:6
+#: build/index.js:12
+#: src/components/Filters.jsx:78
+#: src/screens/Dashboard.jsx:379
+msgid "Issue"
+msgstr "Problem"
+
+#: build/index.js:6
+#: src/screens/Dashboard.jsx:385
+msgid "Severity"
+msgstr "Schweregrad"
+
+#: build/index.js:6
+#: src/screens/Dashboard.jsx:394
+msgid "Products"
+msgstr "Produkte"
+
+#: build/index.js:6
+#: src/screens/Dashboard.jsx:443
+msgid "Scan"
+msgstr "Scan"
+
+#. translators: %d: number of products scanned.
+#: build/index.js:7
+#: src/screens/Dashboard.jsx:451
+#, js-format
+msgid "Based on %d products scanned"
+msgstr "Basierend auf %d gescannten Produkten"
+
+#. translators: %d: number of products left out of the scan.
+#: build/index.js:8
+#: src/screens/Dashboard.jsx:462
+#, js-format
+msgid "%d skipped"
+msgstr "%d übersprungen"
+
+#. translators: %s: time since the last scan, for example "5 mins ago".
+#: build/index.js:9
+#: src/screens/Dashboard.jsx:471
+#, js-format
+msgid "Last scan %s"
+msgstr "Letzter Scan: %s"
+
+#: build/index.js:9
+#: src/screens/Dashboard.jsx:481
+msgid "Run a scan again after editing products to bring these figures up to date."
+msgstr ""
+"Führe nach dem Bearbeiten von Produkten erneut einen Scan aus, um diese "
+"Zahlen auf den neuesten Stand zu bringen."
+
+#: build/index.js:9
+#: src/components/IssueList.jsx:20
+msgid "No issues were found for this product."
+msgstr "Für dieses Produkt wurden keine Probleme gefunden."
+
+#. translators: 1: health score out of 100, 2: health status such as "Healthy".
+#: build/index.js:10
+#: src/components/ScoreBadge.jsx:13
+#, js-format
+msgid "Health score %1$d out of 100, %2$s"
+msgstr "Gesundheitswert %1$d von 100, %2$s"
+
+#: build/index.js:10
+#: src/components/ScoreBadge.jsx:29
+msgid "/100"
+msgstr "/100"
+
+#: build/index.js:10
+#: src/screens/ProductDetail.jsx:84
+msgid "This product report could not be loaded."
+msgstr "Dieser Produktbericht konnte nicht geladen werden."
+
+#: build/index.js:10
+#: src/screens/ProductDetail.jsx:122
+msgid "Loading product report."
+msgstr "Produktbericht wird geladen."
+
+#: build/index.js:10
+#: src/screens/ProductDetail.jsx:140
+msgid "Back to product health"
+msgstr "Zurück zur Produkt-Gesundheit"
+
+#: build/index.js:10
+#: build/index.js:14
+#: src/screens/ProductDetail.jsx:147
+#: src/screens/ProductList.jsx:268
+msgid "Edit product"
+msgstr "Produkt bearbeiten"
+
+#: build/index.js:10
+#: src/screens/ProductDetail.jsx:164
+msgid "This product has not been scanned yet. Run a scan to see its health report."
+msgstr ""
+"Dieses Produkt wurde noch nicht gescannt. Führe einen Scan aus, um "
+"seinen Gesundheitsbericht zu sehen."
+
+#. translators: %s: time since the last check, for example "5 mins ago".
+#: build/index.js:11
+#: src/screens/ProductDetail.jsx:201
+#, js-format
+msgid "Last checked %s"
+msgstr "Zuletzt geprüft: %s"
+
+#: build/index.js:11
+#: src/screens/ProductDetail.jsx:245
+msgid "How this score was reached"
+msgstr "Wie dieser Wert berechnet wurde"
+
+#: build/index.js:11
+#: src/screens/ProductDetail.jsx:254
+msgid "Each deduction applied to this product, and the resulting score"
+msgstr "Jeder Abzug für dieses Produkt und der daraus resultierende Wert"
+
+#: build/index.js:11
+#: src/screens/ProductDetail.jsx:262
+msgid "Check"
+msgstr "Prüfung"
+
+#: build/index.js:11
+#: src/screens/ProductDetail.jsx:265
+msgid "Points"
+msgstr "Punkte"
+
+#: build/index.js:11
+#: src/screens/ProductDetail.jsx:268
+msgid "Running score"
+msgstr "Kumulierter Wert"
+
+#: build/index.js:11
+#: src/screens/ProductDetail.jsx:278
+msgid "Starting score"
+msgstr "Startwert"
+
+#. translators: %d: points deducted.
+#: build/index.js:12
+#: src/screens/ProductDetail.jsx:300
+#, js-format
+msgid "−%d"
+msgstr "−%d"
+
+#: build/index.js:12
+#: src/screens/ProductDetail.jsx:315
+msgid "Health score"
+msgstr "Gesundheitswert"
+
+#: build/index.js:12
+#: build/index.js:14
+#: src/screens/ProductDetail.jsx:333
+#: src/screens/ProductList.jsx:195
+msgid "Issues"
+msgstr "Probleme"
+
+#: build/index.js:12
+#: src/screens/ProductDetail.jsx:344
+msgid "Checks"
+msgstr "Prüfungen"
+
+#: build/index.js:12
+#: src/screens/ProductDetail.jsx:350
+msgid "Passed"
+msgstr "Bestanden"
+
+#: build/index.js:12
+#: src/screens/ProductDetail.jsx:355
+msgid "Not checked"
+msgstr "Nicht geprüft"
+
+#: build/index.js:12
+#: src/screens/ProductDetail.jsx:356
+msgid "These checks do not apply to this product type, so they did not affect the score."
+msgstr ""
+"Diese Prüfungen treffen bei diesem Produkttyp nicht zu und beeinflussen "
+"den Wert daher nicht."
+
+#: build/index.js:12
+#: src/components/Filters.jsx:51
+msgid "Search products"
+msgstr "Produkte suchen"
+
+#: build/index.js:12
+#: src/components/Filters.jsx:62
+msgid "Search"
+msgstr "Suchen"
+
+#: build/index.js:12
+#: build/index.js:14
+#: src/components/Filters.jsx:69
+#: src/screens/ProductList.jsx:186
+msgid "Health"
+msgstr "Gesundheit"
+
+#: build/index.js:12
+#: src/components/Filters.jsx:70
+msgid "Any health"
+msgstr "Alle"
+
+#: build/index.js:12
+#: src/components/Filters.jsx:79
+msgid "Any issue"
+msgstr "Alle Probleme"
+
+#: build/index.js:12
+#: src/components/Filters.jsx:87
+msgid "Product type"
+msgstr "Produkttyp"
+
+#: build/index.js:12
+#: src/components/Filters.jsx:88
+msgid "Any type"
+msgstr "Alle Typen"
+
+#: build/index.js:12
+#: src/components/Filters.jsx:107
+msgid "Clear filters"
+msgstr "Filter zurücksetzen"
+
+#: build/index.js:12
+#: src/components/Pagination.jsx:20
+msgid "Product list pages"
+msgstr "Seiten der Produktliste"
+
+#. translators: %d: total number of products found.
+#: build/index.js:13
+#: src/components/Pagination.jsx:25
+#, js-format
+msgid "%d products"
+msgstr "%d Produkte"
+
+#: build/index.js:13
+#: src/components/Pagination.jsx:34
+msgid "Previous page"
+msgstr "Vorherige Seite"
+
+#. translators: 1: current page number, 2: total number of pages.
+#: build/index.js:14
+#: src/components/Pagination.jsx:39
+#, js-format
+msgid "Page %1$d of %2$d"
+msgstr "Seite %1$d von %2$d"
+
+#: build/index.js:14
+#: src/components/Pagination.jsx:49
+msgid "Next page"
+msgstr "Nächste Seite"
+
+#: build/index.js:14
+#: src/hooks/useProducts.js:49
+msgid "The product list could not be loaded."
+msgstr "Die Produktliste konnte nicht geladen werden."
+
+#: build/index.js:14
+#: src/screens/ProductList.jsx:116
+msgid "Loading products."
+msgstr "Produkte werden geladen."
+
+#: build/index.js:14
+#: src/screens/ProductList.jsx:140
+msgid "No matching products"
+msgstr "Keine passenden Produkte"
+
+#: build/index.js:14
+#: src/screens/ProductList.jsx:144
+msgid "No products match the filters you selected."
+msgstr "Keine Produkte entsprechen deinen ausgewählten Filtern."
+
+#: build/index.js:14
+#: src/screens/ProductList.jsx:151
+msgid "Nothing scanned yet"
+msgstr "Noch nichts gescannt"
+
+#: build/index.js:14
+#: src/screens/ProductList.jsx:169
+msgid "Scanned products and their health"
+msgstr "Gescannte Produkte und ihr Gesundheitszustand"
+
+#: build/index.js:14
+#: src/screens/ProductList.jsx:177
+msgid "Product"
+msgstr "Produkt"
+
+#: build/index.js:14
+#: src/screens/ProductList.jsx:183
+msgid "Type"
+msgstr "Typ"
+
+#: build/index.js:14
+#: src/screens/ProductList.jsx:201
+msgid "Last checked"
+msgstr "Zuletzt geprüft"
+
+#: build/index.js:14
+#: src/screens/ProductList.jsx:207
+msgid "Actions"
+msgstr "Aktionen"
+
+#: build/index.js:14
+#: src/screens/ProductList.jsx:275
+msgid "View only"
+msgstr "Nur ansehen"
+
+#: build/index.js:14
+#: src/app.jsx:24
+msgid "Unknown screen."
+msgstr "Unbekannter Bildschirm."

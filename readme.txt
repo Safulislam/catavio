@@ -186,7 +186,7 @@ Yes. Checks are product-type aware. See “What it checks” in the description.
 
 = Is it translation ready? =
 
-Yes. PHP and JavaScript strings use the `catavio` text domain. A POT file ships in `/languages`.
+Yes. PHP and JavaScript strings use the `catavio` text domain. A POT file ships in `/languages`, together with a complete German (Germany) translation that loads automatically on sites running in German. English is the source language, so no English translation file is needed.
 
 = What is stored, and what is removed on uninstall? =
 
@@ -207,6 +207,10 @@ One menu item: **Catalog Health**. No extra submenu duplicates, no dashboard wid
 
 == Changelog ==
 
+= 1.0.2 =
+* Added a complete German (Germany) translation; translations now load from the bundled /languages directory.
+* Refreshed the translation template (POT) to include the first-run guide strings.
+
 = 1.0.1 =
 * Added a first-run guide for new users with products that have not been scanned.
 * Added a one-time dashboard handoff after first activation; the guide is optional and can be hidden.
@@ -216,6 +220,9 @@ One menu item: **Catalog Health**. No extra submenu duplicates, no dashboard wid
 * Initial release: catalog scan, thirteen product-type-aware checks, transparent health score, Dashboard and Product Health screens.
 
 == Upgrade Notice ==
+
+= 1.0.2 =
+Adds a German translation that loads automatically on sites running in German.
 
 = 1.0.1 =
 Adds an optional first-run guide and smoother dashboard section tabs.

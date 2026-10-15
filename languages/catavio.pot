@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-06T15:51:18+00:00\n"
+"POT-Creation-Date: 2026-10-15T14:08:37+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: catavio\n"
@@ -186,7 +186,7 @@ msgstr ""
 msgid "This variable product has no variations."
 msgstr ""
 
-#: includes/Lifecycle.php:42
+#: includes/Lifecycle.php:49
 msgid "Plugin activation failed"
 msgstr ""
 
@@ -243,7 +243,7 @@ msgstr ""
 #: includes/Rest/SummaryController.php:183
 #: includes/Rest/SummaryController.php:201
 #: build/index.js:6
-#: src/screens/Dashboard.jsx:308
+#: src/screens/Dashboard.jsx:343
 msgid "Critical"
 msgstr ""
 
@@ -257,13 +257,13 @@ msgstr ""
 
 #: includes/Rest/SummaryController.php:205
 #: build/index.js:6
-#: src/screens/Dashboard.jsx:299
+#: src/screens/Dashboard.jsx:334
 msgid "Needs attention"
 msgstr ""
 
 #: includes/Rest/SummaryController.php:208
 #: build/index.js:6
-#: src/screens/Dashboard.jsx:290
+#: src/screens/Dashboard.jsx:325
 msgid "Healthy"
 msgstr ""
 
@@ -303,7 +303,62 @@ msgid "Run scan"
 msgstr ""
 
 #: build/index.js:3
-#: src/screens/Dashboard.jsx:95
+#: src/components/FirstRunWizard.jsx:39
+msgid "A clear view of your catalog"
+msgstr ""
+
+#: build/index.js:3
+#: src/components/FirstRunWizard.jsx:43
+msgid "Let’s take a first look."
+msgstr ""
+
+#: build/index.js:3
+#: src/components/FirstRunWizard.jsx:44
+msgid "Your first catalog check"
+msgstr ""
+
+#: build/index.js:3
+#: src/components/FirstRunWizard.jsx:48
+msgid "Catavio checks product details for common gaps and saves health findings for a report. It won’t edit product titles, descriptions, prices, or other storefront content."
+msgstr ""
+
+#: build/index.js:3
+#: src/components/FirstRunWizard.jsx:52
+msgid "This check reads your product details and records findings for the dashboard. It won’t edit the content shoppers see."
+msgstr ""
+
+#: build/index.js:3
+#: src/components/FirstRunWizard.jsx:59
+msgid "Setup steps"
+msgstr ""
+
+#: build/index.js:3
+#: src/components/FirstRunWizard.jsx:67
+msgid "Review"
+msgstr ""
+
+#: build/index.js:3
+#: src/components/FirstRunWizard.jsx:71
+msgid "Choose to scan"
+msgstr ""
+
+#: build/index.js:3
+#: src/components/FirstRunWizard.jsx:80
+msgid "Continue"
+msgstr ""
+
+#: build/index.js:3
+#: src/components/FirstRunWizard.jsx:86
+msgid "Hide this guide"
+msgstr ""
+
+#: build/index.js:3
+#: src/components/FirstRunWizard.jsx:104
+msgid "Back"
+msgstr ""
+
+#: build/index.js:3
+#: src/screens/Dashboard.jsx:105
 msgid "Product health could not be loaded."
 msgstr ""
 
@@ -345,122 +400,122 @@ msgid "The scan could not be cancelled."
 msgstr ""
 
 #: build/index.js:4
-#: src/screens/Dashboard.jsx:121
+#: src/screens/Dashboard.jsx:131
 msgid "Loading product health."
 msgstr ""
 
 #: build/index.js:4
-#: src/screens/Dashboard.jsx:147
+#: src/screens/Dashboard.jsx:157
 msgid "No products yet"
 msgstr ""
 
 #: build/index.js:4
-#: src/screens/Dashboard.jsx:151
+#: src/screens/Dashboard.jsx:161
 msgid "No WooCommerce products were found."
 msgstr ""
 
 #: build/index.js:4
-#: src/screens/Dashboard.jsx:167
+#: src/screens/Dashboard.jsx:178
 msgid "No scan yet"
 msgstr ""
 
 #: build/index.js:4
 #: build/index.js:14
-#: src/screens/Dashboard.jsx:168
+#: src/screens/Dashboard.jsx:179
 #: src/screens/ProductList.jsx:155
 msgid "Run a scan to check your product catalog."
 msgstr ""
 
 #. translators: %d: share of the scanned products, as a percentage.
 #: build/index.js:5
-#: src/screens/Dashboard.jsx:206
+#: src/screens/Dashboard.jsx:241
 #, js-format
 msgid "%d%% of scanned products"
 msgstr ""
 
 #: build/index.js:5
-#: src/screens/Dashboard.jsx:234
+#: src/screens/Dashboard.jsx:269
 msgid "Product health"
 msgstr ""
 
 #. translators: %d: average health score, out of 100.
 #: build/index.js:6
-#: src/screens/Dashboard.jsx:244
+#: src/screens/Dashboard.jsx:279
 #, js-format
 msgctxt "average health score"
 msgid "%d%%"
 msgstr ""
 
 #: build/index.js:6
-#: src/screens/Dashboard.jsx:253
+#: src/screens/Dashboard.jsx:288
 msgid "Average product information completeness"
 msgstr ""
 
 #: build/index.js:6
-#: src/screens/Dashboard.jsx:264
+#: src/screens/Dashboard.jsx:299
 msgid "Catalog breakdown"
 msgstr ""
 
 #: build/index.js:6
-#: src/screens/Dashboard.jsx:322
+#: src/screens/Dashboard.jsx:357
 msgid "Top issues"
 msgstr ""
 
 #: build/index.js:6
-#: src/screens/Dashboard.jsx:328
+#: src/screens/Dashboard.jsx:363
 msgid "No issues were found in your catalog."
 msgstr ""
 
 #: build/index.js:6
-#: src/screens/Dashboard.jsx:336
+#: src/screens/Dashboard.jsx:371
 msgid "Issues found, by number of products affected"
 msgstr ""
 
 #: build/index.js:6
 #: build/index.js:12
 #: src/components/Filters.jsx:78
-#: src/screens/Dashboard.jsx:344
+#: src/screens/Dashboard.jsx:379
 msgid "Issue"
 msgstr ""
 
 #: build/index.js:6
-#: src/screens/Dashboard.jsx:350
+#: src/screens/Dashboard.jsx:385
 msgid "Severity"
 msgstr ""
 
 #: build/index.js:6
-#: src/screens/Dashboard.jsx:359
+#: src/screens/Dashboard.jsx:394
 msgid "Products"
 msgstr ""
 
 #: build/index.js:6
-#: src/screens/Dashboard.jsx:408
+#: src/screens/Dashboard.jsx:443
 msgid "Scan"
 msgstr ""
 
 #. translators: %d: number of products scanned.
 #: build/index.js:7
-#: src/screens/Dashboard.jsx:416
+#: src/screens/Dashboard.jsx:451
 #, js-format
 msgid "Based on %d products scanned"
 msgstr ""
 
 #. translators: %d: number of products left out of the scan.
 #: build/index.js:8
-#: src/screens/Dashboard.jsx:427
+#: src/screens/Dashboard.jsx:462
 #, js-format
 msgid "%d skipped"
 msgstr ""
 
 #. translators: %s: time since the last scan, for example "5 mins ago".
 #: build/index.js:9
-#: src/screens/Dashboard.jsx:436
+#: src/screens/Dashboard.jsx:471
 #, js-format
 msgid "Last scan %s"
 msgstr ""
 
 #: build/index.js:9
-#: src/screens/Dashboard.jsx:446
+#: src/screens/Dashboard.jsx:481
 msgid "Run a scan again after editing products to bring these figures up to date."
 msgstr ""
 

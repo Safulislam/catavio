@@ -16,8 +16,9 @@
 		"format": "wp-scripts format",
 		"test:js": "wp-scripts test-unit-js --config jest.config.js",
 		"makepot": "wp i18n make-pot . languages/catavio.pot --slug=catavio --domain=catavio --exclude=node_modules,vendor,tests,catavio-development-docs,bin,docs,dist",
-		"makejson": "wp i18n make-json languages --no-purge",
-		"i18n": "npm run build && npm run makepot && npm run makejson"
+		"makejson": "wp i18n make-json languages --no-purge && node bin/merge-i18n-json.js",
+		"makemo": "wp i18n make-mo languages",
+		"i18n": "npm run build && npm run makepot && npm run makejson && npm run makemo"
 	},
 	"devDependencies": {
 		"@testing-library/dom": "^10.4.2",

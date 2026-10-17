@@ -1,0 +1,19 @@
+{
+	"$schema": "https://playground.wordpress.net/blueprint-schema.json",
+	"landingPage": "/wp-admin/admin.php?page=catavio",
+	"preferredVersions": {
+		"php": "8.3",
+		"wp": "latest"
+	},
+	"login": true,
+	"plugins": [
+		"woocommerce",
+		"catavio-catalog-health-for-woocommerce"
+	],
+	"steps": [
+		{
+			"step": "runPHP",
+			"code": "<?php\nrequire_once 'wordpress/wp-load.php';\n\nif ( ! class_exists( 'WC_Product_Simple' ) || wc_get_products( array( 'limit' => 1 ) ) ) {\n\treturn;\n}\n\n$term = term_exists( 'Demo Collection', 'product_cat' );\nif ( ! $term ) {\n\t$term = wp_insert_term( 'Demo Collection', 'product_cat' );\n}\n$category_id = is_array( $term ) ? (int) $term['term_id'] : (int) $term;\n\n$examples = array(\n\tarray(\n\t\t'name' => 'Everyday Canvas Tote',\n\t\t'description' => 'A lightweight everyday tote with reinforced handles and a roomy interior.',\n\t\t'short_description' => 'A simple carryall for daily errands.',\n\t\t'price' => '24.00',\n\t\t'sku' => 'DEMO-TOTE-001',\n\t),\n\tarray(\n\t\t'name' => 'Weekend Trail Pack',\n\t\t'description' => '',\n\t\t'short_description' => '',\n\t\t'price' => '68.00',\n\t\t'sku' => 'DEMO-PACK-002',\n\t),\n\tarray(\n\t\t'name' => 'Pocket Field Notebook',\n\t\t'description' => 'A compact notebook for quick notes and sketches.',\n\t\t'short_description' => 'Made for ideas on the move.',\n\t\t'price' => '9.50',\n\t\t'sku' => '',\n\t),\n);\n\nforeach ( $examples as $example ) {\n\t$product = new WC_Product_Simple();\n\t$product->set_name( $example['name'] );\n\t$product->set_status( 'publish' );\n\t$product->set_catalog_visibility( 'visible' );\n\t$product->set_description( $example['description'] );\n\t$product->set_short_description( $example['short_description'] );\n\t$product->set_regular_price( $example['price'] );\n\t$product->set_sku( $example['sku'] );\n\t$product->set_category_ids( array( $category_id ) );\n\t$product->save();\n}\n"
+		}
+	]
+}

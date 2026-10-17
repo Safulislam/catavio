@@ -13,6 +13,7 @@ download small, which is why `.distignore` excludes this whole folder.
 | `banner-772x250.png` | Header of the plugin's directory page |
 | `banner-1544x500.png` | High-DPI version of the banner, which only works if the 772x250 file is present too |
 | `screenshot-1.png` … `screenshot-4.png` | The Screenshots section of `readme.txt`, in caption order |
+| `blueprints/blueprint.json` | Source for the Playground Live Preview; copy to SVN `assets/blueprints/blueprint.json` |
 | `banner.html` | Source of both banners. Not uploaded |
 | `build-banners.sh` | Renders that source into both banners. Not uploaded |
 

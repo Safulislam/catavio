@@ -46,10 +46,7 @@ export default function useProducts( query ) {
 			setError(
 				errorMessage(
 					thrown,
-					__(
-						'The product list could not be loaded.',
-						'catavio'
-					)
+					__( 'The product list could not be loaded.', 'catavio' )
 				)
 			);
 		} finally {

@@ -2,22 +2,28 @@
  * Health report for one product.
  *
  * Shows the arithmetic rather than asserting the total: a store owner can add
- * up the deductions listed here and arrive at the score displayed. The only
- * action offered is a link into the standard WooCommerce product editor. This
- * plugin reports problems; the editor that fixes them already exists.
+ * up the deductions listed here and arrive at the score displayed. The main
+ * action is a link into the standard WooCommerce product editor. This plugin
+ * reports problems; the editor that fixes them already exists.
+ *
+ * The second action checks this one product again, so a fix made in the editor
+ * can be confirmed without rescanning the whole catalog. It reads the product
+ * and stores a fresh result, exactly as a full scan would; it never edits it.
  */
 
+import { speak } from '@wordpress/a11y';
 import {
 	Button,
 	Card,
 	CardBody,
 	CardHeader,
+	Notice,
 	Spinner,
 } from '@wordpress/components';
-import { useEffect, useRef, useState } from '@wordpress/element';
+import { useCallback, useEffect, useRef, useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 
-import { errorMessage, getProduct } from '../api';
+import { errorMessage, getProduct, recheckProduct } from '../api';
 import HealthMeter from '../components/HealthMeter';
 import IssueList from '../components/IssueList';
 import ScoreBadge from '../components/ScoreBadge';
@@ -65,7 +71,11 @@ function CheckList( { title, description, items, tone } ) {
 export default function ProductDetail( { productId } ) {
 	const [ product, setProduct ] = useState( null );
 	const [ error, setError ] = useState( '' );
+	const [ rechecking, setRechecking ] = useState( false );
+	const [ recheckError, setRecheckError ] = useState( '' );
+	const [ rechecked, setRechecked ] = useState( false );
 	const heading = useRef( null );
+	const arrived = useRef( false );
 
 	useEffect( () => {
 		let cancelled = false;
@@ -96,12 +106,49 @@ export default function ProductDetail( { productId } ) {
 	}, [ productId ] );
 
 	// Move focus to the report heading once it exists, so someone arriving here
-	// by keyboard lands on the content rather than at the top of the page.
+	// by keyboard lands on the content rather than at the top of the page. Only
+	// on arrival: a recheck replaces the report in place, and pulling focus away
+	// from the button just pressed would lose the person's place.
 	useEffect( () => {
-		if ( product && heading.current ) {
+		if ( product && heading.current && ! arrived.current ) {
+			arrived.current = true;
 			heading.current.focus();
 		}
 	}, [ product ] );
+
+	const recheck = useCallback( async () => {
+		setRechecking( true );
+		setRecheckError( '' );
+		setRechecked( false );
+
+		try {
+			const data = await recheckProduct( productId );
+
+			setProduct( data );
+			setRechecked( true );
+			speak(
+				sprintf(
+					/* translators: 1: health score, out of 100. 2: health group, for example "Critical". */
+					__(
+						'Product checked again. Health score %1$d out of 100, %2$s.',
+						'catavio'
+					),
+					data.score,
+					data.bucketLabel
+				),
+				'polite'
+			);
+		} catch ( thrown ) {
+			setRecheckError(
+				errorMessage(
+					thrown,
+					__( 'This product could not be checked.', 'catavio' )
+				)
+			);
+		} finally {
+			setRechecking( false );
+		}
+	}, [ productId ] );
 
 	if ( error ) {
 		return (
@@ -119,10 +166,7 @@ export default function ProductDetail( { productId } ) {
 				<CardBody className="catavio-card__body">
 					<Spinner />
 					<span className="screen-reader-text">
-						{ __(
-							'Loading product report.',
-							'catavio'
-						) }
+						{ __( 'Loading product report.', 'catavio' ) }
 					</span>
 				</CardBody>
 			</Card>
@@ -148,6 +192,52 @@ export default function ProductDetail( { productId } ) {
 		</Button>
 	) : null;
 
+	let recheckLabel = __( 'Check now', 'catavio' );
+
+	if ( rechecking ) {
+		recheckLabel = __( 'Checking…', 'catavio' );
+	} else if ( product.scanned ) {
+		recheckLabel = __( 'Check again', 'catavio' );
+	}
+
+	const recheckButton = product.canRecheck ? (
+		// aria-disabled rather than disabled while busy: disabling the button
+		// that was just pressed would drop keyboard focus to the page body.
+		<Button
+			variant="secondary"
+			onClick={ rechecking ? undefined : recheck }
+			isBusy={ rechecking }
+			aria-disabled={ rechecking }
+		>
+			{ recheckLabel }
+		</Button>
+	) : null;
+
+	const actions = (
+		<div className="catavio-detail__actions">
+			{ editButton }
+			{ recheckButton }
+		</div>
+	);
+
+	const recheckNotices = (
+		<>
+			{ recheckError ? (
+				<Notice status="error" isDismissible={ false }>
+					{ recheckError }
+				</Notice>
+			) : null }
+			{ rechecked && ! recheckError ? (
+				<Notice status="success" isDismissible={ false }>
+					{ __(
+						'Checked again. This report now reflects the product as it is saved.',
+						'catavio'
+					) }
+				</Notice>
+			) : null }
+		</>
+	);
+
 	if ( ! product.scanned ) {
 		return (
 			<Card className="catavio-card">
@@ -161,12 +251,18 @@ export default function ProductDetail( { productId } ) {
 						{ product.name }
 					</h2>
 					<p className="catavio-detail__unscanned">
-						{ __(
-							'This product has not been scanned yet. Run a scan to see its health report.',
-							'catavio'
-						) }
+						{ product.canRecheck
+							? __(
+									'This product has not been checked yet. Check it now, or run a scan to check the whole catalog.',
+									'catavio'
+							  )
+							: __(
+									'This product has not been scanned yet. Run a scan to see its health report.',
+									'catavio'
+							  ) }
 					</p>
-					{ editButton }
+					{ recheckNotices }
+					{ actions }
 				</CardBody>
 			</Card>
 		);
@@ -198,10 +294,7 @@ export default function ProductDetail( { productId } ) {
 									<span className="catavio-meta__item">
 										{ sprintf(
 											/* translators: %s: time since the last check, for example "5 mins ago". */
-											__(
-												'Last checked %s',
-												'catavio'
-											),
+											__( 'Last checked %s', 'catavio' ),
 											product.lastCheckedText
 										) }
 									</span>
@@ -209,8 +302,19 @@ export default function ProductDetail( { productId } ) {
 							</p>
 						</div>
 
-						{ editButton }
+						{ actions }
 					</div>
+
+					{ recheckNotices }
+
+					{ product.changedSince ? (
+						<Notice status="warning" isDismissible={ false }>
+							{ __(
+								'This product was edited after it was last checked, so this report may be out of date.',
+								'catavio'
+							) }
+						</Notice>
+					) : null }
 
 					<div
 						className={ `catavio-detail__scoreboard catavio-detail__scoreboard--${ product.bucket }` }
@@ -242,10 +346,7 @@ export default function ProductDetail( { productId } ) {
 			<Card className="catavio-card">
 				<CardHeader className="catavio-card__header">
 					<h3 className="catavio-card__title">
-						{ __(
-							'How this score was reached',
-							'catavio'
-						) }
+						{ __( 'How this score was reached', 'catavio' ) }
 					</h3>
 				</CardHeader>
 				<CardBody className="catavio-card__body">
@@ -261,26 +362,28 @@ export default function ProductDetail( { productId } ) {
 								<th scope="col">
 									{ __( 'Check', 'catavio' ) }
 								</th>
-								<th scope="col" className="catavio-table__number">
+								<th
+									scope="col"
+									className="catavio-table__number"
+								>
 									{ __( 'Points', 'catavio' ) }
 								</th>
-								<th scope="col" className="catavio-table__number">
-									{ __(
-										'Running score',
-										'catavio'
-									) }
+								<th
+									scope="col"
+									className="catavio-table__number"
+								>
+									{ __( 'Running score', 'catavio' ) }
 								</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr>
 								<th scope="row">
-									{ __(
-										'Starting score',
-										'catavio'
-									) }
+									{ __( 'Starting score', 'catavio' ) }
 								</th>
-								<td className="catavio-table__number">&mdash;</td>
+								<td className="catavio-table__number">
+									&mdash;
+								</td>
 								<td className="catavio-table__number">
 									{ product.startingScore }
 								</td>
@@ -297,10 +400,7 @@ export default function ProductDetail( { productId } ) {
 										<td className="catavio-table__number catavio-detail__penalty">
 											{ sprintf(
 												/* translators: %d: points deducted. */
-												__(
-													'−%d',
-													'catavio'
-												),
+												__( '−%d', 'catavio' ),
 												issue.penalty
 											) }
 										</td>
@@ -312,12 +412,11 @@ export default function ProductDetail( { productId } ) {
 							} ) }
 							<tr className="catavio-detail__maths-total">
 								<th scope="row">
-									{ __(
-										'Health score',
-										'catavio'
-									) }
+									{ __( 'Health score', 'catavio' ) }
 								</th>
-								<td className="catavio-table__number">&mdash;</td>
+								<td className="catavio-table__number">
+									&mdash;
+								</td>
 								<td className="catavio-table__number">
 									{ product.score }
 								</td>
@@ -358,6 +457,15 @@ export default function ProductDetail( { productId } ) {
 							'catavio'
 						) }
 						items={ product.notApplicable }
+					/>
+					<CheckList
+						tone="skipped"
+						title={ __( 'Turned off', 'catavio' ) }
+						description={ __(
+							'These checks are turned off in Settings, so they did not affect the score.',
+							'catavio'
+						) }
+						items={ product.turnedOff || [] }
 					/>
 				</CardBody>
 			</Card>

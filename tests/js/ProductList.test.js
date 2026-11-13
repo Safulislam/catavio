@@ -255,6 +255,98 @@ describe( 'ProductList', () => {
 		} );
 	} );
 
+	it( 'sorts the list and keeps the order in the address bar', async () => {
+		apiFetch.mockResolvedValue( page() );
+
+		render( <ProductList settings={ settings } /> );
+
+		await screen.findByText( 'Merino Wool Scarf' );
+
+		// Worst first by default.
+		expect( apiFetch.mock.calls[ 0 ][ 0 ].path ).toContain(
+			'orderby=score'
+		);
+		expect( apiFetch.mock.calls[ 0 ][ 0 ].path ).toContain( 'order=asc' );
+
+		fireEvent.change( screen.getByLabelText( 'Sort by' ), {
+			target: { value: 'title:asc' },
+		} );
+
+		await waitFor( () => {
+			const last =
+				apiFetch.mock.calls[ apiFetch.mock.calls.length - 1 ][ 0 ].path;
+			expect( last ).toContain( 'orderby=title' );
+			expect( last ).toContain( 'order=asc' );
+		} );
+
+		await waitFor( () => {
+			expect( window.location.search ).toContain( 'orderby=title' );
+		} );
+	} );
+
+	it( 'reads a known sort order from the address bar, and only a known one', async () => {
+		apiFetch.mockResolvedValue( page() );
+
+		window.history.replaceState(
+			{},
+			'',
+			'/wp-admin/admin.php?orderby=checked&order=desc'
+		);
+
+		const { unmount } = render( <ProductList settings={ settings } /> );
+
+		await screen.findByText( 'Merino Wool Scarf' );
+
+		expect( apiFetch.mock.calls[ 0 ][ 0 ].path ).toContain(
+			'orderby=checked'
+		);
+		expect( screen.getByLabelText( 'Sort by' ) ).toHaveValue(
+			'checked:desc'
+		);
+
+		unmount();
+		apiFetch.mockClear();
+
+		window.history.replaceState(
+			{},
+			'',
+			'/wp-admin/admin.php?orderby=post_password&order=DROP'
+		);
+
+		render( <ProductList settings={ settings } /> );
+
+		await screen.findByText( 'Merino Wool Scarf' );
+
+		expect( apiFetch.mock.calls[ 0 ][ 0 ].path ).toContain(
+			'orderby=score'
+		);
+		expect( apiFetch.mock.calls[ 0 ][ 0 ].path ).not.toContain(
+			'post_password'
+		);
+	} );
+
+	it( 'marks a product edited since it was last checked', async () => {
+		apiFetch.mockResolvedValue(
+			page( {
+				products: [
+					product( { changedSince: true } ),
+					product( {
+						id: 102,
+						name: 'Linen Shirt',
+						changedSince: false,
+					} ),
+				],
+				total: 2,
+			} )
+		);
+
+		render( <ProductList settings={ settings } /> );
+
+		await screen.findByText( 'Merino Wool Scarf' );
+
+		expect( screen.getAllByText( 'Edited since then' ) ).toHaveLength( 1 );
+	} );
+
 	it( 'gives every filter control a real label', async () => {
 		apiFetch.mockResolvedValue( page() );
 
@@ -268,6 +360,7 @@ describe( 'ProductList', () => {
 		expect( screen.getByLabelText( 'Health' ) ).toBeInTheDocument();
 		expect( screen.getByLabelText( 'Issue' ) ).toBeInTheDocument();
 		expect( screen.getByLabelText( 'Product type' ) ).toBeInTheDocument();
+		expect( screen.getByLabelText( 'Sort by' ) ).toBeInTheDocument();
 	} );
 
 	it( 'reports a failure to load rather than showing an empty table', async () => {

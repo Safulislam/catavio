@@ -11,7 +11,13 @@
  * numbers — none of them is a separate source of truth.
  */
 
-import { Card, CardBody, CardHeader, Spinner } from '@wordpress/components';
+import {
+	Card,
+	CardBody,
+	CardHeader,
+	Notice,
+	Spinner,
+} from '@wordpress/components';
 import { useCallback, useEffect, useState } from '@wordpress/element';
 import { __, _x, sprintf } from '@wordpress/i18n';
 import { addQueryArgs } from '@wordpress/url';
@@ -33,17 +39,22 @@ import useScan from '../hooks/useScan';
  * always spelled out beside it: the colour is the shortcut, never the
  * information.
  *
- * @param {Object} props       Component props.
- * @param {string} props.label Bucket name.
- * @param {number} props.value Number of products in the bucket.
- * @param {string} props.tone  Bucket key: healthy, attention or critical.
- * @param {string} props.share Share of the scanned catalog, already phrased.
+ * @param {Object} props        Component props.
+ * @param {string} props.label  Bucket name.
+ * @param {number} props.value  Number of products in the bucket.
+ * @param {string} props.tone   Bucket key: healthy, attention or critical.
+ * @param {string} props.share  Share of the scanned catalog, already phrased.
+ * @param {string} [props.href] Product list filtered to this bucket. The label
+ *                              becomes a link to it when the bucket has any
+ *                              products in it.
  */
-function Figure( { label, value, tone, share } ) {
+function Figure( { label, value, tone, share, href } ) {
 	return (
 		<li className={ `catavio-figure catavio-figure--${ tone }` }>
 			<span className="catavio-figure__key" aria-hidden="true" />
-			<span className="catavio-figure__label">{ label }</span>
+			<span className="catavio-figure__label">
+				{ href && value > 0 ? <a href={ href }>{ label }</a> : label }
+			</span>
 			<span className="catavio-figure__value">{ value }</span>
 			{ share ? (
 				<span className="catavio-figure__share">{ share }</span>
@@ -102,10 +113,7 @@ export default function Dashboard( { settings } ) {
 			setLoadError(
 				errorMessage(
 					thrown,
-					__(
-						'Product health could not be loaded.',
-						'catavio'
-					)
+					__( 'Product health could not be loaded.', 'catavio' )
 				)
 			);
 		} finally {
@@ -128,10 +136,7 @@ export default function Dashboard( { settings } ) {
 				<CardBody className="catavio-card__body catavio-card__body--centred">
 					<Spinner />
 					<span className="screen-reader-text">
-						{ __(
-							'Loading product health.',
-							'catavio'
-						) }
+						{ __( 'Loading product health.', 'catavio' ) }
 					</span>
 				</CardBody>
 			</Card>
@@ -154,10 +159,7 @@ export default function Dashboard( { settings } ) {
 			<Card className="catavio-card">
 				<CardBody className="catavio-card__body">
 					<EmptyState
-						title={ __(
-							'No products yet',
-							'catavio'
-						) }
+						title={ __( 'No products yet', 'catavio' ) }
 						description={ __(
 							'No WooCommerce products were found.',
 							'catavio'
@@ -261,8 +263,72 @@ export default function Dashboard( { settings } ) {
 			  } )
 			: '';
 
+	/**
+	 * Link to the product list, filtered to one health group.
+	 *
+	 * @param {string} bucket Health group key.
+	 * @return {string} The URL, or an empty string when unavailable.
+	 */
+	const bucketUrl = ( bucket ) =>
+		productsUrl ? addQueryArgs( productsUrl, { health: bucket } ) : '';
+
+	// Reasons the figures on screen no longer describe the catalog exactly.
+	// Each is stated, rather than the figures being quietly patched, because
+	// every number here is promised to come from a scan that actually ran.
+	const outOfDate = [];
+
+	if ( summary.productsTotal !== summary.scanned + summary.skipped ) {
+		outOfDate.push(
+			sprintf(
+				/* translators: 1: number of products in the catalog now, 2: number of products the last scan covered. */
+				__(
+					'Your catalog has %1$d products to check now, and the last scan covered %2$d.',
+					'catavio'
+				),
+				summary.productsTotal,
+				summary.scanned + summary.skipped
+			)
+		);
+	}
+
+	if ( summary.rechecked ) {
+		outOfDate.push(
+			__(
+				'Some products were checked again individually after the last scan. Their reports are current, but these figures are not.',
+				'catavio'
+			)
+		);
+	}
+
+	if ( summary.settingsChanged ) {
+		outOfDate.push(
+			__(
+				'The checks that run were changed in Settings after the last scan.',
+				'catavio'
+			)
+		);
+	}
+
 	return (
 		<div className="catavio-dashboard">
+			{ outOfDate.length > 0 && ! running ? (
+				<Notice
+					status="info"
+					isDismissible={ false }
+					className="catavio-dashboard__stale"
+				>
+					{ outOfDate.map( ( sentence ) => (
+						<p key={ sentence }>{ sentence }</p>
+					) ) }
+					<p>
+						{ __(
+							'Run a scan to bring these figures up to date.',
+							'catavio'
+						) }
+					</p>
+				</Notice>
+			) : null }
+
 			<Card className="catavio-card catavio-card--hero">
 				<CardHeader className="catavio-card__header">
 					<h2 className="catavio-card__title">
@@ -296,10 +362,7 @@ export default function Dashboard( { settings } ) {
 
 						<div className="catavio-hero__breakdown">
 							<h3 className="catavio-breakdown__title">
-								{ __(
-									'Catalog breakdown',
-									'catavio'
-								) }
+								{ __( 'Catalog breakdown', 'catavio' ) }
 							</h3>
 
 							<DistributionBar
@@ -322,28 +385,22 @@ export default function Dashboard( { settings } ) {
 									tone="healthy"
 									value={ summary.healthy }
 									share={ shareOf( summary.healthy ) }
-									label={ __(
-										'Healthy',
-										'catavio'
-									) }
+									label={ __( 'Healthy', 'catavio' ) }
+									href={ bucketUrl( 'healthy' ) }
 								/>
 								<Figure
 									tone="attention"
 									value={ summary.attention }
 									share={ shareOf( summary.attention ) }
-									label={ __(
-										'Needs attention',
-										'catavio'
-									) }
+									label={ __( 'Needs attention', 'catavio' ) }
+									href={ bucketUrl( 'attention' ) }
 								/>
 								<Figure
 									tone="critical"
 									value={ summary.critical }
 									share={ shareOf( summary.critical ) }
-									label={ __(
-										'Critical',
-										'catavio'
-									) }
+									label={ __( 'Critical', 'catavio' ) }
+									href={ bucketUrl( 'critical' ) }
 								/>
 							</ul>
 						</div>
@@ -376,25 +433,16 @@ export default function Dashboard( { settings } ) {
 							<thead>
 								<tr>
 									<th scope="col">
-										{ __(
-											'Issue',
-											'catavio'
-										) }
+										{ __( 'Issue', 'catavio' ) }
 									</th>
 									<th scope="col">
-										{ __(
-											'Severity',
-											'catavio'
-										) }
+										{ __( 'Severity', 'catavio' ) }
 									</th>
 									<th
 										scope="col"
 										className="catavio-table__number"
 									>
-										{ __(
-											'Products',
-											'catavio'
-										) }
+										{ __( 'Products', 'catavio' ) }
 									</th>
 								</tr>
 							</thead>
@@ -448,10 +496,7 @@ export default function Dashboard( { settings } ) {
 						<span className="catavio-meta__item">
 							{ sprintf(
 								/* translators: %d: number of products scanned. */
-								__(
-									'Based on %d products scanned',
-									'catavio'
-								),
+								__( 'Based on %d products scanned', 'catavio' ),
 								summary.scanned
 							) }
 						</span>
@@ -468,10 +513,7 @@ export default function Dashboard( { settings } ) {
 							<span className="catavio-meta__item">
 								{ sprintf(
 									/* translators: %s: time since the last scan, for example "5 mins ago". */
-									__(
-										'Last scan %s',
-										'catavio'
-									),
+									__( 'Last scan %s', 'catavio' ),
 									summary.lastScanText
 								) }
 							</span>

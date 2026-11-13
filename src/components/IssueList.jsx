@@ -17,10 +17,7 @@ export default function IssueList( { issues } ) {
 	if ( issues.length === 0 ) {
 		return (
 			<p className="catavio-detail__none">
-				{ __(
-					'No issues were found for this product.',
-					'catavio'
-				) }
+				{ __( 'No issues were found for this product.', 'catavio' ) }
 			</p>
 		);
 	}

@@ -98,10 +98,7 @@ export default function useScan( { serverScan, onFinished } ) {
 				setError(
 					errorMessage(
 						thrown,
-						__(
-							'The scan could not be resumed.',
-							'catavio'
-						)
+						__( 'The scan could not be resumed.', 'catavio' )
 					)
 				);
 			}
@@ -134,18 +131,12 @@ export default function useScan( { serverScan, onFinished } ) {
 			}
 
 			if ( cancelled.current ) {
-				speak(
-					__( 'Scan cancelled.', 'catavio' ),
-					'polite'
-				);
+				speak( __( 'Scan cancelled.', 'catavio' ), 'polite' );
 			} else {
 				speak(
 					sprintf(
 						/* translators: %d: number of products scanned. */
-						__(
-							'Scan complete. %d products checked.',
-							'catavio'
-						),
+						__( 'Scan complete. %d products checked.', 'catavio' ),
 						finished && finished.processed ? finished.processed : 0
 					),
 					'polite'
@@ -160,10 +151,7 @@ export default function useScan( { serverScan, onFinished } ) {
 				setError(
 					errorMessage(
 						thrown,
-						__(
-							'The scan could not be completed.',
-							'catavio'
-						)
+						__( 'The scan could not be completed.', 'catavio' )
 					)
 				);
 			}
@@ -188,10 +176,7 @@ export default function useScan( { serverScan, onFinished } ) {
 				setError(
 					errorMessage(
 						thrown,
-						__(
-							'The scan could not be cancelled.',
-							'catavio'
-						)
+						__( 'The scan could not be cancelled.', 'catavio' )
 					)
 				);
 			}

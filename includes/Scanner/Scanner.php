@@ -10,6 +10,7 @@ declare( strict_types = 1 );
 namespace Catavio\Scanner;
 
 use Catavio\Checks\Registry;
+use Catavio\Settings;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -66,18 +67,37 @@ class Scanner {
 	private $summary;
 
 	/**
+	 * Store owner preferences: which checks are turned off.
+	 *
+	 * @var Settings
+	 */
+	private $settings;
+
+	/**
 	 * Constructor.
 	 *
-	 * @param Registry   $registry   Check registry.
-	 * @param Repository $repository Result storage.
-	 * @param ScanState  $state      Job state.
-	 * @param Summary    $summary    Catalog summary storage.
+	 * @param Registry      $registry   Check registry.
+	 * @param Repository    $repository Result storage.
+	 * @param ScanState     $state      Job state.
+	 * @param Summary       $summary    Catalog summary storage.
+	 * @param Settings|null $settings   Store owner preferences. Every check
+	 *                                  runs when omitted.
 	 */
-	public function __construct( Registry $registry, Repository $repository, ScanState $state, Summary $summary ) {
+	public function __construct( Registry $registry, Repository $repository, ScanState $state, Summary $summary, ?Settings $settings = null ) {
 		$this->registry   = $registry;
 		$this->repository = $repository;
 		$this->state      = $state;
 		$this->summary    = $summary;
+		$this->settings   = null !== $settings ? $settings : new Settings();
+	}
+
+	/**
+	 * Get the store owner preferences.
+	 *
+	 * @return Settings
+	 */
+	public function get_settings() {
+		return $this->settings;
 	}
 
 	/**
@@ -136,6 +156,16 @@ class Scanner {
 		$batch_size = (int) apply_filters( 'catavio_batch_size', self::DEFAULT_BATCH_SIZE );
 
 		return max( 1, min( 200, $batch_size ) );
+	}
+
+	/**
+	 * Determine whether a post status is one that scans cover.
+	 *
+	 * @param string $status Post status.
+	 * @return bool
+	 */
+	public function is_scanned_status( $status ) {
+		return in_array( (string) $status, $this->get_scanned_statuses(), true );
 	}
 
 	/**
@@ -253,6 +283,29 @@ class Scanner {
 	}
 
 	/**
+	 * Check one product again and store the result.
+	 *
+	 * This is how a store owner confirms a fix without rescanning the whole
+	 * catalog. It is only ever run on an explicit request for that one
+	 * product, exactly like a full scan.
+	 *
+	 * The dashboard summary is not recalculated: its figures describe the last
+	 * full scan, and stay that way. It is only marked, so the dashboard can say
+	 * that individual products have been rechecked since.
+	 *
+	 * @param \WC_Product $product WooCommerce product.
+	 * @return Result
+	 */
+	public function recheck_product( $product ) {
+		$result = $this->scan_product( $product, time() );
+
+		$this->repository->save( $result );
+		$this->summary->mark_rechecked();
+
+		return $result;
+	}
+
+	/**
 	 * Run every applicable check against a snapshot.
 	 *
 	 * Kept separate from scan_product() so the rule set can be exercised
@@ -266,7 +319,16 @@ class Scanner {
 		$issues = array();
 		$passed = array();
 
+		$disabled = $this->settings->get_disabled_checks();
+
 		foreach ( $this->registry->get_checks() as $check ) {
+			// A check the store owner turned off is left out entirely, exactly
+			// like one that does not apply: neither failed nor passed, and no
+			// part of the score.
+			if ( in_array( $check->get_id(), $disabled, true ) ) {
+				continue;
+			}
+
 			if ( ! $check->applies_to( $snapshot ) ) {
 				continue;
 			}

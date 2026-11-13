@@ -12,6 +12,7 @@ namespace Catavio\Tests\Unit;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use Catavio\Lifecycle;
+use Catavio\Settings;
 use Catavio\Scanner\Repository;
 use Catavio\Scanner\ScanState;
 use Catavio\Scanner\Summary;
@@ -59,8 +60,10 @@ class UninstallTest extends TestCase {
 	public function test_every_option_is_listed() {
 		$options = array(
 			Lifecycle::VERSION_OPTION,
+			Lifecycle::ONBOARDING_OPTION,
 			Summary::OPTION,
 			ScanState::OPTION,
+			Settings::OPTION,
 		);
 
 		foreach ( $options as $option ) {
@@ -104,7 +107,7 @@ class UninstallTest extends TestCase {
 	 */
 	public function test_no_unknown_keys_are_listed() {
 		$known = array_merge(
-			array( Lifecycle::VERSION_OPTION, Summary::OPTION, ScanState::OPTION ),
+			array( Lifecycle::VERSION_OPTION, Lifecycle::ONBOARDING_OPTION, Summary::OPTION, ScanState::OPTION, Settings::OPTION ),
 			$this->meta_keys()
 		);
 

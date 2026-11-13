@@ -13,7 +13,7 @@ import { addQueryArgs, getQueryArgs } from '@wordpress/url';
 
 import EmptyState from '../components/EmptyState';
 import HealthMeter from '../components/HealthMeter';
-import Filters from '../components/Filters';
+import Filters, { sortOptions } from '../components/Filters';
 import Pagination from '../components/Pagination';
 import ScoreBadge from '../components/ScoreBadge';
 import useProducts from '../hooks/useProducts';
@@ -39,6 +39,10 @@ const DEFAULT_QUERY = {
 function queryFromUrl() {
 	const args = getQueryArgs( window.location.href );
 
+	// Only an ordering the list actually offers is taken from the address bar.
+	const sort = `${ args.orderby }:${ args.order }`;
+	const known = sortOptions().some( ( option ) => option.value === sort );
+
 	return {
 		...DEFAULT_QUERY,
 		page: Math.max( 1, parseInt( args.paged, 10 ) || 1 ),
@@ -46,8 +50,8 @@ function queryFromUrl() {
 		health: args.health || '',
 		issue: args.issue || '',
 		type: args.type || '',
-		orderby: DEFAULT_QUERY.orderby,
-		order: DEFAULT_QUERY.order,
+		orderby: known ? args.orderby : DEFAULT_QUERY.orderby,
+		order: known ? args.order : DEFAULT_QUERY.order,
 	};
 }
 
@@ -81,6 +85,18 @@ export default function ProductList( { settings } ) {
 				health: query.health || undefined,
 				issue: query.issue || undefined,
 				type: query.type || undefined,
+				// The default ordering is left out, so the plain list keeps its
+				// plain address.
+				orderby:
+					query.orderby !== DEFAULT_QUERY.orderby ||
+					query.order !== DEFAULT_QUERY.order
+						? query.orderby
+						: undefined,
+				order:
+					query.orderby !== DEFAULT_QUERY.orderby ||
+					query.order !== DEFAULT_QUERY.order
+						? query.order
+						: undefined,
 			}
 		);
 
@@ -148,10 +164,7 @@ export default function ProductList( { settings } ) {
 							/>
 						) : (
 							<EmptyState
-								title={ __(
-									'Nothing scanned yet',
-									'catavio'
-								) }
+								title={ __( 'Nothing scanned yet', 'catavio' ) }
 								description={ __(
 									'Run a scan to check your product catalog.',
 									'catavio'
@@ -174,40 +187,25 @@ export default function ProductList( { settings } ) {
 							<thead>
 								<tr>
 									<th scope="col">
-										{ __(
-											'Product',
-											'catavio'
-										) }
+										{ __( 'Product', 'catavio' ) }
 									</th>
 									<th scope="col">
 										{ __( 'Type', 'catavio' ) }
 									</th>
 									<th scope="col">
-										{ __(
-											'Health',
-											'catavio'
-										) }
+										{ __( 'Health', 'catavio' ) }
 									</th>
 									<th
 										scope="col"
 										className="catavio-table__number"
 									>
-										{ __(
-											'Issues',
-											'catavio'
-										) }
+										{ __( 'Issues', 'catavio' ) }
 									</th>
 									<th scope="col">
-										{ __(
-											'Last checked',
-											'catavio'
-										) }
+										{ __( 'Last checked', 'catavio' ) }
 									</th>
 									<th scope="col">
-										{ __(
-											'Actions',
-											'catavio'
-										) }
+										{ __( 'Actions', 'catavio' ) }
 									</th>
 								</tr>
 							</thead>
@@ -257,6 +255,14 @@ export default function ProductList( { settings } ) {
 										</td>
 										<td className="catavio-products__checked">
 											{ product.lastCheckedText }
+											{ product.changedSince ? (
+												<span className="catavio-products__changed">
+													{ __(
+														'Edited since then',
+														'catavio'
+													) }
+												</span>
+											) : null }
 										</td>
 										<td>
 											{ /* get_edit_post_link() returns nothing when the viewer

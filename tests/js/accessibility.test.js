@@ -109,8 +109,7 @@ const detail = {
 	lastChecked: 1700000000,
 	lastCheckedText: '5 mins ago',
 	editUrl: 'http://example.test/wp-admin/post.php?post=101&action=edit',
-	listUrl:
-		'http://example.test/wp-admin/admin.php?page=catavio&tab=products',
+	listUrl: 'http://example.test/wp-admin/admin.php?page=catavio&tab=products',
 	startingScore: 100,
 	score: 65,
 	bucket: 'critical',

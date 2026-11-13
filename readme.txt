@@ -5,7 +5,7 @@ Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 7.4
 Requires Plugins: woocommerce
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -13,7 +13,7 @@ Scan your WooCommerce catalog for missing product information, review a clear he
 
 == Description ==
 
-Catavio is a catalog health tool for WooCommerce. It reads your products, finds missing or incomplete information, and shows the results in one admin screen — Dashboard and Product Health — so you can see what needs work and open the standard WooCommerce editor to fix it.
+Catavio is a catalog health tool for WooCommerce. It reads your products, finds missing or incomplete information, and shows the results in one admin screen — Dashboard, Product Health and Settings — so you can see what needs work and open the standard WooCommerce editor to fix it.
 
 It does not rewrite titles, prices, descriptions, images, stock, or any other product field. It reports. You edit.
 
@@ -29,21 +29,23 @@ If you already know a few products are unfinished, Catavio is how you find the r
 2. Run a scan. Products are processed in batches of 50. You can stop a scan and continue it later.
 3. Use the **Dashboard** for catalog-wide figures: average completeness, how products split between healthy / needs attention / critical, and the issues affecting the most products.
 4. Open **Product Health** to search and filter the catalog, then open a product’s report.
-5. Follow the **Edit product** link into the normal WooCommerce product editor. After you save a product, run a scan again to refresh the report.
+5. Follow the **Edit product** link into the normal WooCommerce product editor. After you save a product, press **Check again** on its report to confirm the fix, or run a scan again to refresh everything.
 
 Opening the Dashboard never starts a scan and never walks the catalog. Figures come from the last scan that finished. A cancelled or abandoned scan does not overwrite those figures.
 
-= The three screens =
+= The screens =
 
-**Dashboard** — Average completeness for the scanned catalog, a breakdown of healthy / needs attention / critical products, the most common issues (up to ten), and the scan controls. Every number is from a completed scan, not an estimate.
+**Dashboard** — Average completeness for the scanned catalog, a breakdown of healthy / needs attention / critical products, the most common issues (up to ten), and the scan controls. Every number is from a completed scan, not an estimate. Each group and issue links to the matching filtered product list, and the dashboard says plainly when its figures are out of date: products added since the scan, products rechecked one at a time, or checks changed in Settings.
 
-**Product Health** — A paginated list of scanned products. Search by name, then narrow by health group, issue type, and product type. Filters stay in the address bar, so a view can be bookmarked and the browser back button works as expected. Each row links to the product report and to the WooCommerce editor.
+**Product Health** — A paginated list of scanned products. Search by name, narrow by health group, issue type, and product type, and sort by score, name, or when a product was last checked. Filters and sort order stay in the address bar, so a view can be bookmarked and the browser back button works as expected. Products saved since their last check are marked “Edited since then”. Each row links to the product report and to the WooCommerce editor.
 
-**Product report** — One product at a time: the health score, every issue with its severity, the arithmetic behind the score (starting at 100, then each deduction), checks that passed, and checks that were skipped because they do not apply to that product type. The only action is a link to the product editor.
+**Product report** — One product at a time: the health score, every issue with its severity, the arithmetic behind the score (starting at 100, then each deduction), checks that passed, checks that were skipped because they do not apply to that product type, and checks you have turned off. Actions: a link to the product editor, and **Check again**, which checks just this product and updates its report in seconds. The report warns you when the product was edited after its last check.
+
+**Settings** — Turn off checks for information your store does not use, such as SKUs or short descriptions. A turned-off check is left out of scans and never affects a score. Changes apply from the next scan, or when a product is checked again.
 
 = What it checks =
 
-Thirteen rules. A rule that does not apply to a product type is skipped, not failed — so a simple product is never marked down for having no variations, a grouped product is not expected to have its own price, and alt text is only checked when a featured image exists.
+Thirteen rules, each of which can be turned off in Settings. A rule that does not apply to a product type is skipped, not failed — so a simple product is never marked down for having no variations, a grouped product is not expected to have its own price, and alt text is only checked when a featured image exists.
 
 **Critical** — information a customer typically cannot do without:
 
@@ -90,7 +92,7 @@ Products are grouped by what the scan found, not by a score cut-off:
 
 = Scanning =
 
-Scans run only when you start one. Nothing runs on the storefront, and nothing runs when an admin page loads.
+Scans run only when you start one. Nothing runs on the storefront, and nothing runs when an admin page loads. Checking a single product again is also something only you start, from its report.
 
 * Published and private products are included. Drafts and other statuses are not, unless a developer changes that.
 * Work is done in batches (50 products by default) so large catalogs do not lock the admin on one long request.
@@ -113,7 +115,7 @@ The only notice it can show is a requirements message on the Plugins screen (Woo
 
 No external requests. No tracking. No account. Everything stays in your WordPress database.
 
-On delete, the plugin removes its three options and its six per-product meta keys on every site in a multisite network. Deactivating leaves scan results in place so reactivation does not force a new scan.
+On delete, the plugin removes its options and its six per-product meta keys on every site in a multisite network. Deactivating leaves scan results in place so reactivation does not force a new scan.
 
 = Accessibility =
 
@@ -170,7 +172,11 @@ WooCommerce assigns its default category to products saved without one, so an em
 
 = Why did my score not change after I edited a product? =
 
-Results are from the last completed scan. Edit the product, then run a scan again so the stored report and dashboard figures update.
+Results are from the last check. Open the product’s report and press **Check again** to update it straight away; the list marks products that were edited since their last check. The dashboard figures come from the last full scan, so run a scan to bring those up to date too.
+
+= My store does not use SKUs. Can I stop those warnings? =
+
+Yes. Open **Catalog Health → Settings** and turn off the SKU check. Any of the thirteen checks can be turned off; at least one must stay on. Run a scan afterwards to apply the change to every product.
 
 = What if a scan is interrupted? =
 
@@ -190,7 +196,7 @@ Yes. PHP and JavaScript strings use the `catavio` text domain. A POT file ships 
 
 = What is stored, and what is removed on uninstall? =
 
-Stored: plugin version, catalog summary, scan job state, and six meta keys per scanned product (`_catavio_issues`, `_catavio_passed`, `_catavio_issue_code`, `_catavio_score`, `_catavio_severity`, `_catavio_scanned_at`).
+Stored: plugin version, catalog summary, scan job state, your check settings, and six meta keys per scanned product (`_catavio_issues`, `_catavio_passed`, `_catavio_issue_code`, `_catavio_score`, `_catavio_severity`, `_catavio_scanned_at`).
 
 Deleting the plugin removes all of that on every site in a multisite network. Deactivating does not.
 
@@ -207,6 +213,15 @@ One menu item: **Catalog Health**. No extra submenu duplicates, no dashboard wid
 
 == Changelog ==
 
+= 1.0.3 =
+* Added “Check again” to the product report: check one product after editing it, without rescanning the whole catalog.
+* Added an “Edited since then” marker for products saved after their last check, and a matching notice on the report.
+* Added a Settings tab to turn off checks your store does not need, such as SKU or short description.
+* Added sorting to Product Health: by score, name, or last checked. The order is kept in the address bar.
+* The dashboard health groups now link to the filtered product list.
+* The dashboard now says when its figures are out of date: catalog size changed, products rechecked individually, or checks changed in Settings.
+* German translation updated for every new string.
+
 = 1.0.2 =
 * Added a complete German (Germany) translation; translations now load from the bundled /languages directory.
 * Refreshed the translation template (POT) to include the first-run guide strings.
@@ -220,6 +235,9 @@ One menu item: **Catalog Health**. No extra submenu duplicates, no dashboard wid
 * Initial release: catalog scan, thirteen product-type-aware checks, transparent health score, Dashboard and Product Health screens.
 
 == Upgrade Notice ==
+
+= 1.0.3 =
+Check a single product again after editing it, turn off checks your store does not need, and sort the product list.
 
 = 1.0.2 =
 Adds a German translation that loads automatically on sites running in German.

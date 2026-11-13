@@ -2,8 +2,10 @@
  * One product's health report.
  */
 
+import { speak } from '@wordpress/a11y';
 import apiFetch from '@wordpress/api-fetch';
 import { render, screen, waitFor, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import ProductDetail from '../../src/screens/ProductDetail';
 
@@ -56,12 +58,16 @@ function report( overrides = {} ) {
 		notApplicable: [
 			{ check: 'missing_external_url', label: 'Product URL' },
 		],
+		turnedOff: [],
+		changedSince: false,
+		canRecheck: true,
 		...overrides,
 	};
 }
 
 beforeEach( () => {
 	apiFetch.mockReset();
+	speak.mockClear();
 } );
 
 describe( 'ProductDetail', () => {
@@ -251,7 +257,13 @@ describe( 'ProductDetail', () => {
 
 	it( 'says so plainly when a product has never been scanned', async () => {
 		apiFetch.mockResolvedValue(
-			report( { scanned: false, score: 0, issues: [], passed: [] } )
+			report( {
+				scanned: false,
+				score: 0,
+				issues: [],
+				passed: [],
+				canRecheck: false,
+			} )
 		);
 
 		render( <ProductDetail productId={ 101 } /> );
@@ -274,5 +286,137 @@ describe( 'ProductDetail', () => {
 		expect( await screen.findByRole( 'alert' ) ).toHaveTextContent(
 			'Product not found.'
 		);
+	} );
+	it( 'checks the product again and shows the fresh report in place', async () => {
+		const user = userEvent.setup();
+
+		apiFetch
+			.mockResolvedValueOnce( report( { changedSince: true } ) )
+			.mockResolvedValueOnce(
+				report( {
+					score: 100,
+					bucket: 'healthy',
+					bucketLabel: 'Healthy',
+					issues: [],
+					changedSince: false,
+					lastCheckedText: '1 sec ago',
+				} )
+			);
+
+		render( <ProductDetail productId={ 101 } /> );
+
+		await screen.findByText( 'Nike Air Max 270' );
+
+		expect(
+			screen.getByText(
+				'This product was edited after it was last checked, so this report may be out of date.'
+			)
+		).toBeInTheDocument();
+
+		await user.click(
+			screen.getByRole( 'button', { name: 'Check again' } )
+		);
+
+		expect(
+			await screen.findByText( 'Health score 100 out of 100, Healthy' )
+		).toBeInTheDocument();
+
+		const request = apiFetch.mock.calls[ 1 ][ 0 ];
+		expect( request.path ).toBe( '/catavio/v1/products/101/scan' );
+		expect( request.method ).toBe( 'POST' );
+
+		expect(
+			screen.queryByText(
+				'This product was edited after it was last checked, so this report may be out of date.'
+			)
+		).not.toBeInTheDocument();
+		expect(
+			screen.getByText( 'Last checked 1 sec ago' )
+		).toBeInTheDocument();
+		expect( speak ).toHaveBeenCalledWith(
+			'Product checked again. Health score 100 out of 100, Healthy.',
+			'polite'
+		);
+
+		// The button keeps focus; the report is not re-announced from the top.
+		expect(
+			screen.getByRole( 'button', { name: 'Check again' } )
+		).toHaveFocus();
+	} );
+
+	it( 'reports a failed recheck and keeps the old report', async () => {
+		const user = userEvent.setup();
+
+		apiFetch.mockResolvedValueOnce( report() ).mockRejectedValueOnce( {
+			message: 'A full scan is in progress.',
+		} );
+
+		render( <ProductDetail productId={ 101 } /> );
+
+		await screen.findByText( 'Nike Air Max 270' );
+
+		await user.click(
+			screen.getByRole( 'button', { name: 'Check again' } )
+		);
+
+		expect(
+			await screen.findByText( 'A full scan is in progress.' )
+		).toBeInTheDocument();
+		expect(
+			screen.getByText( 'Health score 65 out of 100, Critical' )
+		).toBeInTheDocument();
+	} );
+
+	it( 'offers no recheck for a product scans do not cover', async () => {
+		apiFetch.mockResolvedValue( report( { canRecheck: false } ) );
+
+		render( <ProductDetail productId={ 101 } /> );
+
+		await screen.findByText( 'Nike Air Max 270' );
+
+		expect(
+			screen.queryByRole( 'button', { name: 'Check again' } )
+		).not.toBeInTheDocument();
+	} );
+
+	it( 'lets an unscanned product be checked on its own', async () => {
+		apiFetch.mockResolvedValue(
+			report( { scanned: false, issues: [], passed: [] } )
+		);
+
+		render( <ProductDetail productId={ 101 } /> );
+
+		await screen.findByText( 'Nike Air Max 270' );
+
+		expect(
+			screen.getByText(
+				'This product has not been checked yet. Check it now, or run a scan to check the whole catalog.'
+			)
+		).toBeInTheDocument();
+		expect(
+			screen.getByRole( 'button', { name: 'Check now' } )
+		).toBeInTheDocument();
+	} );
+
+	it( 'tells turned-off checks apart from ones that do not apply', async () => {
+		apiFetch.mockResolvedValue(
+			report( {
+				turnedOff: [ { check: 'missing_sku', label: 'SKU code' } ],
+			} )
+		);
+
+		render( <ProductDetail productId={ 101 } /> );
+
+		await screen.findByText( 'Nike Air Max 270' );
+
+		expect(
+			screen.getByRole( 'heading', { name: 'Turned off' } )
+		).toBeInTheDocument();
+		expect( screen.getByText( 'SKU code' ) ).toBeInTheDocument();
+		expect(
+			screen.getByText(
+				'These checks are turned off in Settings, so they did not affect the score.'
+			)
+		).toBeInTheDocument();
 	} );
 } );

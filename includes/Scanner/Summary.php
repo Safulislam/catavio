@@ -75,6 +75,45 @@ class Summary {
 	}
 
 	/**
+	 * Record that a product was rechecked on its own after this summary.
+	 *
+	 * The figures themselves are left alone. They describe the last full scan,
+	 * and patching them product by product would let them drift from any scan
+	 * that actually ran. The mark lets the dashboard say so instead, and the
+	 * next full scan clears it.
+	 *
+	 * @return void
+	 */
+	public function mark_rechecked() {
+		$summary = $this->get();
+
+		if ( array() === $summary ) {
+			return;
+		}
+
+		$summary['rechecked_at'] = time();
+
+		$this->save( $summary );
+	}
+
+	/**
+	 * Determine whether any product was rechecked after the summary was built.
+	 *
+	 * @return bool
+	 */
+	public function has_rechecks() {
+		$summary = $this->get();
+
+		if ( array() === $summary ) {
+			return false;
+		}
+
+		// A full scan writes a fresh summary with no mark, so any mark present
+		// was made after the figures on screen were produced.
+		return $summary['rechecked_at'] > 0;
+	}
+
+	/**
 	 * Remove the summary.
 	 *
 	 * @return void
@@ -105,6 +144,7 @@ class Summary {
 		return $this->normalize(
 			array(
 				'generated_at'   => time(),
+				'rechecked_at'   => 0,
 				'products_total' => isset( $state['total'] ) ? (int) $state['total'] : 0,
 				'scanned'        => $scanned,
 				'skipped'        => isset( $state['skipped'] ) ? (int) $state['skipped'] : 0,
@@ -136,6 +176,7 @@ class Summary {
 
 		return array(
 			'generated_at'   => isset( $summary['generated_at'] ) ? (int) $summary['generated_at'] : 0,
+			'rechecked_at'   => isset( $summary['rechecked_at'] ) ? max( 0, (int) $summary['rechecked_at'] ) : 0,
 			'products_total' => isset( $summary['products_total'] ) ? max( 0, (int) $summary['products_total'] ) : 0,
 			'scanned'        => isset( $summary['scanned'] ) ? max( 0, (int) $summary['scanned'] ) : 0,
 			'skipped'        => isset( $summary['skipped'] ) ? max( 0, (int) $summary['skipped'] ) : 0,

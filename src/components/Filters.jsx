@@ -34,6 +34,37 @@ function Select( { id, label, value, options, onChange, anyLabel } ) {
 	);
 }
 
+/**
+ * The orderings the list offers, as orderby and order pairs.
+ *
+ * Every pair is one the server's REST schema already accepts; the labels are
+ * the only thing defined here.
+ *
+ * @return {Object[]} Sort options, the default first.
+ */
+export function sortOptions() {
+	return [
+		{
+			value: 'score:asc',
+			label: __( 'Lowest score first', 'catavio' ),
+		},
+		{
+			value: 'score:desc',
+			label: __( 'Highest score first', 'catavio' ),
+		},
+		{ value: 'title:asc', label: __( 'Name, A to Z', 'catavio' ) },
+		{ value: 'title:desc', label: __( 'Name, Z to A', 'catavio' ) },
+		{
+			value: 'checked:desc',
+			label: __( 'Most recently checked', 'catavio' ),
+		},
+		{
+			value: 'checked:asc',
+			label: __( 'Least recently checked', 'catavio' ),
+		},
+	];
+}
+
 export default function Filters( { query, filters, onChange, onSearch } ) {
 	const hasFilters =
 		!! query.search || !! query.health || !! query.issue || !! query.type;
@@ -47,7 +78,10 @@ export default function Filters( { query, filters, onChange, onSearch } ) {
 					onSearch( event.target.elements[ 'catavio-search' ].value );
 				} }
 			>
-				<label className="catavio-filters__label" htmlFor="catavio-search">
+				<label
+					className="catavio-filters__label"
+					htmlFor="catavio-search"
+				>
 					{ __( 'Search products', 'catavio' ) }
 				</label>
 				<span className="catavio-filters__control">
@@ -90,6 +124,30 @@ export default function Filters( { query, filters, onChange, onSearch } ) {
 				options={ filters.types }
 				onChange={ ( value ) => onChange( { type: value } ) }
 			/>
+
+			<p className="catavio-filters__field">
+				<label
+					className="catavio-filters__label"
+					htmlFor="catavio-sort"
+				>
+					{ __( 'Sort by', 'catavio' ) }
+				</label>
+				<select
+					id="catavio-sort"
+					value={ `${ query.orderby }:${ query.order }` }
+					onChange={ ( event ) => {
+						const [ orderby, order ] =
+							event.target.value.split( ':' );
+						onChange( { orderby, order } );
+					} }
+				>
+					{ sortOptions().map( ( option ) => (
+						<option key={ option.value } value={ option.value }>
+							{ option.label }
+						</option>
+					) ) }
+				</select>
+			</p>
 
 			{ hasFilters ? (
 				<span className="catavio-filters__clear">

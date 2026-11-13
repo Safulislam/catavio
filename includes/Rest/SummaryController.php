@@ -89,19 +89,23 @@ class SummaryController extends Controller {
 		$has_scan       = array() !== $summary;
 
 		$response = array(
-			'hasProducts'   => $products_total > 0,
-			'productsTotal' => $products_total,
-			'hasScan'       => $has_scan,
-			'averageScore'  => $has_scan ? (int) $summary['average_score'] : 0,
-			'scanned'       => $has_scan ? (int) $summary['scanned'] : 0,
-			'skipped'       => $has_scan ? (int) $summary['skipped'] : 0,
-			'healthy'       => $has_scan ? (int) $summary['healthy'] : 0,
-			'attention'     => $has_scan ? (int) $summary['attention'] : 0,
-			'critical'      => $has_scan ? (int) $summary['critical'] : 0,
-			'lastScan'      => $has_scan ? (int) $summary['generated_at'] : 0,
-			'lastScanText'  => $has_scan ? $this->describe_time( (int) $summary['generated_at'] ) : '',
-			'topIssues'     => $has_scan ? $this->describe_issues( $summary['issues'] ) : array(),
-			'scan'          => $this->describe_scan(),
+			'hasProducts'     => $products_total > 0,
+			'productsTotal'   => $products_total,
+			'hasScan'         => $has_scan,
+			'averageScore'    => $has_scan ? (int) $summary['average_score'] : 0,
+			'scanned'         => $has_scan ? (int) $summary['scanned'] : 0,
+			'skipped'         => $has_scan ? (int) $summary['skipped'] : 0,
+			'healthy'         => $has_scan ? (int) $summary['healthy'] : 0,
+			'attention'       => $has_scan ? (int) $summary['attention'] : 0,
+			'critical'        => $has_scan ? (int) $summary['critical'] : 0,
+			'lastScan'        => $has_scan ? (int) $summary['generated_at'] : 0,
+			'lastScanText'    => $has_scan ? $this->describe_time( (int) $summary['generated_at'] ) : '',
+			'topIssues'       => $has_scan ? $this->describe_issues( $summary['issues'] ) : array(),
+			// Both say the figures above no longer tell the whole story, so the
+			// dashboard can say so instead of letting them pass as current.
+			'rechecked'       => $has_scan && $this->scanner->get_summary()->has_rechecks(),
+			'settingsChanged' => $has_scan && $this->scanner->get_settings()->get_updated_at() > (int) $summary['generated_at'],
+			'scan'            => $this->describe_scan(),
 		);
 
 		return rest_ensure_response( $response );

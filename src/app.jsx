@@ -9,12 +9,17 @@ import { __ } from '@wordpress/i18n';
 
 import Dashboard from './screens/Dashboard';
 import Products from './screens/Products';
+import Settings from './screens/Settings';
 
 export default function App( { settings } ) {
 	const { screen, screens } = settings;
 
 	if ( screens && screen === screens.products ) {
 		return <Products settings={ settings } />;
+	}
+
+	if ( screens && screen === screens.settings ) {
+		return <Settings settings={ settings } />;
 	}
 
 	if ( screens && screen === screens.dashboard ) {

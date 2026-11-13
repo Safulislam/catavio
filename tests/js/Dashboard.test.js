@@ -4,6 +4,7 @@
 
 import apiFetch from '@wordpress/api-fetch';
 import { render, screen, waitFor, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import Dashboard from '../../src/screens/Dashboard';
 
@@ -124,7 +125,30 @@ describe( 'Dashboard', () => {
 		).not.toBeInTheDocument();
 	} );
 
-	it( 'invites a first scan when products exist but none has run', async () => {
+	it( 'guides a first scan when products exist but none has run', async () => {
+		window.localStorage.removeItem( 'catavio-welcome-hidden' );
+		apiFetch.mockResolvedValue( summary( { hasScan: false } ) );
+
+		render( <Dashboard /> );
+
+		expect(
+			await screen.findByText( 'Let’s take a first look.' )
+		).toBeInTheDocument();
+
+		await userEvent.click(
+			screen.getByRole( 'button', { name: 'Continue' } )
+		);
+
+		expect(
+			screen.getByRole( 'button', { name: 'Run scan' } )
+		).toBeInTheDocument();
+
+		// No invented figures before a scan has happened.
+		expect( screen.queryByText( '93%' ) ).not.toBeInTheDocument();
+	} );
+
+	it( 'invites a first scan once the guide has been hidden', async () => {
+		window.localStorage.setItem( 'catavio-welcome-hidden', '1' );
 		apiFetch.mockResolvedValue( summary( { hasScan: false } ) );
 
 		render( <Dashboard /> );
@@ -138,8 +162,7 @@ describe( 'Dashboard', () => {
 			screen.getByRole( 'button', { name: 'Run scan' } )
 		).toBeInTheDocument();
 
-		// No invented figures before a scan has happened.
-		expect( screen.queryByText( '93%' ) ).not.toBeInTheDocument();
+		window.localStorage.removeItem( 'catavio-welcome-hidden' );
 	} );
 
 	it( 'reports a failure to load rather than showing nothing', async () => {
@@ -181,5 +204,70 @@ describe( 'Dashboard', () => {
 		expect(
 			screen.getByRole( 'button', { name: 'Continue scan' } )
 		).toBeInTheDocument();
+	} );
+	it( 'links each health group to the filtered product list', async () => {
+		apiFetch.mockResolvedValue( summary() );
+
+		render(
+			<Dashboard
+				settings={ {
+					page: 'catavio',
+					tabArg: 'tab',
+					adminUrl: 'http://example.test/wp-admin/admin.php',
+					screens: { dashboard: 'dashboard', products: 'products' },
+				} }
+			/>
+		);
+
+		const critical = await screen.findByRole( 'link', {
+			name: 'Critical',
+		} );
+
+		expect( critical.getAttribute( 'href' ) ).toContain(
+			'health=critical'
+		);
+		expect( critical.getAttribute( 'href' ) ).toContain( 'tab=products' );
+	} );
+
+	it( 'says when the figures no longer describe the catalog', async () => {
+		apiFetch.mockResolvedValue(
+			summary( {
+				productsTotal: 90,
+				rechecked: true,
+				settingsChanged: true,
+			} )
+		);
+
+		render( <Dashboard /> );
+
+		expect(
+			await screen.findByText(
+				'Your catalog has 90 products to check now, and the last scan covered 87.'
+			)
+		).toBeInTheDocument();
+		expect(
+			screen.getByText(
+				'Some products were checked again individually after the last scan. Their reports are current, but these figures are not.'
+			)
+		).toBeInTheDocument();
+		expect(
+			screen.getByText(
+				'The checks that run were changed in Settings after the last scan.'
+			)
+		).toBeInTheDocument();
+	} );
+
+	it( 'says nothing is out of date when nothing is', async () => {
+		apiFetch.mockResolvedValue( summary() );
+
+		render( <Dashboard /> );
+
+		await screen.findByText( 'Top issues' );
+
+		expect(
+			screen.queryByText(
+				'Run a scan to bring these figures up to date.'
+			)
+		).not.toBeInTheDocument();
 	} );
 } );

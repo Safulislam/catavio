@@ -15,6 +15,7 @@ use Catavio\HealthScore;
 use Catavio\Scanner\Issue;
 use Catavio\Scanner\ProductSnapshot;
 use Catavio\Scanner\Repository;
+use Catavio\Scanner\ScanState;
 use Catavio\Scanner\Scanner;
 
 defined( 'ABSPATH' ) || exit;
@@ -96,6 +97,16 @@ class ProductsController extends Controller {
 	 * @return void
 	 */
 	private function register_single_route() {
+		$id_arg = array(
+			'id' => array(
+				'type'              => 'integer',
+				'required'          => true,
+				'minimum'           => 1,
+				'sanitize_callback' => 'absint',
+				'validate_callback' => 'rest_validate_request_arg',
+			),
+		);
+
 		register_rest_route(
 			self::NAMESPACE_V1,
 			'/products/(?P<id>[0-9]+)',
@@ -104,17 +115,96 @@ class ProductsController extends Controller {
 					'methods'             => 'GET',
 					'callback'            => array( $this, 'get_product' ),
 					'permission_callback' => array( $this, 'check_permission' ),
-					'args'                => array(
-						'id' => array(
-							'type'              => 'integer',
-							'required'          => true,
-							'minimum'           => 1,
-							'sanitize_callback' => 'absint',
-							'validate_callback' => 'rest_validate_request_arg',
-						),
-					),
+					'args'                => $id_arg,
 				),
 			)
+		);
+
+		register_rest_route(
+			self::NAMESPACE_V1,
+			'/products/(?P<id>[0-9]+)/scan',
+			array(
+				array(
+					'methods'             => 'POST',
+					'callback'            => array( $this, 'recheck_product' ),
+					'permission_callback' => array( $this, 'check_permission' ),
+					'args'                => $id_arg,
+				),
+			)
+		);
+	}
+
+	/**
+	 * Check one product again and return its fresh report.
+	 *
+	 * Runs the same checks a full scan would, for this product only, and
+	 * stores the result. It reads the product and writes nothing but this
+	 * plugin's own meta, exactly like a full scan.
+	 *
+	 * Refused while a full scan is being driven: that scan will reach this
+	 * product anyway, and its totals are being accumulated as it goes.
+	 *
+	 * @param \WP_REST_Request $request Request.
+	 * @return \WP_REST_Response|\WP_Error
+	 */
+	public function recheck_product( $request ) {
+		$error = $this->require_woocommerce();
+
+		if ( null !== $error ) {
+			return $error;
+		}
+
+		$product_id = (int) $request['id'];
+		$product    = $this->load_product( $product_id );
+
+		if ( is_wp_error( $product ) ) {
+			return $product;
+		}
+
+		if ( ! $this->scanner->is_scanned_status( (string) get_post_status( $product_id ) ) ) {
+			return new \WP_Error(
+				'catavio_product_not_scanned',
+				__( 'Products with this status are not included in scans, so this product cannot be checked.', 'catavio' ),
+				array( 'status' => 409 )
+			);
+		}
+
+		$state = $this->scanner->get_state();
+
+		if ( array() !== $state && ScanState::STATUS_RUNNING === $state['status'] && ! $this->scanner->is_stale() ) {
+			return new \WP_Error(
+				'catavio_scan_running',
+				__( 'A full scan is in progress. Finish or stop it before checking a single product.', 'catavio' ),
+				array( 'status' => 409 )
+			);
+		}
+
+		$this->scanner->recheck_product( $product );
+
+		return rest_ensure_response( $this->build_report( $product_id, $product ) );
+	}
+
+	/**
+	 * Load a product by ID, or explain why it cannot be.
+	 *
+	 * @param int $product_id Product ID.
+	 * @return \WC_Product|\WP_Error
+	 */
+	private function load_product( $product_id ) {
+		$post = get_post( $product_id );
+
+		if ( $post instanceof \WP_Post && 'product' === $post->post_type ) {
+			$product = wc_get_product( $product_id );
+
+			if ( $product instanceof \WC_Product ) {
+				return $product;
+			}
+		}
+
+		return new \WP_Error(
+			'catavio_product_not_found',
+			__( 'That product could not be found.', 'catavio' ),
+			array( 'status' => 404 )
 		);
 	}
 
@@ -136,26 +226,24 @@ class ProductsController extends Controller {
 		}
 
 		$product_id = (int) $request['id'];
+		$product    = $this->load_product( $product_id );
+
+		if ( is_wp_error( $product ) ) {
+			return $product;
+		}
+
+		return rest_ensure_response( $this->build_report( $product_id, $product ) );
+	}
+
+	/**
+	 * Build one product's full health report from its stored result.
+	 *
+	 * @param int         $product_id Product ID.
+	 * @param \WC_Product $product    The loaded product.
+	 * @return array<string, mixed>
+	 */
+	private function build_report( $product_id, $product ) {
 		$post       = get_post( $product_id );
-
-		if ( ! $post instanceof \WP_Post || 'product' !== $post->post_type ) {
-			return new \WP_Error(
-				'catavio_product_not_found',
-				__( 'That product could not be found.', 'catavio' ),
-				array( 'status' => 404 )
-			);
-		}
-
-		$product = wc_get_product( $product_id );
-
-		if ( ! $product instanceof \WC_Product ) {
-			return new \WP_Error(
-				'catavio_product_not_found',
-				__( 'That product could not be found.', 'catavio' ),
-				array( 'status' => 404 )
-			);
-		}
-
 		$scanned_at = (int) get_post_meta( $product_id, Repository::META_SCANNED_AT, true );
 
 		$response = array(
@@ -166,6 +254,8 @@ class ProductsController extends Controller {
 			'scanned'         => $scanned_at > 0,
 			'lastChecked'     => $scanned_at,
 			'lastCheckedText' => $this->describe_time( $scanned_at ),
+			'changedSince'    => $this->changed_since_check( $post, $scanned_at ),
+			'canRecheck'      => $this->scanner->is_scanned_status( (string) get_post_status( $product_id ) ),
 			'editUrl'         => (string) get_edit_post_link( $product_id, 'raw' ),
 			'listUrl'         => $this->get_list_url(),
 			'startingScore'   => HealthScore::STARTING_SCORE,
@@ -175,10 +265,11 @@ class ProductsController extends Controller {
 			'issues'          => array(),
 			'passed'          => array(),
 			'notApplicable'   => array(),
+			'turnedOff'       => array(),
 		);
 
 		if ( ! $response['scanned'] ) {
-			return rest_ensure_response( $response );
+			return $response;
 		}
 
 		$bucket                  = (string) get_post_meta( $product_id, Repository::META_BUCKET, true );
@@ -229,24 +320,51 @@ class ProductsController extends Controller {
 			);
 		}
 
-		// Whatever neither failed nor passed did not apply to this product type.
-		// Deriving it from the stored result, rather than re-running
-		// applies_to() against the product as it is now, keeps the three lists
-		// consistent with each other and with the score.
+		// Whatever neither failed nor passed did not apply to this product type,
+		// unless the store owner has turned that check off, which is a
+		// different reason and is said separately. Deriving both from the
+		// stored result, rather than re-running applies_to() against the
+		// product as it is now, keeps the lists consistent with each other and
+		// with the score.
 		$applicable = array_merge( $failed, $passed );
+		$disabled   = $this->scanner->get_settings()->get_disabled_checks();
 
 		foreach ( $this->registry->get_checks() as $check ) {
 			if ( in_array( $check->get_id(), $applicable, true ) ) {
 				continue;
 			}
 
-			$response['notApplicable'][] = array(
+			$group = in_array( $check->get_id(), $disabled, true ) ? 'turnedOff' : 'notApplicable';
+
+			$response[ $group ][] = array(
 				'check' => $check->get_id(),
 				'label' => $check->get_label(),
 			);
 		}
 
-		return rest_ensure_response( $response );
+		return $response;
+	}
+
+	/**
+	 * Determine whether a product was saved after it was last checked.
+	 *
+	 * Read from the post row that is already loaded, so it costs no query.
+	 * WooCommerce updates the modified time on every product save, which makes
+	 * this a reliable sign that the stored result may no longer describe the
+	 * product.
+	 *
+	 * @param \WP_Post|null $post       Product post.
+	 * @param int           $scanned_at When the product was last checked.
+	 * @return bool
+	 */
+	private function changed_since_check( $post, $scanned_at ) {
+		if ( ! $post instanceof \WP_Post || $scanned_at <= 0 ) {
+			return false;
+		}
+
+		$modified = (int) get_post_modified_time( 'U', true, $post );
+
+		return $modified > $scanned_at;
 	}
 
 	/**
@@ -500,6 +618,7 @@ class ProductsController extends Controller {
 			'criticalCount'   => $critical,
 			'lastChecked'     => $scanned_at,
 			'lastCheckedText' => $this->describe_time( $scanned_at ),
+			'changedSince'    => $this->changed_since_check( $post, $scanned_at ),
 			'editUrl'         => (string) get_edit_post_link( $product_id, 'raw' ),
 			'detailUrl'       => $this->get_detail_url( $product_id ),
 		);

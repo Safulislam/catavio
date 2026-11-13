@@ -1,6 +1,6 @@
 {
 	"name": "catavio",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"description": "Admin interface for the Catavio WordPress plugin.",
 	"license": "GPL-2.0-or-later",
 	"private": true,
@@ -11,8 +11,8 @@
 		"build": "wp-scripts build",
 		"release": "bin/build-release.sh",
 		"start": "wp-scripts start",
-		"lint:js": "wp-scripts lint-js",
-		"lint:css": "wp-scripts lint-style",
+		"lint:js": "wp-scripts lint-js src tests/js",
+		"lint:css": "wp-scripts lint-style \"src/**/*.scss\"",
 		"format": "wp-scripts format",
 		"test:js": "wp-scripts test-unit-js --config jest.config.js",
 		"makepot": "wp i18n make-pot . languages/catavio.pot --slug=catavio --domain=catavio --exclude=node_modules,vendor,tests,catavio-development-docs,bin,docs,dist",

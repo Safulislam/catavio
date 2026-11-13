@@ -63,11 +63,7 @@ export default function ScanPanel( {
 						<p className="catavio-scan__percent" aria-hidden="true">
 							{ sprintf(
 								/* translators: %d: how much of the scan is complete, as a percentage. */
-								_x(
-									'%d%%',
-									'scan progress',
-									'catavio'
-								),
+								_x( '%d%%', 'scan progress', 'catavio' ),
 								percent
 							) }
 						</p>
@@ -84,10 +80,7 @@ export default function ScanPanel( {
 					<div className="catavio-scan__actions">
 						{ interrupted ? (
 							<Button variant="primary" onClick={ onResume }>
-								{ __(
-									'Continue scan',
-									'catavio'
-								) }
+								{ __( 'Continue scan', 'catavio' ) }
 							</Button>
 						) : null }
 						<Button variant="secondary" onClick={ onStop }>

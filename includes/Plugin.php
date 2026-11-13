@@ -13,6 +13,7 @@ use Catavio\Admin\Menu;
 use Catavio\Checks\Registry;
 use Catavio\Rest\ProductsController;
 use Catavio\Rest\ScanController;
+use Catavio\Rest\SettingsController;
 use Catavio\Rest\SummaryController;
 use Catavio\Scanner\Repository;
 use Catavio\Scanner\ScanState;
@@ -116,7 +117,7 @@ class Plugin {
 
 		$this->registry   = new Registry();
 		$this->repository = new Repository();
-		$this->scanner    = new Scanner( $this->registry, $this->repository, new ScanState(), new Summary() );
+		$this->scanner    = new Scanner( $this->registry, $this->repository, new ScanState(), new Summary(), new Settings() );
 
 		$this->scanner->register();
 
@@ -168,6 +169,7 @@ class Plugin {
 			new ScanController( $this->scanner ),
 			new SummaryController( $this->scanner, $this->registry ),
 			new ProductsController( $this->scanner, $this->registry ),
+			new SettingsController( $this->scanner->get_settings(), $this->registry ),
 		);
 
 		foreach ( $controllers as $controller ) {

@@ -44,7 +44,13 @@ jest.mock( '@wordpress/components', () => {
 		__esModule: true,
 		// Matches the real component: given an href it renders an anchor, so a
 		// link is queried as a link and a button as a button.
-		Button: function Button( { children, variant, href, ...rest } ) {
+		Button: function Button( {
+			children,
+			variant,
+			href,
+			isBusy,
+			...rest
+		} ) {
 			if ( href ) {
 				return React.createElement( 'a', { href, ...rest }, children );
 			}

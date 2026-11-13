@@ -43,7 +43,8 @@
 	--catavio-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.04);
 	--catavio-shadow-lift: 0 2px 4px rgba(0, 0, 0, 0.05), 0 10px 24px rgba(0, 0, 0, 0.07);
 
-	/* One shared curve, so every transition in the screens settles the same way. */
+	/* One shared curve, so every transition in the screens settles the same
+	   way. */
 	--catavio-ease: cubic-bezier(0.4, 0, 0.2, 1);
 
 	/* The segmented control the views are chosen with. */
@@ -145,7 +146,7 @@
 .catavio-tabs__tab--current,
 .catavio-tabs__tab--current:hover,
 .catavio-tabs__tab--current:focus {
-	background: linear-gradient(180deg, #ffffff 0%, #fbfcfd 100%);
+	background: linear-gradient(180deg, #fff 0%, #fbfcfd 100%);
 	box-shadow:
 		0 0 0 1px rgba(0, 0, 0, 0.045),
 		0 1px 2px rgba(0, 0, 0, 0.07),
@@ -182,9 +183,10 @@
 /*
  * Card, CardHeader and CardBody are styled by @wordpress/components with
  * emotion, and the Card root carries no stable class of its own. So every card
- * part here is given an .catavio-card* class of its own rather than reaching for a
- * core one, and these rules are written two classes deep: emotion injects its
- * <style> after this stylesheet, so an equally specific selector would lose.
+ * part here is given an .catavio-card* class of its own rather than reaching
+ * for a core one, and these rules are written two classes deep: emotion
+ * injects its <style> after this stylesheet, so an equally specific selector
+ * would lose.
  */
 .catavio-admin-root .catavio-card {
 	border: 1px solid var(--catavio-border);
@@ -1493,4 +1495,88 @@
 
 .catavio-admin-root .catavio-table--products tr > :nth-child(3) {
 	width: 190px;
+}
+
+/* Product report actions -------------------------------------------------- */
+
+.catavio-detail__actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+}
+
+.catavio-detail .components-notice,
+.catavio-card__body > .components-notice {
+	margin: 0 0 16px;
+	border-radius: var(--catavio-radius-sm);
+}
+
+.catavio-card__body > .catavio-detail__actions {
+	margin-top: 4px;
+}
+
+/* A result older than the product's last save. Stated in words; the colour
+   only helps it stand out from the timestamp beside it. */
+.catavio-products__changed {
+	display: block;
+	margin-top: 2px;
+	font-size: 12px;
+	font-weight: 600;
+	color: #8a6116;
+	white-space: nowrap;
+}
+
+/* Dashboard ---------------------------------------------------------------- */
+
+.catavio-dashboard__stale {
+	margin: 0 0 20px;
+	border-radius: var(--catavio-radius-sm);
+}
+
+.catavio-dashboard__stale p {
+	margin: 0 0 4px;
+}
+
+.catavio-dashboard__stale p:last-child {
+	margin-bottom: 0;
+}
+
+/* Settings --------------------------------------------------------------- */
+
+.catavio-settings__group {
+	margin: 0 0 20px;
+	padding: 12px 16px 4px;
+	border: 1px solid var(--catavio-border);
+	border-radius: var(--catavio-radius-sm);
+}
+
+.catavio-settings__legend {
+	padding: 0 6px;
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
+	color: var(--catavio-ink-muted);
+}
+
+.catavio-settings__check {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin: 0 0 10px;
+}
+
+.catavio-settings__check input[type="checkbox"] {
+	margin: 0;
+}
+
+.catavio-settings .components-notice {
+	margin: 0 0 16px;
+	border-radius: var(--catavio-radius-sm);
+}
+
+.catavio-settings__actions {
+	display: flex;
+	gap: 8px;
 }

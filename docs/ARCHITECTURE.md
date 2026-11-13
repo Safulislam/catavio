@@ -138,7 +138,8 @@ Build output paths, for `Assets.php`:
 Other frontend decisions:
 
 - **One admin page is registered, not two or three.** `page=catavio`
-  renders the dashboard, and `&tab=products` renders Product Health. The product
+  renders the dashboard, `&tab=products` renders Product Health, and
+  `&tab=settings` renders Settings. The product
   detail report is a *view* within that tab, addressed by a `product` query
   argument. WordPress repeats a top level menu item as its own first submenu the
   moment any submenu exists, which put two sidebar routes to one page; no
@@ -189,6 +190,8 @@ meta plus one option covers everything the screens need.
 | `_catavio_scanned_at` | product meta | single, int | "Last Checked" |
 | `catavio_summary` | option, no autoload | array | dashboard aggregates, top issues |
 | `catavio_scan_state` | option, no autoload | array | resumable scan job |
+| `catavio_settings` | option, no autoload | array | turned-off check ids + when they changed |
+| `catavio_onboarding_pending` | option, no autoload | string | one-time redirect after first activation |
 | `catavio_version` | option | string | upgrade routines |
 
 Notes:
@@ -219,6 +222,9 @@ automatic nonce handling through core's `wp-api-fetch` middleware.
 | `DELETE` | `/scan` | abort and clear job state |
 | `GET` | `/products` | paginated list with filters; sends `X-WP-Total` |
 | `GET` | `/products/<id>` | one product's full health report |
+| `POST` | `/products/<id>/scan` | check one product again, store and return its report |
+| `GET` | `/settings` | every check and whether it is turned on |
+| `POST` | `/settings` | store the turned-off checks (`disabledChecks`, enum-validated) |
 
 Controllers never return WooCommerce objects. Each route maps to an explicit
 response array, and `edit_url` is built server-side with `get_edit_post_link()`
@@ -599,6 +605,44 @@ Principles the code holds to:
 
 ---
 
+## 10a. Version 1.0.3 additions
+
+**Checking one product again.** `POST /products/<id>/scan` runs the same
+`Scanner::scan_product()` a full scan runs, for one product, and stores the
+result through `Repository::save()`. It is still a manual, explicit action and
+still writes nothing but this plugin's own meta (verified: the post row and
+every `WC_Product` field are byte-identical before and after). It is refused
+with 409 for a status that scans do not cover, and while a full scan is being
+driven, since that scan will reach the product anyway and is accumulating its
+totals as it goes.
+
+The dashboard summary is **not** patched per product. Its contract is that
+every figure comes from a scan that actually ran; incremental deltas would
+drift whenever a cancelled scan had already rewritten some products' meta.
+Instead `Summary::mark_rechecked()` sets `rechecked_at`, the dashboard says so
+in words, and the next full scan writes a fresh summary without the mark.
+
+**Edited since the last check.** `changedSince` compares the post's
+`post_modified_gmt` with `_catavio_scanned_at`. WooCommerce bumps the modified
+time on every product save, and the post row is already loaded by both the
+list and the report, so this costs no query.
+
+**Turned-off checks.** `Settings` stores only the *turned-off* ids, so a check
+added later, or by an extension through `catavio_checks`, is on by default.
+`Scanner::scan_snapshot()` skips a turned-off check exactly like one that does
+not apply. The registry is deliberately unchanged, so stored results that still
+mention a now-disabled check keep their labels, and the issue filter still
+offers it. The report lists turned-off checks separately from "not applicable"
+because the reasons differ. Turning every check off is refused (400): a scan
+would then call every product healthy. Saving starts no scan; the dashboard
+reports `settingsChanged` until the next full scan.
+
+**Sorting.** The list's `orderby`/`order` pairs were already REST enums; the
+UI now exposes them and keeps a non-default order in the address bar. Only a
+pair the UI offers is read back from the URL.
+
+---
+
 ## 11. Known limitations
 
 **The test suite runs on the React that WordPress ships.** `react` and
@@ -620,7 +664,8 @@ The three options it owns are `catavio_version`, `catavio_scan_state` and `catav
 asserts it covers every key actually written.
 
 **The list shows only products that have been scanned.** A product added after
-the last scan does not appear until the next one. The dashboard states when the
+the last scan does not appear until the next one, or until its own report is
+opened and checked. The dashboard states when the
 last scan ran and how many products it covered, which is where "time to rescan"
 belongs; adding an exact unscanned count to the list would cost a query on every
 page load to answer a question the dashboard already answers.

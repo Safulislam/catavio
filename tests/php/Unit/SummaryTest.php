@@ -189,4 +189,45 @@ class SummaryTest extends TestCase {
 		$this->assertSame( 0, $read['healthy'] );
 		$this->assertSame( array(), $read['issues'] );
 	}
+
+	/**
+	 * Rechecking a product marks the summary but leaves its figures alone.
+	 *
+	 * @return void
+	 */
+	public function test_recheck_marks_without_changing_figures() {
+		$this->summary->mark_rechecked();
+
+		// No summary yet: there is nothing to mark, and nothing is created.
+		$this->assertFalse( $this->summary->exists() );
+
+		$this->summary->save(
+			$this->summary->build_from_state(
+				array(
+					'processed'   => 2,
+					'score_total' => 150,
+				)
+			)
+		);
+
+		$this->assertFalse( $this->summary->has_rechecks() );
+
+		$this->summary->mark_rechecked();
+
+		$this->assertTrue( $this->summary->has_rechecks() );
+		$this->assertSame( 75, $this->summary->get()['average_score'] );
+		$this->assertSame( 2, $this->summary->get()['scanned'] );
+
+		// The next full scan starts the figures, and the mark, afresh.
+		$this->summary->save(
+			$this->summary->build_from_state(
+				array(
+					'processed'   => 2,
+					'score_total' => 200,
+				)
+			)
+		);
+
+		$this->assertFalse( $this->summary->has_rechecks() );
+	}
 }

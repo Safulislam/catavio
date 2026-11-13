@@ -57,6 +57,13 @@ class Screen {
 	const VIEW_PRODUCTS = 'products';
 
 	/**
+	 * Settings view: which checks run.
+	 *
+	 * @var string
+	 */
+	const VIEW_SETTINGS = 'settings';
+
+	/**
 	 * DOM id of the React mount point.
 	 *
 	 * @var string
@@ -69,7 +76,7 @@ class Screen {
 	 * @return string[]
 	 */
 	public static function views() {
-		return array( self::VIEW_DASHBOARD, self::VIEW_PRODUCTS );
+		return array( self::VIEW_DASHBOARD, self::VIEW_PRODUCTS, self::VIEW_SETTINGS );
 	}
 
 	/**
@@ -105,6 +112,10 @@ class Screen {
 	public static function page_title( $view ) {
 		if ( self::VIEW_PRODUCTS === $view ) {
 			return __( 'Product Health', 'catavio' );
+		}
+
+		if ( self::VIEW_SETTINGS === $view ) {
+			return __( 'Catalog Health Settings', 'catavio' );
 		}
 
 		return __( 'Catalog Health', 'catavio' );
@@ -152,6 +163,10 @@ class Screen {
 	public static function menu_title( $view ) {
 		if ( self::VIEW_PRODUCTS === $view ) {
 			return __( 'Product Health', 'catavio' );
+		}
+
+		if ( self::VIEW_SETTINGS === $view ) {
+			return __( 'Settings', 'catavio' );
 		}
 
 		return __( 'Dashboard', 'catavio' );

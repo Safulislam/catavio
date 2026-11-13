@@ -1,6 +1,6 @@
 <?php
 /**
- * Admin navigation: one menu entry, two views, one tab argument.
+ * Admin navigation: one menu entry, three views, one tab argument.
  *
  * @package Catavio
  */
@@ -126,6 +126,18 @@ class AdminNavigationTest extends TestCase {
 	}
 
 	/**
+	 * The settings view is reached by its tab, like the product list.
+	 *
+	 * @return void
+	 */
+	public function test_settings_tab_selects_the_settings_view() {
+		$_GET[ Screen::TAB ] = Screen::VIEW_SETTINGS;
+
+		$this->assertSame( Screen::VIEW_SETTINGS, Screen::current_view() );
+		$this->assertStringContainsString( Screen::TAB . '=' . Screen::VIEW_SETTINGS, Screen::url( Screen::VIEW_SETTINGS ) );
+	}
+
+	/**
 	 * Anything unrecognised falls back rather than rendering nothing.
 	 *
 	 * @param string $tab Value supplied in the request.
@@ -147,7 +159,7 @@ class AdminNavigationTest extends TestCase {
 	public function provide_unusable_tabs() {
 		return array(
 			'empty'             => array( '' ),
-			'unknown view'      => array( 'settings' ),
+			'unknown view'      => array( 'reports' ),
 			'retired page slug' => array( 'catavio-products' ),
 			'markup'            => array( '<script>' ),
 		);

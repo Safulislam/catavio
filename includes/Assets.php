@@ -161,6 +161,7 @@ class Assets {
 			'screens'  => array(
 				'dashboard' => Screen::VIEW_DASHBOARD,
 				'products'  => Screen::VIEW_PRODUCTS,
+				'settings'  => Screen::VIEW_SETTINGS,
 			),
 			'page'     => Screen::PAGE,
 			'tabArg'   => Screen::TAB,

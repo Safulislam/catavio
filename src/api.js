@@ -26,6 +26,25 @@ export function getProduct( id ) {
 	return apiFetch( { path: `${ NAMESPACE }/products/${ id }` } );
 }
 
+export function recheckProduct( id ) {
+	return apiFetch( {
+		path: `${ NAMESPACE }/products/${ id }/scan`,
+		method: 'POST',
+	} );
+}
+
+export function getSettings() {
+	return apiFetch( { path: `${ NAMESPACE }/settings` } );
+}
+
+export function saveSettings( disabledChecks ) {
+	return apiFetch( {
+		path: `${ NAMESPACE }/settings`,
+		method: 'POST',
+		data: { disabledChecks },
+	} );
+}
+
 export function startScan() {
 	return apiFetch( { path: `${ NAMESPACE }/scan`, method: 'POST' } );
 }

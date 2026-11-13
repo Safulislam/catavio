@@ -22,7 +22,9 @@ export default function HealthMeter( { value, tone } ) {
 
 	return (
 		<div
-			className={ `catavio-meter${ tone ? ` catavio-meter--${ tone }` : '' }` }
+			className={ `catavio-meter${
+				tone ? ` catavio-meter--${ tone }` : ''
+			}` }
 			aria-hidden="true"
 		>
 			<div className="catavio-meter__track">

@@ -10,6 +10,9 @@
 				"lang": "de_DE",
 				"plural-forms": "nplurals=2; plural=(n != 1);"
 			},
+			"Keep at least one check turned on.": [
+				"Lass mindestens eine Prüfung eingeschaltet."
+			],
 			"Critical": [
 				"Kritisch"
 			],
@@ -112,6 +115,18 @@
 			"%d%% of scanned products": [
 				"%d%% der gescannten Produkte"
 			],
+			"Your catalog has %1$d products to check now, and the last scan covered %2$d.": [
+				"Dein Katalog enthält jetzt %1$d zu prüfende Produkte, der letzte Scan hat %2$d erfasst."
+			],
+			"Some products were checked again individually after the last scan. Their reports are current, but these figures are not.": [
+				"Einige Produkte wurden nach dem letzten Scan einzeln erneut geprüft. Ihre Berichte sind aktuell, diese Zahlen jedoch nicht."
+			],
+			"The checks that run were changed in Settings after the last scan.": [
+				"Die ausgeführten Prüfungen wurden nach dem letzten Scan in den Einstellungen geändert."
+			],
+			"Run a scan to bring these figures up to date.": [
+				"Führe einen Scan aus, um diese Zahlen zu aktualisieren."
+			],
 			"Product health": [
 				"Produkt-Gesundheit"
 			],
@@ -169,6 +184,12 @@
 			"This product report could not be loaded.": [
 				"Dieser Produktbericht konnte nicht geladen werden."
 			],
+			"Product checked again. Health score %1$d out of 100, %2$s.": [
+				"Produkt erneut geprüft. Gesundheitswert %1$d von 100, %2$s."
+			],
+			"This product could not be checked.": [
+				"Dieses Produkt konnte nicht geprüft werden."
+			],
 			"Loading product report.": [
 				"Produktbericht wird geladen."
 			],
@@ -178,11 +199,29 @@
 			"Edit product": [
 				"Produkt bearbeiten"
 			],
+			"Check now": [
+				"Jetzt prüfen"
+			],
+			"Checking…": [
+				"Wird geprüft …"
+			],
+			"Check again": [
+				"Erneut prüfen"
+			],
+			"Checked again. This report now reflects the product as it is saved.": [
+				"Erneut geprüft. Dieser Bericht zeigt jetzt das Produkt so, wie es gespeichert ist."
+			],
+			"This product has not been checked yet. Check it now, or run a scan to check the whole catalog.": [
+				"Dieses Produkt wurde noch nicht geprüft. Prüfe es jetzt oder führe einen Scan aus, um den ganzen Katalog zu prüfen."
+			],
 			"This product has not been scanned yet. Run a scan to see its health report.": [
 				"Dieses Produkt wurde noch nicht gescannt. Führe einen Scan aus, um seinen Gesundheitsbericht zu sehen."
 			],
 			"Last checked %s": [
 				"Zuletzt geprüft: %s"
+			],
+			"This product was edited after it was last checked, so this report may be out of date.": [
+				"Dieses Produkt wurde nach der letzten Prüfung bearbeitet, daher ist dieser Bericht möglicherweise veraltet."
 			],
 			"How this score was reached": [
 				"Wie dieser Wert berechnet wurde"
@@ -223,6 +262,30 @@
 			"These checks do not apply to this product type, so they did not affect the score.": [
 				"Diese Prüfungen treffen bei diesem Produkttyp nicht zu und beeinflussen den Wert daher nicht."
 			],
+			"Turned off": [
+				"Ausgeschaltet"
+			],
+			"These checks are turned off in Settings, so they did not affect the score.": [
+				"Diese Prüfungen sind in den Einstellungen ausgeschaltet und haben den Wert daher nicht beeinflusst."
+			],
+			"Lowest score first": [
+				"Niedrigster Wert zuerst"
+			],
+			"Highest score first": [
+				"Höchster Wert zuerst"
+			],
+			"Name, A to Z": [
+				"Name, A bis Z"
+			],
+			"Name, Z to A": [
+				"Name, Z bis A"
+			],
+			"Most recently checked": [
+				"Zuletzt geprüfte zuerst"
+			],
+			"Least recently checked": [
+				"Am längsten nicht geprüfte zuerst"
+			],
 			"Search products": [
 				"Produkte suchen"
 			],
@@ -243,6 +306,9 @@
 			],
 			"Any type": [
 				"Alle Typen"
+			],
+			"Sort by": [
+				"Sortieren nach"
 			],
 			"Clear filters": [
 				"Filter zurücksetzen"
@@ -292,8 +358,38 @@
 			"Actions": [
 				"Aktionen"
 			],
+			"Edited since then": [
+				"Seitdem bearbeitet"
+			],
 			"View only": [
 				"Nur ansehen"
+			],
+			"Settings could not be loaded.": [
+				"Die Einstellungen konnten nicht geladen werden."
+			],
+			"Loading settings.": [
+				"Einstellungen werden geladen."
+			],
+			"Settings saved.": [
+				"Einstellungen gespeichert."
+			],
+			"Settings could not be saved.": [
+				"Die Einstellungen konnten nicht gespeichert werden."
+			],
+			"Turn off checks for information your store does not use. A turned-off check is left out of scans and never affects a score. Products are never changed.": [
+				"Schalte Prüfungen für Angaben aus, die dein Shop nicht verwendet. Eine ausgeschaltete Prüfung wird bei Scans ausgelassen und beeinflusst nie einen Wert. Produkte werden nie verändert."
+			],
+			"Settings saved. They apply from the next scan, or when a product is checked again.": [
+				"Einstellungen gespeichert. Sie gelten ab dem nächsten Scan oder wenn ein Produkt erneut geprüft wird."
+			],
+			"Go to the dashboard": [
+				"Zum Dashboard"
+			],
+			"Saving…": [
+				"Wird gespeichert …"
+			],
+			"Save changes": [
+				"Änderungen speichern"
 			],
 			"Unknown screen.": [
 				"Unbekannter Bildschirm."

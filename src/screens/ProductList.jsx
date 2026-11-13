@@ -175,7 +175,7 @@ export default function ProductList( { settings } ) {
 				) : (
 					<CardBody className="catavio-card__body">
 						<table
-							className="catavio-table catavio-table--products widefat striped"
+							className="catavio-table catavio-table--panel catavio-table--products widefat"
 							aria-busy={ loading }
 						>
 							<caption className="screen-reader-text">
@@ -249,7 +249,13 @@ export default function ProductList( { settings } ) {
 											/>
 										</td>
 										<td className="catavio-table__number">
-											<span className="catavio-products__issues">
+											<span
+												className={ `catavio-products__issues${
+													product.issueCount === 0
+														? ' catavio-products__issues--none'
+														: ''
+												}` }
+											>
 												{ product.issueCount }
 											</span>
 										</td>
@@ -270,7 +276,10 @@ export default function ProductList( { settings } ) {
 										     empty href would look like a working control and do
 										     nothing at all. */ }
 											{ product.editUrl ? (
-												<a href={ product.editUrl }>
+												<a
+													className="catavio-products__action"
+													href={ product.editUrl }
+												>
 													{ __(
 														'Edit product',
 														'catavio'

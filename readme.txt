@@ -221,6 +221,8 @@ One menu item: **Catalog Health**. No extra submenu duplicates, no dashboard wid
 * The dashboard health groups now link to the filtered product list.
 * The dashboard now says when its figures are out of date: catalog size changed, products rechecked individually, or checks changed in Settings.
 * German translation updated for every new string.
+* Tested: WooCommerce 11.3.0 compatibility.
+* Tested: WordPress 7.1.4 compatibility.
 
 = 1.0.2 =
 * Added a complete German (Germany) translation; translations now load from the bundled /languages directory.

@@ -839,10 +839,13 @@
 	background: var(--catavio-accent);
 }
 
+/* Never shrink or wrap: a four-digit count must stay one number. */
 .catavio-count__value {
-	min-width: 3ch;
+	flex: none;
+	min-width: 4ch;
 	font-variant-numeric: tabular-nums;
 	font-weight: 500;
+	white-space: nowrap;
 }
 
 @media (max-width: 782px) {
@@ -1087,10 +1090,6 @@
 	text-decoration: none;
 }
 
-.catavio-products__name:hover, {
-	text-decoration: underline;
-}
-
 /* Secondary information: present, and quieter than the product it describes. */
 .catavio-products__type {
 	display: inline-block;
@@ -1131,27 +1130,52 @@
 	height: 4px;
 }
 
-/* Tinted rather than filled with a flat neutral: widefat stripes every other
-   row in the same grey, which would make the chip vanish on half the table. */
+/* A tinted chip so the count reads as a tally, not loose text. A product with
+   nothing wrong fades back: zero is the expected answer, not news. */
 .catavio-products__issues {
 	display: inline-block;
 	min-width: 30px;
 	padding: 2px 9px;
 	border-radius: 999px;
-	background: rgba(30, 41, 51, 0.07);
+	background: rgba(214, 54, 56, 0.08);
 	font-weight: 600;
 	font-variant-numeric: tabular-nums;
 	text-align: center;
+	color: var(--catavio-ink);
 }
 
-.catavio-products__action {
+.catavio-products__issues--none {
+	background: rgba(140, 143, 148, 0.1);
 	font-weight: 500;
+	color: var(--catavio-ink-faint);
+}
+
+/* A quiet outlined button: clearly a control, but lighter than the product
+   name it sits beside. */
+.catavio-admin-root .catavio-products__action {
+	display: inline-flex;
+	align-items: center;
+	padding: 4px 12px;
+	border: 1px solid var(--catavio-border-strong);
+	border-radius: 999px;
+	background: var(--catavio-surface);
+	font-size: 12px;
+	font-weight: 500;
+	line-height: 18px;
+	color: var(--catavio-ink);
 	text-decoration: none;
 	white-space: nowrap;
+	transition:
+		border-color 0.15s var(--catavio-ease),
+		color 0.15s var(--catavio-ease),
+		background-color 0.15s var(--catavio-ease);
 }
 
-.catavio-products__action:hover, {
-	text-decoration: underline;
+.catavio-admin-root .catavio-products__action:hover,
+.catavio-admin-root .catavio-products__action:focus {
+	border-color: var(--catavio-accent);
+	background: var(--catavio-accent-wash);
+	color: var(--catavio-accent);
 }
 
 .catavio-products__no-action {
@@ -1495,6 +1519,107 @@
 
 .catavio-admin-root .catavio-table--products tr > :nth-child(3) {
 	width: 190px;
+}
+
+/* Panel tables ----------------------------------------------------------- */
+
+/*
+ * A contained panel rather than a bare grid: its own hairline frame, a tinted
+ * header band and inset cells, so the first and last columns breathe instead
+ * of running into the card edge. Rows are divided, not striped; the hover wash
+ * is the only fill, which keeps it quiet until a row is reached for.
+ */
+.catavio-admin-root .catavio-table--panel {
+	border: 1px solid var(--catavio-border);
+	border-collapse: separate;
+	border-spacing: 0;
+	border-radius: var(--catavio-radius);
+	overflow: hidden;
+	background: var(--catavio-surface);
+}
+
+.catavio-admin-root .catavio-table--panel thead th {
+	padding: 10px 16px;
+	border-bottom: 1px solid var(--catavio-border);
+	background: var(--catavio-plane);
+}
+
+.catavio-admin-root .catavio-table--panel td {
+	padding: 14px 16px;
+	border-bottom: 1px solid var(--catavio-border);
+	transition: background-color 0.15s var(--catavio-ease);
+}
+
+.catavio-admin-root .catavio-table--panel tbody tr:last-child td {
+	border-bottom: 0;
+}
+
+/* Override the flush outer columns of the shared table chrome: inside its own
+   frame this table pads every edge the same. */
+.catavio-admin-root .catavio-table--panel tr > :first-child {
+	padding-left: 20px;
+}
+
+.catavio-admin-root .catavio-table--panel tr > :last-child {
+	padding-right: 20px;
+}
+
+.catavio-admin-root .catavio-table--panel tbody tr:hover {
+	background: transparent;
+}
+
+.catavio-admin-root .catavio-table--panel tbody tr:hover td {
+	background: #f6f9fc;
+}
+
+/* The first column names the row's subject: ink weight, with the accent kept
+   for the moment it is pointed at. */
+.catavio-admin-root .catavio-table--panel td:first-child > a {
+	color: var(--catavio-ink);
+	font-weight: 500;
+	text-decoration: none;
+}
+
+.catavio-admin-root .catavio-table--panel td:first-child > a:hover,
+.catavio-admin-root .catavio-table--panel td:first-child > a:focus {
+	color: var(--catavio-accent);
+	text-decoration: underline;
+	text-underline-offset: 3px;
+}
+
+/* Issues table ----------------------------------------------------------- */
+
+.catavio-admin-root .catavio-table--issues tr > :nth-child(2) {
+	width: 1%;
+	white-space: nowrap;
+}
+
+.catavio-admin-root .catavio-table--issues tr > :nth-child(3) {
+	width: 36%;
+	white-space: nowrap;
+}
+
+/* A longer, rounder bar: the column is wide enough to show magnitude well. */
+.catavio-table--issues .catavio-count {
+	gap: 14px;
+}
+
+.catavio-table--issues .catavio-count__track {
+	flex: 1 1 auto;
+	max-width: 180px;
+	height: 8px;
+	border-radius: 999px;
+}
+
+.catavio-table--issues .catavio-count__fill {
+	min-width: 4px;
+	border-radius: 999px;
+	background: linear-gradient(90deg, #4f94d4 0%, var(--catavio-accent) 100%);
+}
+
+.catavio-table--issues .catavio-count__value {
+	font-weight: 600;
+	color: var(--catavio-ink);
 }
 
 /* Product report actions -------------------------------------------------- */

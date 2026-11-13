@@ -423,7 +423,7 @@ export default function Dashboard( { settings } ) {
 							) }
 						</p>
 					) : (
-						<table className="catavio-table catavio-table--issues widefat striped">
+						<table className="catavio-table catavio-table--panel catavio-table--issues widefat">
 							<caption className="screen-reader-text">
 								{ __(
 									'Issues found, by number of products affected',

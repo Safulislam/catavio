@@ -11,6 +11,7 @@ namespace Catavio\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Catavio\HealthScore;
+use Catavio\Rest\SummaryController;
 use Catavio\Scanner\Summary;
 
 /**
@@ -229,5 +230,88 @@ class SummaryTest extends TestCase {
 		);
 
 		$this->assertFalse( $this->summary->has_rechecks() );
+	}
+
+	/**
+	 * Each topic keeps how many products it affected and its most common issue.
+	 *
+	 * @return void
+	 */
+	public function test_topics_record_affected_products_and_most_common_issue() {
+		$built = $this->summary->build_from_state(
+			array(
+				'processed'    => 10,
+				'score_total'  => 900,
+				'issue_counts' => array(
+					'missing_sku'               => 2,
+					'missing_image_alt_text'    => 7,
+					'missing_short_description' => 4,
+					'missing_description'       => 5,
+				),
+				'group_counts' => array(
+					'media'       => 7,
+					'content'     => 6,
+					'identifiers' => 2,
+				),
+			),
+			array(
+				'missing_sku'               => 'identifiers',
+				'missing_image_alt_text'    => 'media',
+				'missing_short_description' => 'content',
+				'missing_description'       => 'content',
+			)
+		);
+
+		$this->assertSame(
+			array(
+				'affected'  => 6,
+				'top_check' => 'missing_description',
+				'top_count' => 5,
+			),
+			$built['topics']['content']
+		);
+		$this->assertSame( 'missing_image_alt_text', $built['topics']['media']['top_check'] );
+		$this->assertSame( 2, $built['topics']['identifiers']['affected'] );
+		$this->assertArrayNotHasKey( 'commerce', $built['topics'] );
+	}
+
+	/**
+	 * A summary saved before topics existed reads as "not recorded", not "none".
+	 *
+	 * @return void
+	 */
+	public function test_summary_from_before_topics_has_no_topic_figures() {
+		$GLOBALS['catavio_test_options'][ Summary::OPTION ] = array(
+			'generated_at' => 1700000000,
+			'scanned'      => 5,
+		);
+
+		$this->assertNull( $this->summary->get()['topics'] );
+
+		$this->summary->save(
+			$this->summary->build_from_state(
+				array(
+					'processed'   => 5,
+					'score_total' => 500,
+				)
+			)
+		);
+
+		$this->assertSame( array(), $this->summary->get()['topics'] );
+	}
+
+	/**
+	 * The share never contradicts the count beside it.
+	 *
+	 * @return void
+	 */
+	public function test_topic_share_never_rounds_away_an_issue() {
+		$this->assertSame( 100, SummaryController::complete_share( 1000, 0 ) );
+		$this->assertSame( 99, SummaryController::complete_share( 1000, 1 ) );
+		$this->assertSame( 1, SummaryController::complete_share( 1000, 999 ) );
+		$this->assertSame( 0, SummaryController::complete_share( 1000, 1000 ) );
+		$this->assertSame( 0, SummaryController::complete_share( 1000, 1200 ) );
+		$this->assertSame( 75, SummaryController::complete_share( 4, 1 ) );
+		$this->assertSame( 0, SummaryController::complete_share( 0, 0 ) );
 	}
 }

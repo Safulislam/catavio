@@ -6,9 +6,14 @@
  * completed, so nothing here is ever an estimate or a placeholder.
  *
  * The page reads top down as one sentence: how complete the catalog is, how it
- * divides up, what is most worth fixing, and how to refresh the figures. The
- * bar, the meter and the row of figures are three views of the same stored
- * numbers — none of them is a separate source of truth.
+ * divides up, where (by topic) it falls short, what is most worth fixing, and
+ * how to refresh the figures. The ring, the bar and the row of figures are
+ * views of the same stored numbers — none of them is a separate source of
+ * truth.
+ *
+ * Extensions add a line under the headline score ("catavio.dashboard.scoreDetails",
+ * for example a trend) and whole cards below the page ("catavio.dashboard.cards").
+ * A topic an extension registers on the server gets its own tile automatically.
  */
 
 import {
@@ -27,9 +32,10 @@ import { ExtensionEntry, getExtensions } from '../extensions';
 import DistributionBar from '../components/DistributionBar';
 import EmptyState from '../components/EmptyState';
 import FirstRunWizard from '../components/FirstRunWizard';
-import HealthMeter from '../components/HealthMeter';
 import ScanPanel from '../components/ScanPanel';
+import ScoreRing from '../components/ScoreRing';
 import SeverityTag from '../components/SeverityTag';
+import TopicTiles from '../components/TopicTiles';
 import useScan from '../hooks/useScan';
 
 /**
@@ -273,6 +279,14 @@ export default function Dashboard( { settings } ) {
 	const bucketUrl = ( bucket ) =>
 		productsUrl ? addQueryArgs( productsUrl, { health: bucket } ) : '';
 
+	// Extension slots, read once per render.
+	const scoreDetails = getExtensions(
+		'catavio.dashboard.scoreDetails',
+		false,
+		summary
+	);
+	const cards = getExtensions( 'catavio.dashboard.cards', false, summary );
+
 	// Reasons the figures on screen no longer describe the catalog exactly.
 	// Each is stated, rather than the figures being quietly patched, because
 	// every number here is promised to come from a scan that actually ran.
@@ -339,8 +353,8 @@ export default function Dashboard( { settings } ) {
 				<CardBody className="catavio-card__body">
 					<div className="catavio-hero">
 						<div className="catavio-hero__score">
-							<p className="catavio-headline">
-								<span className="catavio-headline__value">
+							<ScoreRing value={ summary.averageScore }>
+								<span className="catavio-ring__value">
 									{ sprintf(
 										/* translators: %d: average health score, out of 100. */
 										_x(
@@ -351,14 +365,27 @@ export default function Dashboard( { settings } ) {
 										summary.averageScore
 									) }
 								</span>
-								<span className="catavio-headline__label">
+							</ScoreRing>
+
+							<div className="catavio-hero__text">
+								<p className="catavio-headline__label">
 									{ __(
 										'Average product information completeness',
 										'catavio'
 									) }
-								</span>
-							</p>
-							<HealthMeter value={ summary.averageScore } />
+								</p>
+								{ scoreDetails.map( ( entry ) => (
+									<div
+										key={ entry.key }
+										className="catavio-hero__detail"
+									>
+										<ExtensionEntry
+											entry={ entry }
+											args={ { summary } }
+										/>
+									</div>
+								) ) }
+							</div>
 						</div>
 
 						<div className="catavio-hero__breakdown">
@@ -408,6 +435,12 @@ export default function Dashboard( { settings } ) {
 					</div>
 				</CardBody>
 			</Card>
+
+			<TopicTiles
+				topics={ summary.topics || [] }
+				recorded={ !! summary.topicsRecorded }
+				productsUrl={ productsUrl }
+			/>
 
 			<Card className="catavio-card catavio-card--issues">
 				<CardHeader className="catavio-card__header">
@@ -486,16 +519,6 @@ export default function Dashboard( { settings } ) {
 				</CardBody>
 			</Card>
 
-			{ getExtensions( 'catavio.dashboard.cards', false, summary ).map(
-				( card ) => (
-					<ExtensionEntry
-						key={ card.key }
-						entry={ card }
-						args={ { summary } }
-					/>
-				)
-			) }
-
 			<Card className="catavio-card catavio-card--scan">
 				<CardHeader className="catavio-card__header">
 					<h2 className="catavio-card__title">
@@ -547,6 +570,12 @@ export default function Dashboard( { settings } ) {
 					/>
 				</CardBody>
 			</Card>
+
+			{ cards.map( ( card ) => (
+				<div key={ card.key } className="catavio-dashboard__extension">
+					<ExtensionEntry entry={ card } args={ { summary } } />
+				</div>
+			) ) }
 		</div>
 	);
 }

@@ -46,6 +46,13 @@ class Scanner {
 	private $registry;
 
 	/**
+	 * Topic of each check, built on first use.
+	 *
+	 * @var array<string, string>|null
+	 */
+	private $group_map = null;
+
+	/**
 	 * Result storage.
 	 *
 	 * @var Repository
@@ -240,7 +247,7 @@ class Scanner {
 			// The summary is written only here, when a job has genuinely run to
 			// the end, so the dashboard never shows figures from a half
 			// finished scan.
-			$summary = $this->summary->build_from_state( $finished );
+			$summary = $this->summary->build_from_state( $finished, $this->group_map() );
 
 			$this->summary->save( $summary );
 
@@ -297,8 +304,17 @@ class Scanner {
 			$state['score_total']        = (int) $state['score_total'] + $result->get_score();
 			$state['buckets'][ $bucket ] = ( isset( $state['buckets'][ $bucket ] ) ? (int) $state['buckets'][ $bucket ] : 0 ) + 1;
 
+			$groups = array();
+
 			foreach ( $result->get_issue_codes() as $code ) {
-				$state['issue_counts'][ $code ] = ( isset( $state['issue_counts'][ $code ] ) ? (int) $state['issue_counts'][ $code ] : 0 ) + 1;
+				$state['issue_counts'][ $code ]     = ( isset( $state['issue_counts'][ $code ] ) ? (int) $state['issue_counts'][ $code ] : 0 ) + 1;
+				$groups[ $this->group_of( $code ) ] = true;
+			}
+
+			// A product counts once per topic, however many of its issues
+			// fall in that topic.
+			foreach ( array_keys( $groups ) as $group ) {
+				$state['group_counts'][ $group ] = ( isset( $state['group_counts'][ $group ] ) ? (int) $state['group_counts'][ $group ] : 0 ) + 1;
 			}
 
 			++$state['processed'];
@@ -307,6 +323,37 @@ class Scanner {
 		$this->state->save( $state );
 
 		return $this->state->get();
+	}
+
+	/**
+	 * The topic of every registered check.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return array<string, string> Group identifier keyed by check identifier.
+	 */
+	public function group_map() {
+		if ( null === $this->group_map ) {
+			$this->group_map = array();
+
+			foreach ( $this->registry->get_checks() as $check ) {
+				$this->group_map[ $check->get_id() ] = $this->registry->get_group_id( $check );
+			}
+		}
+
+		return $this->group_map;
+	}
+
+	/**
+	 * The topic of one check.
+	 *
+	 * @param string $check_id Check identifier.
+	 * @return string Group identifier; "other" for a check no longer registered.
+	 */
+	private function group_of( $check_id ) {
+		$map = $this->group_map();
+
+		return isset( $map[ $check_id ] ) ? $map[ $check_id ] : Registry::GROUP_OTHER;
 	}
 
 	/**

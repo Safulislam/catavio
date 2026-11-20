@@ -151,6 +151,34 @@ describe( 'accessibility: axe', () => {
 		expect( await axe( container, AXE_CONFIG ) ).toHaveNoViolations();
 	} );
 
+	it( 'dashboard with topic tiles has no violations', async () => {
+		apiFetch.mockResolvedValue( {
+			...summary,
+			topicsRecorded: true,
+			topics: [
+				{
+					group: 'media',
+					label: 'Images',
+					checks: 2,
+					affected: 40,
+					complete: 54,
+					topIssue: {
+						check: 'missing_image_alt_text',
+						label: 'Featured image alt text',
+						severity: 'info',
+						severityLabel: 'Info',
+						count: 40,
+					},
+				},
+			],
+		} );
+
+		const { container } = render( <Dashboard /> );
+		await screen.findByText( '54%' );
+
+		expect( await axe( container, AXE_CONFIG ) ).toHaveNoViolations();
+	} );
+
 	it( 'dashboard empty state has no violations', async () => {
 		apiFetch.mockResolvedValue( {
 			...summary,

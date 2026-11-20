@@ -13,6 +13,7 @@
  *
  * - catavio.views                        Object of view id → component, see app.jsx.
  * - catavio.dashboard.cards              ( entries, summary )         render( { summary } )
+ * - catavio.dashboard.scoreDetails       ( entries, summary )         render( { summary } ), under the headline score
  * - catavio.productList.columns          ( entries, data )            render( { product } ), label required
  * - catavio.productReport.issueActions   ( entries, issue, product )  render( { issue, product, reload } )
  * - catavio.productReport.panels         ( entries, product )         render( { product, reload } )

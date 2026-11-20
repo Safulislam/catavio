@@ -17,6 +17,7 @@ import Settings from '../../src/screens/Settings';
 const HOOKS = [
 	'catavio.views',
 	'catavio.dashboard.cards',
+	'catavio.dashboard.scoreDetails',
 	'catavio.productList.columns',
 	'catavio.productReport.issueActions',
 	'catavio.productReport.panels',
@@ -308,6 +309,48 @@ describe( 'Dashboard', () => {
 		expect(
 			await screen.findByText( 'AI readiness for 2 products' )
 		).toBeInTheDocument();
+	} );
+
+	it( 'adds a line under the headline score, such as a trend', async () => {
+		addFilter( 'catavio.dashboard.scoreDetails', NS, ( entries ) => [
+			...entries,
+			{
+				key: 'trend',
+				render: ( { summary } ) => (
+					<p>{ `Up 4 points, now ${ summary.averageScore }` }</p>
+				),
+			},
+		] );
+
+		apiFetch.mockResolvedValue( {
+			hasProducts: true,
+			productsTotal: 2,
+			hasScan: true,
+			averageScore: 90,
+			scanned: 2,
+			skipped: 0,
+			healthy: 1,
+			attention: 1,
+			critical: 0,
+			lastScan: 1700000000,
+			lastScanText: '5 mins ago',
+			topIssues: [],
+			topics: [],
+			topicsRecorded: true,
+			scan: {
+				status: 'idle',
+				total: 0,
+				processed: 0,
+				done: true,
+				stale: false,
+			},
+		} );
+
+		render( <Dashboard /> );
+
+		const line = await screen.findByText( 'Up 4 points, now 90' );
+
+		expect( line.closest( '.catavio-hero' ) ).not.toBeNull();
 	} );
 } );
 

@@ -399,6 +399,35 @@
 			],
 			"Optional, off until turned on": [
 				"Optional, aus bis zum Einschalten"
+			],
+			"share of products with no issue in a topic\u0004%d%%": [
+				"%d%%"
+			],
+			"topic share\u0004complete": [
+				"vollständig"
+			],
+			"No issues": [
+				"Keine Probleme"
+			],
+			"%d product with issues": [
+				"%d Produkt mit Problemen",
+				"%d Produkte mit Problemen"
+			],
+			"Most common": [
+				"Am häufigsten"
+			],
+			"%d check": [
+				"%d Prüfung",
+				"%d Prüfungen"
+			],
+			"By topic": [
+				"Nach Thema"
+			],
+			"The share of scanned products with no issue in each topic.": [
+				"Der Anteil der gescannten Produkte ohne Problem im jeweiligen Thema."
+			],
+			"Figures by topic appear after the next scan.": [
+				"Die Werte nach Thema erscheinen nach dem nächsten Scan."
 			]
 		}
 	}

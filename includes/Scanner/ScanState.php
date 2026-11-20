@@ -75,6 +75,7 @@ class ScanState {
 			'score_total'  => 0,
 			'buckets'      => array(),
 			'issue_counts' => array(),
+			'group_counts' => array(),
 			'started_at'   => $now,
 			'updated_at'   => $now,
 		);
@@ -213,6 +214,9 @@ class ScanState {
 			'score_total'  => isset( $state['score_total'] ) ? max( 0, (int) $state['score_total'] ) : 0,
 			'buckets'      => $this->normalize_counts( isset( $state['buckets'] ) ? $state['buckets'] : array() ),
 			'issue_counts' => $this->normalize_counts( isset( $state['issue_counts'] ) ? $state['issue_counts'] : array() ),
+			// Products with at least one issue in each topic. Absent from jobs
+			// started by 1.0.x, which normalizes to "none counted".
+			'group_counts' => $this->normalize_counts( isset( $state['group_counts'] ) ? $state['group_counts'] : array() ),
 			'started_at'   => isset( $state['started_at'] ) ? (int) $state['started_at'] : 0,
 			'updated_at'   => isset( $state['updated_at'] ) ? (int) $state['updated_at'] : 0,
 		);

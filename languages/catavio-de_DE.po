@@ -246,7 +246,7 @@ msgstr "Dieses Produkt konnte nicht gefunden werden."
 
 #. translators: %s: human readable time difference, for example "5 mins".
 #: includes/Rest/ProductsController.php:795
-#: includes/Rest/SummaryController.php:241
+#: includes/Rest/SummaryController.php:338
 #, php-format
 msgid "%s ago"
 msgstr "vor %s"
@@ -256,35 +256,35 @@ msgid "There is no scan in progress."
 msgstr "Es läuft derzeit kein Scan."
 
 #: includes/Rest/SettingsController.php:128
-#: build/index.js:16
-#: src/screens/Settings.jsx:264
+#: build/index.js:19
+#: src/screens/Settings.jsx:265
 msgid "Keep at least one check turned on."
 msgstr "Lass mindestens eine Prüfung eingeschaltet."
 
-#: includes/Rest/SummaryController.php:200
-#: includes/Rest/SummaryController.php:218
-#: build/index.js:7
-#: src/screens/Dashboard.jsx:403
+#: includes/Rest/SummaryController.php:297
+#: includes/Rest/SummaryController.php:315
+#: build/index.js:10
+#: src/screens/Dashboard.jsx:430
 msgid "Critical"
 msgstr "Kritisch"
 
-#: includes/Rest/SummaryController.php:204
+#: includes/Rest/SummaryController.php:301
 msgid "Warning"
 msgstr "Warnung"
 
-#: includes/Rest/SummaryController.php:207
+#: includes/Rest/SummaryController.php:304
 msgid "Info"
 msgstr "Info"
 
-#: includes/Rest/SummaryController.php:222
-#: build/index.js:7
-#: src/screens/Dashboard.jsx:396
+#: includes/Rest/SummaryController.php:319
+#: build/index.js:10
+#: src/screens/Dashboard.jsx:423
 msgid "Needs attention"
 msgstr "Braucht Aufmerksamkeit"
 
-#: includes/Rest/SummaryController.php:225
-#: build/index.js:7
-#: src/screens/Dashboard.jsx:389
+#: includes/Rest/SummaryController.php:322
+#: build/index.js:10
+#: src/screens/Dashboard.jsx:416
 msgid "Healthy"
 msgstr "Gesund"
 
@@ -378,576 +378,576 @@ msgstr "Diese Anleitung ausblenden"
 msgid "Back"
 msgstr "Zurück"
 
-#: build/index.js:3
-#: src/screens/Dashboard.jsx:117
+#: build/index.js:6
+#: src/screens/Dashboard.jsx:123
 msgid "Product health could not be loaded."
 msgstr "Produkt-Gesundheit konnte nicht geladen werden."
 
-#: build/index.js:3
+#: build/index.js:6
 #: src/hooks/useScan.js:89
 msgid "Resuming scan."
 msgstr "Scan wird fortgesetzt."
 
-#: build/index.js:3
+#: build/index.js:6
 #: src/hooks/useScan.js:101
 msgid "The scan could not be resumed."
 msgstr "Der Scan konnte nicht fortgesetzt werden."
 
-#: build/index.js:3
+#: build/index.js:6
 #: src/hooks/useScan.js:125
 msgid "Scan started."
 msgstr "Scan gestartet."
 
-#: build/index.js:3
+#: build/index.js:6
 #: src/hooks/useScan.js:134
 msgid "Scan cancelled."
 msgstr "Scan abgebrochen."
 
 #. translators: %d: number of products scanned.
-#: build/index.js:4
+#: build/index.js:7
 #: src/hooks/useScan.js:139
 #, js-format
 msgid "Scan complete. %d products checked."
 msgstr "Scan abgeschlossen. %d Produkte geprüft."
 
-#: build/index.js:4
+#: build/index.js:7
 #: src/hooks/useScan.js:154
 msgid "The scan could not be completed."
 msgstr "Der Scan konnte nicht abgeschlossen werden."
 
-#: build/index.js:4
+#: build/index.js:7
 #: src/hooks/useScan.js:179
 msgid "The scan could not be cancelled."
 msgstr "Der Scan konnte nicht abgebrochen werden."
 
-#: build/index.js:4
-#: src/screens/Dashboard.jsx:140
+#: build/index.js:7
+#: src/screens/Dashboard.jsx:146
 msgid "Loading product health."
 msgstr "Produkt-Gesundheit wird geladen."
 
-#: build/index.js:4
-#: src/screens/Dashboard.jsx:163
+#: build/index.js:7
+#: src/screens/Dashboard.jsx:169
 msgid "No products yet"
 msgstr "Noch keine Produkte"
 
-#: build/index.js:4
-#: src/screens/Dashboard.jsx:164
+#: build/index.js:7
+#: src/screens/Dashboard.jsx:170
 msgid "No WooCommerce products were found."
 msgstr "Es wurden keine WooCommerce-Produkte gefunden."
 
-#: build/index.js:4
-#: src/screens/Dashboard.jsx:181
+#: build/index.js:7
+#: src/screens/Dashboard.jsx:187
 msgid "No scan yet"
 msgstr "Noch kein Scan"
 
-#: build/index.js:4
-#: build/index.js:16
-#: src/screens/Dashboard.jsx:182
+#: build/index.js:7
+#: build/index.js:19
+#: src/screens/Dashboard.jsx:188
 #: src/screens/ProductList.jsx:172
 msgid "Run a scan to check your product catalog."
 msgstr "Führe einen Scan aus, um deinen Produktkatalog zu prüfen."
 
 #. translators: %d: share of the scanned products, as a percentage.
-#: build/index.js:5
-#: src/screens/Dashboard.jsx:244
+#: build/index.js:8
+#: src/screens/Dashboard.jsx:250
 #, js-format
 msgid "%d%% of scanned products"
 msgstr "%d%% der gescannten Produkte"
 
 #. translators: 1: number of products in the catalog now, 2: number of products the last scan covered.
-#: build/index.js:6
-#: src/screens/Dashboard.jsx:285
+#: build/index.js:9
+#: src/screens/Dashboard.jsx:299
 #, js-format
 msgid "Your catalog has %1$d products to check now, and the last scan covered %2$d."
 msgstr "Dein Katalog enthält jetzt %1$d zu prüfende Produkte, der letzte Scan hat %2$d erfasst."
 
-#: build/index.js:6
-#: src/screens/Dashboard.jsx:297
+#: build/index.js:9
+#: src/screens/Dashboard.jsx:311
 msgid "Some products were checked again individually after the last scan. Their reports are current, but these figures are not."
 msgstr "Einige Produkte wurden nach dem letzten Scan einzeln erneut geprüft. Ihre Berichte sind aktuell, diese Zahlen jedoch nicht."
 
-#: build/index.js:6
-#: src/screens/Dashboard.jsx:306
+#: build/index.js:9
+#: src/screens/Dashboard.jsx:320
 msgid "The checks that run were changed in Settings after the last scan."
 msgstr "Die ausgeführten Prüfungen wurden nach dem letzten Scan in den Einstellungen geändert."
 
-#: build/index.js:6
-#: src/screens/Dashboard.jsx:325
+#: build/index.js:9
+#: src/screens/Dashboard.jsx:339
 msgid "Run a scan to bring these figures up to date."
 msgstr "Führe einen Scan aus, um diese Zahlen zu aktualisieren."
 
-#: build/index.js:6
-#: src/screens/Dashboard.jsx:336
+#: build/index.js:9
+#: src/screens/Dashboard.jsx:350
 msgid "Product health"
 msgstr "Produkt-Gesundheit"
 
 #. translators: %d: average health score, out of 100.
-#: build/index.js:7
-#: src/screens/Dashboard.jsx:346
+#: build/index.js:10
+#: src/screens/Dashboard.jsx:360
 #, js-format
 msgctxt "average health score"
 msgid "%d%%"
 msgstr "%d%%"
 
-#: build/index.js:7
-#: src/screens/Dashboard.jsx:355
+#: build/index.js:10
+#: src/screens/Dashboard.jsx:372
 msgid "Average product information completeness"
 msgstr "Durchschnittliche Vollständigkeit der Produktinformationen"
 
-#: build/index.js:7
-#: src/screens/Dashboard.jsx:366
+#: build/index.js:10
+#: src/screens/Dashboard.jsx:393
 msgid "Catalog breakdown"
 msgstr "Katalog-Aufschlüsselung"
 
-#: build/index.js:7
-#: src/screens/Dashboard.jsx:415
+#: build/index.js:10
+#: src/screens/Dashboard.jsx:448
 msgid "Top issues"
 msgstr "Top-Probleme"
 
-#: build/index.js:7
-#: src/screens/Dashboard.jsx:421
+#: build/index.js:10
+#: src/screens/Dashboard.jsx:454
 msgid "No issues were found in your catalog."
 msgstr "In deinem Katalog wurden keine Probleme gefunden."
 
-#: build/index.js:7
-#: src/screens/Dashboard.jsx:429
+#: build/index.js:10
+#: src/screens/Dashboard.jsx:462
 msgid "Issues found, by number of products affected"
 msgstr "Gefundene Probleme, nach Anzahl betroffener Produkte"
 
-#: build/index.js:7
-#: build/index.js:14
+#: build/index.js:10
+#: build/index.js:17
 #: src/components/Filters.jsx:112
-#: src/screens/Dashboard.jsx:437
+#: src/screens/Dashboard.jsx:470
 msgid "Issue"
 msgstr "Problem"
 
-#: build/index.js:7
-#: src/screens/Dashboard.jsx:440
+#: build/index.js:10
+#: src/screens/Dashboard.jsx:473
 msgid "Severity"
 msgstr "Schweregrad"
 
-#: build/index.js:7
-#: src/screens/Dashboard.jsx:446
+#: build/index.js:10
+#: src/screens/Dashboard.jsx:479
 msgid "Products"
 msgstr "Produkte"
 
-#: build/index.js:7
-#: src/screens/Dashboard.jsx:502
+#: build/index.js:10
+#: src/screens/Dashboard.jsx:525
 msgid "Scan"
 msgstr "Scan"
 
 #. translators: %d: number of products scanned.
-#: build/index.js:8
-#: src/screens/Dashboard.jsx:510
+#: build/index.js:11
+#: src/screens/Dashboard.jsx:533
 #, js-format
 msgid "Based on %d products scanned"
 msgstr "Basierend auf %d gescannten Produkten"
 
 #. translators: %d: number of products left out of the scan.
-#: build/index.js:9
-#: src/screens/Dashboard.jsx:518
+#: build/index.js:12
+#: src/screens/Dashboard.jsx:541
 #, js-format
 msgid "%d skipped"
 msgstr "%d übersprungen"
 
 #. translators: %s: time since the last scan, for example "5 mins ago".
-#: build/index.js:10
-#: src/screens/Dashboard.jsx:527
+#: build/index.js:13
+#: src/screens/Dashboard.jsx:550
 #, js-format
 msgid "Last scan %s"
 msgstr "Letzter Scan: %s"
 
-#: build/index.js:10
-#: src/screens/Dashboard.jsx:534
+#: build/index.js:13
+#: src/screens/Dashboard.jsx:557
 msgid "Run a scan again after editing products to bring these figures up to date."
 msgstr "Führe nach dem Bearbeiten von Produkten erneut einen Scan aus, um diese Zahlen auf den neuesten Stand zu bringen."
 
-#: build/index.js:10
+#: build/index.js:13
 #: src/components/IssueList.jsx:54
 msgid "No issues were found for this product."
 msgstr "Für dieses Produkt wurden keine Probleme gefunden."
 
 #. translators: 1: health score out of 100, 2: health status such as "Healthy".
-#: build/index.js:11
+#: build/index.js:14
 #: src/components/ScoreBadge.jsx:13
 #, js-format
 msgid "Health score %1$d out of 100, %2$s"
 msgstr "Gesundheitswert %1$d von 100, %2$s"
 
-#: build/index.js:11
+#: build/index.js:14
 #: src/components/ScoreBadge.jsx:29
 msgid "/100"
 msgstr "/100"
 
-#: build/index.js:11
+#: build/index.js:14
 #: src/screens/ProductDetail.jsx:95
 msgid "This product report could not be loaded."
 msgstr "Dieser Produktbericht konnte nicht geladen werden."
 
 #. translators: 1: health score, out of 100. 2: health group, for example "Critical".
-#: build/index.js:12
+#: build/index.js:15
 #: src/screens/ProductDetail.jsx:143
 #, js-format
 msgid "Product checked again. Health score %1$d out of 100, %2$s."
 msgstr "Produkt erneut geprüft. Gesundheitswert %1$d von 100, %2$s."
 
-#: build/index.js:12
+#: build/index.js:15
 #: src/screens/ProductDetail.jsx:156
 msgid "This product could not be checked."
 msgstr "Dieses Produkt konnte nicht geprüft werden."
 
-#: build/index.js:12
+#: build/index.js:15
 #: src/screens/ProductDetail.jsx:180
 msgid "Loading product report."
 msgstr "Produktbericht wird geladen."
 
-#: build/index.js:12
+#: build/index.js:15
 #: src/screens/ProductDetail.jsx:195
 msgid "Back to product health"
 msgstr "Zurück zur Produkt-Gesundheit"
 
-#: build/index.js:12
-#: build/index.js:16
+#: build/index.js:15
+#: build/index.js:19
 #: src/screens/ProductDetail.jsx:202
 #: src/screens/ProductList.jsx:300
 msgid "Edit product"
 msgstr "Produkt bearbeiten"
 
-#: build/index.js:12
+#: build/index.js:15
 #: src/screens/ProductDetail.jsx:206
 msgid "Check now"
 msgstr "Jetzt prüfen"
 
-#: build/index.js:12
+#: build/index.js:15
 #: src/screens/ProductDetail.jsx:209
 msgid "Checking…"
 msgstr "Wird geprüft …"
 
-#: build/index.js:12
+#: build/index.js:15
 #: src/screens/ProductDetail.jsx:211
 msgid "Check again"
 msgstr "Erneut prüfen"
 
-#: build/index.js:12
+#: build/index.js:15
 #: src/screens/ProductDetail.jsx:243
 msgid "Checked again. This report now reflects the product as it is saved."
 msgstr "Erneut geprüft. Dieser Bericht zeigt jetzt das Produkt so, wie es gespeichert ist."
 
-#: build/index.js:12
+#: build/index.js:15
 #: src/screens/ProductDetail.jsx:266
 msgid "This product has not been checked yet. Check it now, or run a scan to check the whole catalog."
 msgstr "Dieses Produkt wurde noch nicht geprüft. Prüfe es jetzt oder führe einen Scan aus, um den ganzen Katalog zu prüfen."
 
-#: build/index.js:12
+#: build/index.js:15
 #: src/screens/ProductDetail.jsx:270
 msgid "This product has not been scanned yet. Run a scan to see its health report."
 msgstr "Dieses Produkt wurde noch nicht gescannt. Führe einen Scan aus, um seinen Gesundheitsbericht zu sehen."
 
 #. translators: %s: time since the last check, for example "5 mins ago".
-#: build/index.js:13
+#: build/index.js:16
 #: src/screens/ProductDetail.jsx:308
 #, js-format
 msgid "Last checked %s"
 msgstr "Zuletzt geprüft: %s"
 
-#: build/index.js:13
+#: build/index.js:16
 #: src/screens/ProductDetail.jsx:323
 msgid "This product was edited after it was last checked, so this report may be out of date."
 msgstr "Dieses Produkt wurde nach der letzten Prüfung bearbeitet, daher ist dieser Bericht möglicherweise veraltet."
 
-#: build/index.js:13
+#: build/index.js:16
 #: src/screens/ProductDetail.jsx:360
 msgid "How this score was reached"
 msgstr "Wie dieser Wert berechnet wurde"
 
-#: build/index.js:13
+#: build/index.js:16
 #: src/screens/ProductDetail.jsx:366
 msgid "Each deduction applied to this product, and the resulting score"
 msgstr "Jeder Abzug für dieses Produkt und der daraus resultierende Wert"
 
-#: build/index.js:13
+#: build/index.js:16
 #: src/screens/ProductDetail.jsx:374
 msgid "Check"
 msgstr "Prüfung"
 
-#: build/index.js:13
+#: build/index.js:16
 #: src/screens/ProductDetail.jsx:380
 msgid "Points"
 msgstr "Punkte"
 
-#: build/index.js:13
+#: build/index.js:16
 #: src/screens/ProductDetail.jsx:386
 msgid "Running score"
 msgstr "Kumulierter Wert"
 
-#: build/index.js:13
+#: build/index.js:16
 #: src/screens/ProductDetail.jsx:393
 msgid "Starting score"
 msgstr "Startwert"
 
 #. translators: %d: points deducted.
-#: build/index.js:14
+#: build/index.js:17
 #: src/screens/ProductDetail.jsx:414
 #, js-format
 msgid "−%d"
 msgstr "−%d"
 
-#: build/index.js:14
+#: build/index.js:17
 #: src/screens/ProductDetail.jsx:426
 msgid "Health score"
 msgstr "Gesundheitswert"
 
-#: build/index.js:14
-#: build/index.js:16
+#: build/index.js:17
+#: build/index.js:19
 #: src/screens/ProductDetail.jsx:443
 #: src/screens/ProductList.jsx:206
 msgid "Issues"
 msgstr "Probleme"
 
-#: build/index.js:14
-#: build/index.js:16
+#: build/index.js:17
+#: build/index.js:19
 #: src/screens/ProductDetail.jsx:458
-#: src/screens/Settings.jsx:195
+#: src/screens/Settings.jsx:196
 msgid "Checks"
 msgstr "Prüfungen"
 
-#: build/index.js:14
+#: build/index.js:17
 #: src/screens/ProductDetail.jsx:464
 msgid "Passed"
 msgstr "Bestanden"
 
-#: build/index.js:14
+#: build/index.js:17
 #: src/screens/ProductDetail.jsx:469
 msgid "Not checked"
 msgstr "Nicht geprüft"
 
-#: build/index.js:14
+#: build/index.js:17
 #: src/screens/ProductDetail.jsx:470
 msgid "These checks do not apply to this product type, so they did not affect the score."
 msgstr "Diese Prüfungen treffen bei diesem Produkttyp nicht zu und beeinflussen den Wert daher nicht."
 
-#: build/index.js:14
+#: build/index.js:17
 #: src/screens/ProductDetail.jsx:478
 msgid "Turned off"
 msgstr "Ausgeschaltet"
 
-#: build/index.js:14
+#: build/index.js:17
 #: src/screens/ProductDetail.jsx:479
 msgid "These checks are turned off in Settings, so they did not affect the score."
 msgstr "Diese Prüfungen sind in den Einstellungen ausgeschaltet und haben den Wert daher nicht beeinflusst."
 
-#: build/index.js:14
+#: build/index.js:17
 #: src/components/Filters.jsx:49
 msgid "Lowest score first"
 msgstr "Niedrigster Wert zuerst"
 
-#: build/index.js:14
+#: build/index.js:17
 #: src/components/Filters.jsx:53
 msgid "Highest score first"
 msgstr "Höchster Wert zuerst"
 
-#: build/index.js:14
+#: build/index.js:17
 #: src/components/Filters.jsx:55
 msgid "Name, A to Z"
 msgstr "Name, A bis Z"
 
-#: build/index.js:14
+#: build/index.js:17
 #: src/components/Filters.jsx:56
 msgid "Name, Z to A"
 msgstr "Name, Z bis A"
 
-#: build/index.js:14
+#: build/index.js:17
 #: src/components/Filters.jsx:59
 msgid "Most recently checked"
 msgstr "Zuletzt geprüfte zuerst"
 
-#: build/index.js:14
+#: build/index.js:17
 #: src/components/Filters.jsx:63
 msgid "Least recently checked"
 msgstr "Am längsten nicht geprüfte zuerst"
 
-#: build/index.js:14
+#: build/index.js:17
 #: src/components/Filters.jsx:85
 msgid "Search products"
 msgstr "Produkte suchen"
 
-#: build/index.js:14
+#: build/index.js:17
 #: src/components/Filters.jsx:96
 msgid "Search"
 msgstr "Suchen"
 
-#: build/index.js:14
-#: build/index.js:16
+#: build/index.js:17
+#: build/index.js:19
 #: src/components/Filters.jsx:103
 #: src/screens/ProductList.jsx:200
 msgid "Health"
 msgstr "Gesundheit"
 
-#: build/index.js:14
+#: build/index.js:17
 #: src/components/Filters.jsx:104
 msgid "Any health"
 msgstr "Alle"
 
-#: build/index.js:14
+#: build/index.js:17
 #: src/components/Filters.jsx:113
 msgid "Any issue"
 msgstr "Alle Probleme"
 
-#: build/index.js:14
+#: build/index.js:17
 #: src/components/Filters.jsx:121
 msgid "Product type"
 msgstr "Produkttyp"
 
-#: build/index.js:14
+#: build/index.js:17
 #: src/components/Filters.jsx:122
 msgid "Any type"
 msgstr "Alle Typen"
 
-#: build/index.js:14
+#: build/index.js:17
 #: src/components/Filters.jsx:133
 msgid "Sort by"
 msgstr "Sortieren nach"
 
-#: build/index.js:14
+#: build/index.js:17
 #: src/components/Filters.jsx:165
 msgid "Clear filters"
 msgstr "Filter zurücksetzen"
 
-#: build/index.js:14
+#: build/index.js:17
 #: src/components/Pagination.jsx:20
 msgid "Product list pages"
 msgstr "Seiten der Produktliste"
 
 #. translators: %d: total number of products found.
-#: build/index.js:15
+#: build/index.js:18
 #: src/components/Pagination.jsx:25
 #, js-format
 msgid "%d products"
 msgstr "%d Produkte"
 
-#: build/index.js:15
+#: build/index.js:18
 #: src/components/Pagination.jsx:34
 msgid "Previous page"
 msgstr "Vorherige Seite"
 
 #. translators: 1: current page number, 2: total number of pages.
-#: build/index.js:16
+#: build/index.js:19
 #: src/components/Pagination.jsx:39
 #, js-format
 msgid "Page %1$d of %2$d"
 msgstr "Seite %1$d von %2$d"
 
-#: build/index.js:16
+#: build/index.js:19
 #: src/components/Pagination.jsx:49
 msgid "Next page"
 msgstr "Nächste Seite"
 
-#: build/index.js:16
+#: build/index.js:19
 #: src/hooks/useProducts.js:49
 msgid "The product list could not be loaded."
 msgstr "Die Produktliste konnte nicht geladen werden."
 
-#: build/index.js:16
+#: build/index.js:19
 #: src/screens/ProductList.jsx:133
 msgid "Loading products."
 msgstr "Produkte werden geladen."
 
-#: build/index.js:16
+#: build/index.js:19
 #: src/screens/ProductList.jsx:160
 msgid "No matching products"
 msgstr "Keine passenden Produkte"
 
-#: build/index.js:16
+#: build/index.js:19
 #: src/screens/ProductList.jsx:164
 msgid "No products match the filters you selected."
 msgstr "Keine Produkte entsprechen deinen ausgewählten Filtern."
 
-#: build/index.js:16
+#: build/index.js:19
 #: src/screens/ProductList.jsx:171
 msgid "Nothing scanned yet"
 msgstr "Noch nichts gescannt"
 
-#: build/index.js:16
+#: build/index.js:19
 #: src/screens/ProductList.jsx:186
 msgid "Scanned products and their health"
 msgstr "Gescannte Produkte und ihr Gesundheitszustand"
 
-#: build/index.js:16
+#: build/index.js:19
 #: src/screens/ProductList.jsx:194
 msgid "Product"
 msgstr "Produkt"
 
-#: build/index.js:16
+#: build/index.js:19
 #: src/screens/ProductList.jsx:197
 msgid "Type"
 msgstr "Typ"
 
-#: build/index.js:16
+#: build/index.js:19
 #: src/screens/ProductList.jsx:209
 msgid "Last checked"
 msgstr "Zuletzt geprüft"
 
-#: build/index.js:16
+#: build/index.js:19
 #: src/screens/ProductList.jsx:217
 msgid "Actions"
 msgstr "Aktionen"
 
-#: build/index.js:16
+#: build/index.js:19
 #: src/screens/ProductList.jsx:275
 msgid "Edited since then"
 msgstr "Seitdem bearbeitet"
 
-#: build/index.js:16
+#: build/index.js:19
 #: src/screens/ProductList.jsx:307
 msgid "View only"
 msgstr "Nur ansehen"
 
-#: build/index.js:16
+#: build/index.js:19
 #: src/screens/Settings.jsx:104
 msgid "Settings could not be loaded."
 msgstr "Die Einstellungen konnten nicht geladen werden."
 
-#: build/index.js:16
+#: build/index.js:19
 #: src/screens/Settings.jsx:131
 msgid "Loading settings."
 msgstr "Einstellungen werden geladen."
 
-#: build/index.js:16
+#: build/index.js:19
 #: src/screens/Settings.jsx:169
 msgid "Settings saved."
 msgstr "Einstellungen gespeichert."
 
-#: build/index.js:16
+#: build/index.js:19
 #: src/screens/Settings.jsx:174
 msgid "Settings could not be saved."
 msgstr "Die Einstellungen konnten nicht gespeichert werden."
 
-#: build/index.js:16
-#: src/screens/Settings.jsx:200
+#: build/index.js:19
+#: src/screens/Settings.jsx:201
 msgid "Turn off checks for information your store does not use. A turned-off check is left out of scans and never affects a score. Products are never changed."
 msgstr "Schalte Prüfungen für Angaben aus, die dein Shop nicht verwendet. Eine ausgeschaltete Prüfung wird bei Scans ausgelassen und beeinflusst nie einen Wert. Produkte werden nie verändert."
 
-#: build/index.js:16
-#: src/screens/Settings.jsx:279
+#: build/index.js:19
+#: src/screens/Settings.jsx:280
 msgid "Settings saved. They apply from the next scan, or when a product is checked again."
 msgstr "Einstellungen gespeichert. Sie gelten ab dem nächsten Scan oder wenn ein Produkt erneut geprüft wird."
 
-#: build/index.js:16
-#: src/screens/Settings.jsx:285
+#: build/index.js:19
+#: src/screens/Settings.jsx:286
 msgid "Go to the dashboard"
 msgstr "Zum Dashboard"
 
-#: build/index.js:16
-#: src/screens/Settings.jsx:303
+#: build/index.js:19
+#: src/screens/Settings.jsx:309
 msgid "Saving…"
 msgstr "Wird gespeichert …"
 
-#: build/index.js:16
-#: src/screens/Settings.jsx:304
+#: build/index.js:19
+#: src/screens/Settings.jsx:310
 msgid "Save changes"
 msgstr "Änderungen speichern"
 
-#: build/index.js:16
+#: build/index.js:19
 #: src/app.jsx:70
 msgid "Unknown screen."
 msgstr "Unbekannter Bildschirm."
@@ -1049,11 +1049,68 @@ msgid "Other checks"
 msgstr "Weitere Prüfungen"
 
 #: build/index.js:1
-#: src/extensions.jsx:84
+#: src/extensions.jsx:85
 msgid "This section could not be displayed."
 msgstr "Dieser Bereich konnte nicht angezeigt werden."
 
-#: build/index.js:16
-#: src/screens/Settings.jsx:249
+#: build/index.js:19
+#: src/screens/Settings.jsx:250
 msgid "Optional, off until turned on"
 msgstr "Optional, aus bis zum Einschalten"
+
+#. translators: %d: share of scanned products with no issue in this topic, as a percentage.
+#: build/index.js:4
+#: src/components/TopicTiles.jsx:54
+#, js-format
+msgctxt "share of products with no issue in a topic"
+msgid "%d%%"
+msgstr "%d%%"
+
+#: build/index.js:4
+#: src/components/TopicTiles.jsx:63
+msgctxt "topic share"
+msgid "complete"
+msgstr "vollständig"
+
+#: build/index.js:4
+#: src/components/TopicTiles.jsx:74
+msgid "No issues"
+msgstr "Keine Probleme"
+
+#. translators: %d: number of products with at least one issue in this topic.
+#: build/index.js:5
+#: src/components/TopicTiles.jsx:77
+#, js-format
+msgid "%d product with issues"
+msgid_plural "%d products with issues"
+msgstr[0] "%d Produkt mit Problemen"
+msgstr[1] "%d Produkte mit Problemen"
+
+#: build/index.js:5
+#: src/components/TopicTiles.jsx:90
+msgid "Most common"
+msgstr "Am häufigsten"
+
+#. translators: %d: number of checks turned on in this topic.
+#: build/index.js:6
+#: src/components/TopicTiles.jsx:109
+#, js-format
+msgid "%d check"
+msgid_plural "%d checks"
+msgstr[0] "%d Prüfung"
+msgstr[1] "%d Prüfungen"
+
+#: build/index.js:6
+#: src/components/TopicTiles.jsx:131
+msgid "By topic"
+msgstr "Nach Thema"
+
+#: build/index.js:6
+#: src/components/TopicTiles.jsx:134
+msgid "The share of scanned products with no issue in each topic."
+msgstr "Der Anteil der gescannten Produkte ohne Problem im jeweiligen Thema."
+
+#: build/index.js:6
+#: src/components/TopicTiles.jsx:154
+msgid "Figures by topic appear after the next scan."
+msgstr "Die Werte nach Thema erscheinen nach dem nächsten Scan."

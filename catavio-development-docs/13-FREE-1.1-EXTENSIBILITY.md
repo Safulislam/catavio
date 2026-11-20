@@ -99,6 +99,7 @@ ships in the bundle.
 | `catavio.productList.columns` | Add list columns |
 | `catavio.settings.sections` | Add settings sections |
 | `catavio.dashboard.cards` | Add dashboard cards |
+| `catavio.dashboard.scoreDetails` | Add a line under the headline score (Pro: trend) |
 
 Each filter receives and returns a plain array of `{ key, label, render }`. Free
 renders whatever comes back inside an error boundary, so a broken extension cannot

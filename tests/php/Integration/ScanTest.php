@@ -81,6 +81,25 @@ class ScanTest extends TestCase {
 		$summary = get_option( 'catavio_summary' );
 		$this->assertSame( 6, (int) $summary['scanned'] );
 		$this->assertSame( 1, (int) $summary['healthy'] );
+
+		// Topics: a product counts once per topic, however many issues it has
+		// there. Three products have a "structure" issue: the variable one,
+		// the external one and the downloadable one.
+		$this->assertArrayHasKey( 'structure', $summary['topics'] );
+		$this->assertSame( 3, $summary['topics']['structure']['affected'] );
+
+		wp_set_current_user( self::factory()->user->create( array( 'role' => 'shop_manager' ) ) );
+
+		$response = rest_get_server()->dispatch( new \WP_REST_Request( 'GET', '/catavio/v1/summary' ) )->get_data();
+		$topics   = wp_list_pluck( $response['topics'], 'complete', 'group' );
+
+		$this->assertTrue( $response['topicsRecorded'] );
+		$this->assertSame( 50, $topics['structure'] );
+		$this->assertArrayHasKey( 'content', $topics );
+
+		// No optional check is on, so no topic made only of optional checks
+		// is shown; every built-in topic still has a check turned on.
+		$this->assertCount( 5, $response['topics'] );
 	}
 
 	/**

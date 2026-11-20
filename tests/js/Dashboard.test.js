@@ -270,4 +270,90 @@ describe( 'Dashboard', () => {
 			)
 		).not.toBeInTheDocument();
 	} );
+
+	it( 'shows one tile per topic, with its share, count and most common issue', async () => {
+		apiFetch.mockResolvedValue(
+			summary( {
+				topicsRecorded: true,
+				topics: [
+					{
+						group: 'content',
+						label: 'Content',
+						checks: 4,
+						affected: 0,
+						complete: 100,
+						topIssue: null,
+					},
+					{
+						group: 'media',
+						label: 'Images',
+						checks: 2,
+						affected: 76,
+						complete: 13,
+						topIssue: {
+							check: 'missing_image_alt_text',
+							label: 'Featured image alt text',
+							severity: 'info',
+							severityLabel: 'Info',
+							count: 76,
+						},
+					},
+				],
+			} )
+		);
+
+		render(
+			<Dashboard
+				settings={ {
+					adminUrl: 'http://example.test/wp-admin/admin.php',
+					page: 'catavio',
+					tabArg: 'tab',
+					screens: { products: 'products' },
+				} }
+			/>
+		);
+
+		const topics = await screen.findByRole( 'region', {
+			name: 'By topic',
+		} );
+		const tiles = within( topics ).getAllByRole( 'listitem' );
+
+		expect( tiles ).toHaveLength( 2 );
+		expect(
+			within( tiles[ 0 ] ).getByText( 'Content' )
+		).toBeInTheDocument();
+		expect( within( tiles[ 0 ] ).getByText( '100%' ) ).toBeInTheDocument();
+		expect(
+			within( tiles[ 0 ] ).getByText( 'No issues' )
+		).toBeInTheDocument();
+		expect(
+			within( tiles[ 0 ] ).getByText( '4 checks' )
+		).toBeInTheDocument();
+
+		// Coloured by the most common issue's severity, not the share alone.
+		expect( tiles[ 0 ] ).toHaveClass( 'catavio-topic--healthy' );
+		expect( tiles[ 1 ] ).toHaveClass( 'catavio-topic--info' );
+
+		expect( within( tiles[ 1 ] ).getByText( '13%' ) ).toBeInTheDocument();
+		expect(
+			within( tiles[ 1 ] ).getByText( '76 products with issues' )
+		).toBeInTheDocument();
+		expect(
+			within( tiles[ 1 ] )
+				.getByRole( 'link', { name: 'Featured image alt text' } )
+				.getAttribute( 'href' )
+		).toContain( 'issue=missing_image_alt_text' );
+	} );
+
+	it( 'says topic figures come with the next scan when the last scan predates them', async () => {
+		apiFetch.mockResolvedValue( summary( { topicsRecorded: false } ) );
+
+		render( <Dashboard /> );
+
+		expect(
+			await screen.findByText(
+				'Figures by topic appear after the next scan.'
+			)
+		).toBeInTheDocument();
+	} );
 } );

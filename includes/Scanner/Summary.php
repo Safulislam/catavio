@@ -125,10 +125,13 @@ class Summary {
 	/**
 	 * Build a summary from a completed job's accumulated totals.
 	 *
-	 * @param array<string, mixed> $state Completed scan state.
+	 * @param array<string, mixed>  $state     Completed scan state.
+	 * @param array<string, string> $group_map Topic of each check, keyed by check
+	 *                                         id. Used to find each topic's most
+	 *                                         common issue.
 	 * @return array<string, mixed>
 	 */
-	public function build_from_state( array $state ) {
+	public function build_from_state( array $state, array $group_map = array() ) {
 		$scanned = isset( $state['processed'] ) ? (int) $state['processed'] : 0;
 		$buckets = isset( $state['buckets'] ) && is_array( $state['buckets'] ) ? $state['buckets'] : array();
 		$issues  = isset( $state['issue_counts'] ) && is_array( $state['issue_counts'] ) ? $state['issue_counts'] : array();
@@ -140,6 +143,29 @@ class Summary {
 		}
 
 		arsort( $issues );
+
+		// Per topic: products with at least one issue in it (counted during the
+		// scan, so a product with two such issues counts once), and the issue
+		// in it that affects the most products.
+		$topics = array();
+		$groups = isset( $state['group_counts'] ) && is_array( $state['group_counts'] ) ? $state['group_counts'] : array();
+
+		foreach ( $groups as $group => $affected ) {
+			$topics[ (string) $group ] = array(
+				'affected'  => (int) $affected,
+				'top_check' => '',
+				'top_count' => 0,
+			);
+		}
+
+		foreach ( $issues as $check => $count ) {
+			$group = isset( $group_map[ $check ] ) ? $group_map[ $check ] : 'other';
+
+			if ( isset( $topics[ $group ] ) && '' === $topics[ $group ]['top_check'] ) {
+				$topics[ $group ]['top_check'] = (string) $check;
+				$topics[ $group ]['top_count'] = (int) $count;
+			}
+		}
 
 		return $this->normalize(
 			array(
@@ -153,6 +179,7 @@ class Summary {
 				'attention'      => isset( $buckets[ HealthScore::BUCKET_ATTENTION ] ) ? (int) $buckets[ HealthScore::BUCKET_ATTENTION ] : 0,
 				'critical'       => isset( $buckets[ HealthScore::BUCKET_CRITICAL ] ) ? (int) $buckets[ HealthScore::BUCKET_CRITICAL ] : 0,
 				'issues'         => array_slice( $issues, 0, self::TOP_ISSUE_LIMIT, true ),
+				'topics'         => $topics,
 			)
 		);
 	}
@@ -174,6 +201,26 @@ class Summary {
 
 		$average = isset( $summary['average_score'] ) ? (int) $summary['average_score'] : 0;
 
+		// Null, not empty: a summary written before 1.1.0 has no topic figures,
+		// which is different from a scan that found no issues in any topic.
+		$topics = null;
+
+		if ( isset( $summary['topics'] ) && is_array( $summary['topics'] ) ) {
+			$topics = array();
+
+			foreach ( $summary['topics'] as $group => $topic ) {
+				if ( ! is_array( $topic ) ) {
+					continue;
+				}
+
+				$topics[ (string) $group ] = array(
+					'affected'  => isset( $topic['affected'] ) ? max( 0, (int) $topic['affected'] ) : 0,
+					'top_check' => isset( $topic['top_check'] ) ? (string) $topic['top_check'] : '',
+					'top_count' => isset( $topic['top_count'] ) ? max( 0, (int) $topic['top_count'] ) : 0,
+				);
+			}
+		}
+
 		return array(
 			'generated_at'   => isset( $summary['generated_at'] ) ? (int) $summary['generated_at'] : 0,
 			'rechecked_at'   => isset( $summary['rechecked_at'] ) ? max( 0, (int) $summary['rechecked_at'] ) : 0,
@@ -185,6 +232,7 @@ class Summary {
 			'attention'      => isset( $summary['attention'] ) ? max( 0, (int) $summary['attention'] ) : 0,
 			'critical'       => isset( $summary['critical'] ) ? max( 0, (int) $summary['critical'] ) : 0,
 			'issues'         => $issues,
+			'topics'         => $topics,
 		);
 	}
 }

@@ -36,7 +36,7 @@ Opening the Dashboard never starts a scan and never walks the catalog. Figures c
 
 = The screens =
 
-**Dashboard** — Average completeness for the scanned catalog, a breakdown of healthy / needs attention / critical products, the most common issues (up to ten), and the scan controls. Every number is from a completed scan, not an estimate. Each group and issue links to the matching filtered product list, and the dashboard says plainly when its figures are out of date: products added since the scan, products rechecked one at a time, or checks changed in Settings.
+**Dashboard** — Average completeness for the scanned catalog, a breakdown of healthy / needs attention / critical products, a tile for each topic (Content, Images, Price and stock, Brand and identifiers, Product type setup) showing the share of products with nothing missing there and its most common issue, the most common issues overall (up to ten), and the scan controls. Every number is from a completed scan, not an estimate. Each group and issue links to the matching filtered product list, and the dashboard says plainly when its figures are out of date: products added since the scan, products rechecked one at a time, or checks changed in Settings.
 
 **Product Health** — A paginated list of scanned products. Search by name, narrow by health group, issue type, and product type, and sort by score, name, or when a product was last checked. Filters and sort order stay in the address bar, so a view can be bookmarked and the browser back button works as expected. Products saved since their last check are marked “Edited since then”. Each row links to the product report and to the WooCommerce editor.
 
@@ -217,7 +217,7 @@ Developers can add checks, check groups, report panels, list columns, dashboard 
 
 == Screenshots ==
 
-1. Dashboard — average completeness, healthy / needs attention / critical split, and the issues affecting the most products.
+1. Dashboard — average completeness, healthy / needs attention / critical split, a tile per topic, and the issues affecting the most products.
 2. Product Health — filter by health, issue type, and product type; every row links to the product editor.
 3. Product report — every issue found and the arithmetic behind the health score.
 4. A scan in progress — running count, percentage, and the option to stop.
@@ -227,6 +227,7 @@ Developers can add checks, check groups, report panels, list columns, dashboard 
 
 = 1.1.0 =
 * Added three optional checks, off until turned on in Settings: gallery images, GTIN/UPC/EAN/ISBN (WooCommerce’s built-in field), and brand (WooCommerce’s built-in Brands).
+* Redesigned dashboard: the average score in a ring, and a tile for each topic with the share of products complete in it, how many have an issue there, and the most common one.
 * Settings now lists checks by topic (Content, Images, Price and stock, Brand and identifiers, Product type setup), with each check’s severity beside it.
 * Added read-only abilities for the WordPress Abilities API (WordPress 6.9+), so AI agents connected to your site can read catalog health.
 * Added developer hooks: scan actions, snapshot data, check groups, severity penalties, REST response filters, extra tabs, and JavaScript slots on every screen.
@@ -260,7 +261,7 @@ Developers can add checks, check groups, report panels, list columns, dashboard 
 == Upgrade Notice ==
 
 = 1.1.0 =
-Three new optional checks (gallery images, GTIN, brand), Settings grouped by topic, and read-only access for AI agents on WordPress 6.9+. Your scores do not change until you turn a new check on.
+A redesigned dashboard with health by topic, three new optional checks (gallery images, GTIN, brand), Settings grouped by topic, and read-only access for AI agents on WordPress 6.9+. Your scores do not change until you turn a new check on.
 
 = 1.0.3 =
 Check a single product again after editing it, turn off checks your store does not need, and sort the product list.

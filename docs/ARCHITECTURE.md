@@ -661,6 +661,18 @@ unchanged, and a check added later is still on unless it says otherwise.
 the report and the REST responses label checks by topic. Groups can be added
 with `catavio_check_groups`, never replaced, and "Other checks" is always last.
 
+**Dashboard by topic.** During a scan each product is counted once in every
+topic it has an issue in (`group_counts` in the job state); the summary keeps
+that count and each topic's most common issue. `GET /summary` returns one
+`topics` row per topic with at least one check turned on: `complete` is the
+share of scanned products with no issue there, rounded so it never shows 100
+while any product has one, or 0 while any has none. `topicsRecorded` is false
+for a summary written by 1.0.x, and the dashboard asks for a scan instead of
+showing zeros. A topic registered by an extension (`catavio_check_groups` plus
+its checks) gets a tile with no JavaScript. Tiles are coloured by the severity
+of their most common issue, never by the share alone, and the headline ring is
+neutral: the average is not a health group.
+
 **Extensions.** Every PHP and JavaScript extension point is listed in §13.
 All of them add; none can change or remove what Catavio itself reports. Each
 JavaScript slot renders inside its own error boundary, and Settings sections
@@ -724,8 +736,8 @@ falsifiable rather than aspirational.
 | JS lint | `npm run lint:js` | |
 | Style lint | `npm run lint:css` | |
 | Bundle ships no framework | inspect `build/index.asset.php` | externals must appear as dependencies |
-| Check rules and scoring | `composer test` | 144 unit tests, no WordPress needed, runs in milliseconds |
-| Admin UI renders | `npm run test:js` | 82 jsdom tests: screens, filters, paging, score arithmetic, extension slots |
+| Check rules and scoring | `composer test` | 147 unit tests, no WordPress needed, runs in milliseconds |
+| Admin UI renders | `npm run test:js` | 86 jsdom tests: screens, topic tiles, filters, paging, score arithmetic, extension slots |
 | Accessibility | `npm run test:js` | axe on every screen + keyboard traversal; axe itself sanity-checked |
 | Translations | `npm run i18n` | build, then make-pot, then make-json, in that order |
 | List performance | benchmark on 1,087 products | constant query count by page depth and filter |
@@ -832,6 +844,7 @@ in its own error boundary.
 |---|---|---|
 | `catavio.views` | — (object of view id → component) | `{ settings }` as props |
 | `catavio.dashboard.cards` | `summary` | `{ summary }` |
+| `catavio.dashboard.scoreDetails` | `summary` | `{ summary }`, rendered under the headline score (for example a trend) |
 | `catavio.productList.columns` (label required) | `data` | `{ product }` |
 | `catavio.productReport.issueActions` | `issue, product` | `{ issue, product, reload }` |
 | `catavio.productReport.panels` | `product` | `{ product, reload }` |

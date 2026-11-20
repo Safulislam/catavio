@@ -9,7 +9,7 @@
   - 2.1 Integration tests: `tests/php/Integration`, run with `composer test:integration`
     and `composer test:integration:multisite`. They need an empty test database; see
     `wp-tests-config.php`.
-  - 2.2 Screenshots 1–4 re-captured from the real screens with a demo catalog;
+  - 2.2 Screenshots 1–4 re-captured from the real screens with a demo catalog (1 and 4 again after the dashboard redesign);
     `screenshot-5.png` (Settings) added with its caption. The blueprint is unchanged.
   - 2.3 POT regenerated; German covers all 213 strings.
   - 2.4 Tested with WordPress 7.1.5 and WooCommerce 11.3; PHP 7.4 floor passes.

@@ -101,6 +101,8 @@ class SummaryController extends Controller {
 			'lastScan'        => $has_scan ? (int) $summary['generated_at'] : 0,
 			'lastScanText'    => $has_scan ? $this->describe_time( (int) $summary['generated_at'] ) : '',
 			'topIssues'       => $has_scan ? $this->describe_issues( $summary['issues'] ) : array(),
+			'topics'          => $has_scan ? $this->describe_topics( $summary ) : array(),
+			'topicsRecorded'  => $has_scan && null !== $summary['topics'],
 			// Both say the figures above no longer tell the whole story, so the
 			// dashboard can say so instead of letting them pass as current.
 			'rechecked'       => $has_scan && $this->scanner->get_summary()->has_rechecks(),
@@ -187,6 +189,101 @@ class SummaryController extends Controller {
 		}
 
 		return $rows;
+	}
+
+	/**
+	 * Describe each topic for the dashboard tiles.
+	 *
+	 * A topic is shown when at least one of its checks is turned on. Its
+	 * figure is the share of scanned products with no issue in that topic.
+	 * Topics added by extensions through catavio_check_groups appear here the
+	 * same way as Catavio's own.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param array<string, mixed> $summary Stored summary.
+	 * @return array<int, array<string, mixed>>
+	 */
+	private function describe_topics( array $summary ) {
+		if ( null === $summary['topics'] ) {
+			return array();
+		}
+
+		$disabled = $this->scanner->get_disabled_checks();
+		$scanned  = (int) $summary['scanned'];
+		$blank    = new ProductSnapshot();
+		$enabled  = array();
+
+		foreach ( $this->registry->get_checks() as $check ) {
+			if ( ! in_array( $check->get_id(), $disabled, true ) ) {
+				$group             = $this->registry->get_group_id( $check );
+				$enabled[ $group ] = ( isset( $enabled[ $group ] ) ? $enabled[ $group ] : 0 ) + 1;
+			}
+		}
+
+		$rows = array();
+
+		foreach ( $this->registry->get_groups() as $group => $label ) {
+			if ( empty( $enabled[ $group ] ) ) {
+				continue;
+			}
+
+			$stored   = isset( $summary['topics'][ $group ] ) ? $summary['topics'][ $group ] : array();
+			$affected = isset( $stored['affected'] ) ? min( $scanned, (int) $stored['affected'] ) : 0;
+			$top      = null;
+
+			if ( ! empty( $stored['top_check'] ) ) {
+				$check = $this->registry->get_check( (string) $stored['top_check'] );
+
+				if ( null !== $check ) {
+					$severity = $check->get_severity( $blank );
+					$top      = array(
+						'check'         => $check->get_id(),
+						'label'         => $check->get_label(),
+						'severity'      => $severity,
+						'severityLabel' => self::severity_label( $severity ),
+						'count'         => (int) $stored['top_count'],
+					);
+				}
+			}
+
+			$rows[] = array(
+				'group'    => (string) $group,
+				'label'    => $label,
+				'checks'   => (int) $enabled[ $group ],
+				'affected' => $affected,
+				'complete' => self::complete_share( $scanned, $affected ),
+				'topIssue' => $top,
+			);
+		}
+
+		return $rows;
+	}
+
+	/**
+	 * Share of products with no issue, as a whole percentage.
+	 *
+	 * Never rounds to 100 while any product has an issue, or to 0 while any
+	 * product has none, so the figure never contradicts the count beside it.
+	 *
+	 * @param int $scanned  Products scanned.
+	 * @param int $affected Products with at least one issue.
+	 * @return int
+	 */
+	public static function complete_share( $scanned, $affected ) {
+		if ( $scanned <= 0 ) {
+			return 0;
+		}
+
+		if ( $affected <= 0 ) {
+			return 100;
+		}
+
+		if ( $affected >= $scanned ) {
+			return 0;
+		}
+
+		return max( 1, min( 99, (int) round( ( ( $scanned - $affected ) / $scanned ) * 100 ) ) );
 	}
 
 	/**

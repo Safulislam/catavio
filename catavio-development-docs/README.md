@@ -25,3 +25,8 @@ REST data layer, file structure, data model, check matrix, and the phase-by-phas
 execution order. Read it alongside the phase docs.
 
 Use the files sequentially with Claude Code. Complete and test one phase before moving to the next.
+
+## Release plans
+
+- `12-RELEASE-1.0.4-PLAN.md` — next maintenance release: integration tests,
+  refreshed WordPress.org screenshots, translations, compatibility pass, release checklist.

@@ -188,125 +188,134 @@ export default function Settings( { settings } ) {
 	const sections = getExtensions( 'catavio.settings.sections' );
 
 	return (
-		<form className="catavio-settings" onSubmit={ save }>
-			<Card className="catavio-card">
-				<CardHeader className="catavio-card__header">
-					<h2 className="catavio-card__title">
-						{ __( 'Checks', 'catavio' ) }
-					</h2>
-				</CardHeader>
-				<CardBody className="catavio-card__body">
-					<p className="catavio-card__note">
-						{ __(
-							'Turn off checks for information your store does not use. A turned-off check is left out of scans and never affects a score. Products are never changed.',
-							'catavio'
-						) }
-					</p>
-
-					{ fieldsets.map( ( fieldset ) => (
-						<fieldset
-							key={ fieldset.key }
-							className={ `catavio-settings__group catavio-settings__group--${ fieldset.key }` }
-						>
-							<legend className="catavio-settings__legend">
-								{ fieldset.legend }
-							</legend>
-							{ fieldset.items.map( ( check ) => {
-								const id = `catavio-check-${ check.check }`;
-								const about = `${ id }-about`;
-
-								return (
-									<p
-										key={ check.check }
-										className="catavio-settings__check"
-									>
-										<input
-											type="checkbox"
-											id={ id }
-											aria-describedby={ about }
-											checked={ check.enabled }
-											onChange={ ( event ) =>
-												toggle(
-													check.check,
-													event.target.checked
-												)
-											}
-										/>
-										<label htmlFor={ id }>
-											{ check.label }
-										</label>
-										<span
-											id={ about }
-											className="catavio-settings__about"
-										>
-											<span
-												className={ `catavio-settings__severity catavio-settings__severity--${ check.severity }` }
-											>
-												{ check.severityLabel }
-											</span>
-											{ check.optional ? (
-												<span className="catavio-settings__optional">
-													{ __(
-														'Optional, off until turned on',
-														'catavio'
-													) }
-												</span>
-											) : null }
-										</span>
-									</p>
-								);
-							} ) }
-						</fieldset>
-					) ) }
-
-					{ noneEnabled ? (
-						<Notice status="warning" isDismissible={ false }>
+		<>
+			<form className="catavio-settings" onSubmit={ save }>
+				<Card className="catavio-card">
+					<CardHeader className="catavio-card__header">
+						<h2 className="catavio-card__title">
+							{ __( 'Checks', 'catavio' ) }
+						</h2>
+					</CardHeader>
+					<CardBody className="catavio-card__body">
+						<p className="catavio-card__note">
 							{ __(
-								'Keep at least one check turned on.',
+								'Turn off checks for information your store does not use. A turned-off check is left out of scans and never affects a score. Products are never changed.',
 								'catavio'
 							) }
-						</Notice>
-					) : null }
+						</p>
 
-					{ saveError ? (
-						<Notice status="error" isDismissible={ false }>
-							{ saveError }
-						</Notice>
-					) : null }
+						{ fieldsets.map( ( fieldset ) => (
+							<fieldset
+								key={ fieldset.key }
+								className={ `catavio-settings__group catavio-settings__group--${ fieldset.key }` }
+							>
+								<legend className="catavio-settings__legend">
+									{ fieldset.legend }
+								</legend>
+								{ fieldset.items.map( ( check ) => {
+									const id = `catavio-check-${ check.check }`;
+									const about = `${ id }-about`;
 
-					{ justSaved ? (
-						<Notice status="success" isDismissible={ false }>
-							{ __(
-								'Settings saved. They apply from the next scan, or when a product is checked again.',
-								'catavio'
-							) }{ ' ' }
-							{ dashboardUrl ? (
-								<a href={ dashboardUrl }>
-									{ __( 'Go to the dashboard', 'catavio' ) }
-								</a>
-							) : null }
-						</Notice>
-					) : null }
+									return (
+										<p
+											key={ check.check }
+											className="catavio-settings__check"
+										>
+											<input
+												type="checkbox"
+												id={ id }
+												aria-describedby={ about }
+												checked={ check.enabled }
+												onChange={ ( event ) =>
+													toggle(
+														check.check,
+														event.target.checked
+													)
+												}
+											/>
+											<label htmlFor={ id }>
+												{ check.label }
+											</label>
+											<span
+												id={ about }
+												className="catavio-settings__about"
+											>
+												<span
+													className={ `catavio-settings__severity catavio-settings__severity--${ check.severity }` }
+												>
+													{ check.severityLabel }
+												</span>
+												{ check.optional ? (
+													<span className="catavio-settings__optional">
+														{ __(
+															'Optional, off until turned on',
+															'catavio'
+														) }
+													</span>
+												) : null }
+											</span>
+										</p>
+									);
+								} ) }
+							</fieldset>
+						) ) }
 
-					<div className="catavio-settings__actions">
-						<Button
-							variant="primary"
-							type="submit"
-							isBusy={ saving }
-							// aria-disabled rather than disabled: the button is
-							// still focused once a save succeeds, and disabling
-							// it would drop focus to the page body. save()
-							// ignores a press while there is nothing to save.
-							aria-disabled={ saving || noneEnabled || ! changed }
-						>
-							{ saving
-								? __( 'Saving…', 'catavio' )
-								: __( 'Save changes', 'catavio' ) }
-						</Button>
-					</div>
-				</CardBody>
-			</Card>
+						{ noneEnabled ? (
+							<Notice status="warning" isDismissible={ false }>
+								{ __(
+									'Keep at least one check turned on.',
+									'catavio'
+								) }
+							</Notice>
+						) : null }
 
+						{ saveError ? (
+							<Notice status="error" isDismissible={ false }>
+								{ saveError }
+							</Notice>
+						) : null }
+
+						{ justSaved ? (
+							<Notice status="success" isDismissible={ false }>
+								{ __(
+									'Settings saved. They apply from the next scan, or when a product is checked again.',
+									'catavio'
+								) }{ ' ' }
+								{ dashboardUrl ? (
+									<a href={ dashboardUrl }>
+										{ __(
+											'Go to the dashboard',
+											'catavio'
+										) }
+									</a>
+								) : null }
+							</Notice>
+						) : null }
+
+						<div className="catavio-settings__actions">
+							<Button
+								variant="primary"
+								type="submit"
+								isBusy={ saving }
+								// aria-disabled rather than disabled: the button is
+								// still focused once a save succeeds, and disabling
+								// it would drop focus to the page body. save()
+								// ignores a press while there is nothing to save.
+								aria-disabled={
+									saving || noneEnabled || ! changed
+								}
+							>
+								{ saving
+									? __( 'Saving…', 'catavio' )
+									: __( 'Save changes', 'catavio' ) }
+							</Button>
+						</div>
+					</CardBody>
+				</Card>
+			</form>
+
+			{ /* Outside the form: a section with its own fields or form must
+			     never submit, or be submitted with, the checks above. */ }
 			{ sections.map( ( section ) => (
 				<ExtensionEntry
 					key={ section.key }
@@ -314,6 +323,6 @@ export default function Settings( { settings } ) {
 					args={ {} }
 				/>
 			) ) }
-		</form>
+		</>
 	);
 }

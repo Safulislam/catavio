@@ -368,7 +368,10 @@ describe( 'Settings', () => {
 		expect(
 			screen.queryByRole( 'group', { name: 'Other checks' } )
 		).not.toBeInTheDocument();
-		expect( screen.getByText( 'Licence section' ) ).toBeInTheDocument();
+		// Outside the checks form, so its own fields never submit it.
+		expect( screen.getByText( 'Licence section' ).closest( 'form' ) ).toBe(
+			null
+		);
 
 		await waitFor( () =>
 			expect(

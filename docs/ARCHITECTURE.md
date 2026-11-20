@@ -647,6 +647,29 @@ pair the UI offers is read back from the URL.
 
 ---
 
+## 10b. Version 1.1.0 additions
+
+**Optional checks.** Gallery images, GTIN and brand implement
+`OptionalCheckInterface` and are off until turned on. Turning them on by
+default would have lowered every existing store's scores on upgrade without a
+single product changing. `Settings` therefore stores two lists:
+`disabled_checks` (default-on checks turned off, unchanged from 1.0.3) and
+`enabled_checks` (optional checks turned on). Settings saved by 1.0.x load
+unchanged, and a check added later is still on unless it says otherwise.
+
+**Topics.** Every check reports a group (`GroupedCheckInterface`); Settings,
+the report and the REST responses label checks by topic. Groups can be added
+with `catavio_check_groups`, never replaced, and "Other checks" is always last.
+
+**Extensions.** Every PHP and JavaScript extension point is listed in §13.
+All of them add; none can change or remove what Catavio itself reports. Each
+JavaScript slot renders inside its own error boundary, and Settings sections
+render outside the checks form so their fields never submit it.
+
+**Abilities.** On WordPress 6.9+, three read-only abilities run the existing
+REST routes through `rest_do_request()`, so permissions and output are
+exactly those of the screens.
+
 ## 11. Known limitations
 
 **The test suite runs on the React that WordPress ships.** `react` and
@@ -701,12 +724,13 @@ falsifiable rather than aspirational.
 | JS lint | `npm run lint:js` | |
 | Style lint | `npm run lint:css` | |
 | Bundle ships no framework | inspect `build/index.asset.php` | externals must appear as dependencies |
-| Check rules and scoring | `composer test` | 69 tests, no WordPress needed, runs in ~20ms |
-| Admin UI renders | `npm run test:js` | 54 jsdom tests: screens, filters, paging, score arithmetic |
+| Check rules and scoring | `composer test` | 144 unit tests, no WordPress needed, runs in milliseconds |
+| Admin UI renders | `npm run test:js` | 82 jsdom tests: screens, filters, paging, score arithmetic, extension slots |
 | Accessibility | `npm run test:js` | axe on every screen + keyboard traversal; axe itself sanity-checked |
 | Translations | `npm run i18n` | build, then make-pot, then make-json, in that order |
 | List performance | benchmark on 1,087 products | constant query count by page depth and filter |
 | WooCommerce mapping | scan a seeded catalog | fakes cannot prove the real API; see below |
+| Real WordPress + WooCommerce | `composer test:integration` (and `:multisite`) | full scan of every product type, REST permissions by role, Check again, uninstall on a network. Needs an empty test database; see `tests/php/Integration/wp-tests-config.php` |
 
 ### PHPCompatibility cannot be trusted alone
 

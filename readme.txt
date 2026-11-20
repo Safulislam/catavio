@@ -6,7 +6,7 @@ Tested up to: 7.1
 Requires PHP: 7.4
 Requires Plugins: woocommerce
 WC tested up to: 11.3
-Stable tag: 1.0.3
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -167,7 +167,7 @@ Anyone who can manage WooCommerce. The plugin uses `manage_woocommerce` when tha
 
 = Which products are scanned? =
 
-Published and private products. Drafts, pending, and trash are not included by default.
+Published and private products. Drafts, pending, and trash are not included by default. Developers can change which statuses are scanned with the `catavio_scanned_statuses` filter, for example to include drafts.
 
 = Does a grouped or variable product fail checks that do not apply? =
 
@@ -221,6 +221,7 @@ Developers can add checks, check groups, report panels, list columns, dashboard 
 2. Product Health — filter by health, issue type, and product type; every row links to the product editor.
 3. Product report — every issue found and the arithmetic behind the health score.
 4. A scan in progress — running count, percentage, and the option to stop.
+5. Settings — choose which checks run, grouped by topic. Optional checks are off until you turn them on.
 
 == Changelog ==
 
@@ -229,7 +230,9 @@ Developers can add checks, check groups, report panels, list columns, dashboard 
 * Settings now lists checks by topic (Content, Images, Price and stock, Brand and identifiers, Product type setup), with each check’s severity beside it.
 * Added read-only abilities for the WordPress Abilities API (WordPress 6.9+), so AI agents connected to your site can read catalog health.
 * Added developer hooks: scan actions, snapshot data, check groups, severity penalties, REST response filters, extra tabs, and JavaScript slots on every screen.
+* Issue and Product Health tables redesigned as framed panels.
 * German translation updated for every new string.
+* Tested: WordPress 7.1.5 and WooCommerce 11.3 compatibility.
 
 = 1.0.3 =
 * Added “Check again” to the product report: check one product after editing it, without rescanning the whole catalog.
@@ -255,6 +258,9 @@ Developers can add checks, check groups, report panels, list columns, dashboard 
 * Initial release: catalog scan, thirteen product-type-aware checks, transparent health score, Dashboard and Product Health screens.
 
 == Upgrade Notice ==
+
+= 1.1.0 =
+Three new optional checks (gallery images, GTIN, brand), Settings grouped by topic, and read-only access for AI agents on WordPress 6.9+. Your scores do not change until you turn a new check on.
 
 = 1.0.3 =
 Check a single product again after editing it, turn off checks your store does not need, and sort the product list.

@@ -2,6 +2,20 @@
 
 - **Branch:** `version-1.0.4` (cut from `main` after `version-1.0.3` was merged)
 - **Type:** maintenance release: polish, test coverage, and compatibility
+- **Status (2026-11-20): folded into 1.1.0.** There was no separate 1.0.4 release;
+  this checklist was completed on `version-1.1.0`:
+  - 1. Framed panels: listed in the 1.1.0 changelog. Catavio is not yet on WordPress.org,
+    so there was no published 1.0.3 zip to compare against. WC tested up to 11.3 is in sync.
+  - 2.1 Integration tests: `tests/php/Integration`, run with `composer test:integration`
+    and `composer test:integration:multisite`. They need an empty test database; see
+    `wp-tests-config.php`.
+  - 2.2 Screenshots 1–4 re-captured from the real screens with a demo catalog;
+    `screenshot-5.png` (Settings) added with its caption. The blueprint is unchanged.
+  - 2.3 POT regenerated; German covers all 213 strings.
+  - 2.4 Tested with WordPress 7.1.5 and WooCommerce 11.3; PHP 7.4 floor passes.
+  - 2.5 `catavio_scanned_statuses` mentioned in the FAQ.
+  - 3. Version 1.1.0, changelog, upgrade notice, ARCHITECTURE §10b, gates green,
+    release zip built and smoke-tested from the zip.
 - **Scope rule:** Free V1 principles in `00-MASTER-PLAN.md` still apply. No scheduled
   scans, bulk fixes, reports, history, AI, telemetry, or Pro locks.
 

@@ -26,6 +26,7 @@ composer.lock
 package-lock.json
 phpcs.xml.dist
 phpunit.xml.dist
+phpunit-integration.xml.dist
 jest.config.js
 webpack.config.js
 bin
@@ -36,3 +37,5 @@ docs
 catavio-development-docs
 .gitkeep
 .wordpress-org
+# An older copy of .wordpress-org; nothing in the plugin loads it.
+assets

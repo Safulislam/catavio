@@ -23,7 +23,7 @@ Core question:
 - No AI.
 - No Pro locks or disabled promotional features. Once Catavio Pro is on sale, Free may
   carry one "Get Pro" link in its Plugins screen row and a line in the readme, and
-  nothing else (decision D3 in `pro/00-PRO-MASTER-PLAN.md`).
+  nothing else (decision D3 of the Pro plan).
 - Local processing only.
 - WordPress-native admin UX.
 - WooCommerce-aware checks.
@@ -46,7 +46,7 @@ Core question:
 | 11 | `11-PHASE-11-FINAL-AUDIT.md` | Final submission audit |
 
 ## Future Pro boundary
-Future Pro may add advanced checks, bulk fixes, scheduled scans, reports, AI assistance and historical analysis. Do not implement those in Free V1. The full plan is in `pro/00-PRO-MASTER-PLAN.md`.
+Future Pro may add advanced checks, bulk fixes, scheduled scans, reports, AI assistance and historical analysis. Do not implement those in Free V1. Pro is a separate, private add-on with its own plan; Free 1.1 adds the extension API it builds on (`13-FREE-1.1-EXTENSIBILITY.md`).
 
 ## Completion rule
 Do not claim WordPress.org approval. Approval is determined by the WordPress.org review process.

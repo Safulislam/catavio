@@ -21,7 +21,9 @@ Core question:
 - No telemetry.
 - No external API.
 - No AI.
-- No Pro locks or disabled promotional features.
+- No Pro locks or disabled promotional features. Once Catavio Pro is on sale, Free may
+  carry one "Get Pro" link in its Plugins screen row and a line in the readme, and
+  nothing else (decision D3 in `pro/00-PRO-MASTER-PLAN.md`).
 - Local processing only.
 - WordPress-native admin UX.
 - WooCommerce-aware checks.

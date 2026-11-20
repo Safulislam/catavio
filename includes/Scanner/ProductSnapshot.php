@@ -177,6 +177,59 @@ class ProductSnapshot {
 	public $child_count = 0;
 
 	/**
+	 * Number of gallery images, not counting the featured image.
+	 *
+	 * @since 1.1.0
+	 * @var int
+	 */
+	public $gallery_image_count = 0;
+
+	/**
+	 * Whether this WooCommerce version has the built-in GTIN field (9.1+).
+	 *
+	 * @since 1.1.0
+	 * @var bool
+	 */
+	public $gtin_supported = false;
+
+	/**
+	 * GTIN, UPC, EAN or ISBN from WooCommerce's built-in field.
+	 *
+	 * @since 1.1.0
+	 * @var string
+	 */
+	public $global_unique_id = '';
+
+	/**
+	 * Whether WooCommerce's Brands taxonomy is registered.
+	 *
+	 * @since 1.1.0
+	 * @var bool
+	 */
+	public $brand_supported = false;
+
+	/**
+	 * Assigned brand term IDs.
+	 *
+	 * @since 1.1.0
+	 * @var int[]
+	 */
+	public $brand_ids = array();
+
+	/**
+	 * Data added by extensions through the catavio_snapshot_data filter.
+	 *
+	 * Keyed by whatever the extension chooses, ideally its own slug, so two
+	 * extensions never overwrite each other. Extensions should read everything
+	 * their checks need here, once per product, so the checks stay pure
+	 * functions of the snapshot.
+	 *
+	 * @since 1.1.0
+	 * @var array<string, mixed>
+	 */
+	public $extra = array();
+
+	/**
 	 * Build a snapshot from a WooCommerce product.
 	 *
 	 * Only WooCommerce CRUD getters are used, so this works for every product
@@ -204,6 +257,26 @@ class ProductSnapshot {
 		$snapshot->is_downloadable     = (bool) $product->get_downloadable();
 		$snapshot->download_count      = count( (array) $product->get_downloads() );
 		$snapshot->child_count         = count( (array) $product->get_children() );
+		$snapshot->gallery_image_count = count( (array) $product->get_gallery_image_ids() );
+
+		// method_exists() rather than is_callable(): see the note on
+		// get_product_url() below.
+		if ( method_exists( $product, 'get_global_unique_id' ) ) {
+			$snapshot->gtin_supported   = true;
+			$snapshot->global_unique_id = trim( (string) $product->get_global_unique_id() );
+		}
+
+		if ( taxonomy_exists( 'product_brand' ) ) {
+			$snapshot->brand_supported = true;
+
+			// get_the_terms() reads the term cache the scan query primes, so
+			// this costs no query per product.
+			$brands = get_the_terms( $snapshot->id, 'product_brand' );
+
+			if ( is_array( $brands ) ) {
+				$snapshot->brand_ids = array_map( 'intval', wp_list_pluck( $brands, 'term_id' ) );
+			}
+		}
 
 		$quantity                 = $product->get_stock_quantity();
 		$snapshot->stock_quantity = ( null === $quantity ) ? null : (int) $quantity;
@@ -222,6 +295,22 @@ class ProductSnapshot {
 
 		$snapshot->apply_attributes( (array) $product->get_attributes() );
 
+		/**
+		 * Filters the extension data attached to a product snapshot.
+		 *
+		 * Runs once per product per scan, in the admin or a REST request, never
+		 * on the storefront. Return an array keyed by your extension's slug.
+		 *
+		 * @since 1.1.0
+		 *
+		 * @param array<string, mixed> $extra    Extension data, empty by default.
+		 * @param \WC_Product          $product  The product being scanned.
+		 * @param ProductSnapshot      $snapshot The snapshot built so far.
+		 */
+		$extra = apply_filters( 'catavio_snapshot_data', array(), $product, $snapshot );
+
+		$snapshot->extra = is_array( $extra ) ? $extra : array();
+
 		return $snapshot;
 	}
 
@@ -239,6 +328,19 @@ class ProductSnapshot {
 				++$this->variation_attribute_count;
 			}
 		}
+	}
+
+	/**
+	 * Read one entry of the extension data.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param string $key           Entry key.
+	 * @param mixed  $default_value Returned when the entry is missing.
+	 * @return mixed
+	 */
+	public function get_extra( $key, $default_value = null ) {
+		return array_key_exists( $key, $this->extra ) ? $this->extra[ $key ] : $default_value;
 	}
 
 	/**

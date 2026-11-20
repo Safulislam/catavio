@@ -54,6 +54,7 @@ class FakeProduct {
 				'downloads'         => array(),
 				'children'          => array(),
 				'attributes'        => array(),
+				'gallery_image_ids' => array(),
 			),
 			$values
 		);
@@ -83,6 +84,43 @@ class FakeProduct {
 		}
 
 		return $this->values[ $key ];
+	}
+}
+
+/**
+ * A product from WooCommerce 9.1 or later, which has the GTIN field.
+ *
+ * Declared as a real method because from_product() detects the field with
+ * method_exists(), which __call() does not satisfy.
+ */
+class FakeProductWithGtin extends FakeProduct {
+
+	/**
+	 * GTIN value.
+	 *
+	 * @var string
+	 */
+	private $gtin;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param string               $gtin   GTIN value.
+	 * @param array<string, mixed> $values Values returned by the other getters.
+	 */
+	public function __construct( $gtin, array $values = array() ) {
+		parent::__construct( $values );
+
+		$this->gtin = $gtin;
+	}
+
+	/**
+	 * GTIN, UPC, EAN or ISBN.
+	 *
+	 * @return string
+	 */
+	public function get_global_unique_id() {
+		return $this->gtin;
 	}
 }
 
@@ -130,7 +168,109 @@ class ProductSnapshotTest extends TestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
-		$GLOBALS['catavio_test_meta'] = array();
+		$GLOBALS['catavio_test_meta']       = array();
+		$GLOBALS['catavio_test_taxonomies'] = array();
+		$GLOBALS['catavio_test_terms']      = array();
+		$GLOBALS['catavio_test_hooks']      = array();
+	}
+
+	/**
+	 * Gallery images are counted.
+	 *
+	 * @return void
+	 */
+	public function test_counts_gallery_images() {
+		$snapshot = ProductSnapshot::from_product( new FakeProduct( array( 'gallery_image_ids' => array( 4, 5, 6 ) ) ) );
+
+		$this->assertSame( 3, $snapshot->gallery_image_count );
+	}
+
+	/**
+	 * Without the built-in GTIN field, the GTIN is reported as unsupported.
+	 *
+	 * @return void
+	 */
+	public function test_gtin_is_unsupported_on_older_woocommerce() {
+		$snapshot = ProductSnapshot::from_product( new FakeProduct() );
+
+		$this->assertFalse( $snapshot->gtin_supported );
+		$this->assertSame( '', $snapshot->global_unique_id );
+	}
+
+	/**
+	 * The GTIN is read and trimmed when the field exists.
+	 *
+	 * @return void
+	 */
+	public function test_reads_the_gtin() {
+		$snapshot = ProductSnapshot::from_product( new FakeProductWithGtin( ' 4006381333931 ' ) );
+
+		$this->assertTrue( $snapshot->gtin_supported );
+		$this->assertSame( '4006381333931', $snapshot->global_unique_id );
+	}
+
+	/**
+	 * Brands are read only when the taxonomy exists.
+	 *
+	 * @return void
+	 */
+	public function test_reads_brands_only_when_the_taxonomy_exists() {
+		$GLOBALS['catavio_test_terms'][77]['product_brand'] = array( (object) array( 'term_id' => '9' ) );
+
+		$without = ProductSnapshot::from_product( new FakeProduct() );
+
+		$this->assertFalse( $without->brand_supported );
+		$this->assertSame( array(), $without->brand_ids );
+
+		$GLOBALS['catavio_test_taxonomies'] = array( 'product_brand' );
+
+		$with = ProductSnapshot::from_product( new FakeProduct() );
+
+		$this->assertTrue( $with->brand_supported );
+		$this->assertSame( array( 9 ), $with->brand_ids );
+	}
+
+	/**
+	 * Extensions can attach data, and anything but an array is discarded.
+	 *
+	 * @return void
+	 */
+	public function test_extensions_can_attach_data() {
+		add_filter(
+			'catavio_snapshot_data',
+			static function ( $extra, $product, $snapshot ) {
+				$extra['seo'] = array(
+					'name' => $snapshot->name,
+					'id'   => $product->get_id(),
+				);
+
+				return $extra;
+			},
+			10,
+			3
+		);
+
+		$snapshot = ProductSnapshot::from_product( new FakeProduct() );
+
+		$this->assertSame(
+			array(
+				'name' => 'Test Product',
+				'id'   => 77,
+			),
+			$snapshot->get_extra( 'seo' )
+		);
+		$this->assertSame( 'fallback', $snapshot->get_extra( 'missing', 'fallback' ) );
+
+		$GLOBALS['catavio_test_hooks'] = array();
+
+		add_filter(
+			'catavio_snapshot_data',
+			static function () {
+				return false;
+			}
+		);
+
+		$this->assertSame( array(), ProductSnapshot::from_product( new FakeProduct() )->extra );
 	}
 
 	/**

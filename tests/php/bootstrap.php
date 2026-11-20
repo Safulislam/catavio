@@ -61,18 +61,89 @@ if ( ! function_exists( 'esc_html__' ) ) {
 	}
 }
 
+// Callbacks registered by a test, keyed by hook name, and every action fired.
+$GLOBALS['catavio_test_hooks']   = array();
+$GLOBALS['catavio_test_actions'] = array();
+
+if ( ! function_exists( 'add_filter' ) ) {
+	/**
+	 * Hook registration stub. Priority is ignored; callbacks run in the order
+	 * they were added.
+	 *
+	 * @param string   $tag           Hook name.
+	 * @param callable $callback      Callback.
+	 * @param int      $priority      Ignored.
+	 * @param int      $accepted_args Number of arguments passed to the callback.
+	 * @return true
+	 */
+	function add_filter( $tag, $callback, $priority = 10, $accepted_args = 1 ) {
+		unset( $priority );
+
+		$GLOBALS['catavio_test_hooks'][ $tag ][] = array( $callback, (int) $accepted_args );
+
+		return true;
+	}
+}
+
+if ( ! function_exists( 'add_action' ) ) {
+	/**
+	 * Action registration stub.
+	 *
+	 * @param string   $tag           Hook name.
+	 * @param callable $callback      Callback.
+	 * @param int      $priority      Ignored.
+	 * @param int      $accepted_args Number of arguments passed to the callback.
+	 * @return true
+	 */
+	function add_action( $tag, $callback, $priority = 10, $accepted_args = 1 ) {
+		return add_filter( $tag, $callback, $priority, $accepted_args );
+	}
+}
+
 if ( ! function_exists( 'apply_filters' ) ) {
 	/**
-	 * Filter stub: returns the value unchanged.
+	 * Filter stub: runs callbacks a test registered, otherwise returns the
+	 * value unchanged.
 	 *
-	 * @param string $tag   Filter name.
-	 * @param mixed  $value Value to filter.
+	 * @param string $tag     Filter name.
+	 * @param mixed  $value   Value to filter.
+	 * @param mixed  ...$args Extra arguments.
 	 * @return mixed
 	 */
-	function apply_filters( $tag, $value ) {
-		unset( $tag );
+	function apply_filters( $tag, $value, ...$args ) {
+		if ( empty( $GLOBALS['catavio_test_hooks'][ $tag ] ) ) {
+			return $value;
+		}
+
+		foreach ( $GLOBALS['catavio_test_hooks'][ $tag ] as $hook ) {
+			$value = call_user_func_array( $hook[0], array_slice( array_merge( array( $value ), $args ), 0, max( 1, $hook[1] ) ) );
+		}
 
 		return $value;
+	}
+}
+
+if ( ! function_exists( 'do_action' ) ) {
+	/**
+	 * Action stub: records the call, then runs callbacks a test registered.
+	 *
+	 * @param string $tag     Action name.
+	 * @param mixed  ...$args Arguments.
+	 * @return void
+	 */
+	function do_action( $tag, ...$args ) {
+		$GLOBALS['catavio_test_actions'][] = array(
+			'tag'  => $tag,
+			'args' => $args,
+		);
+
+		if ( empty( $GLOBALS['catavio_test_hooks'][ $tag ] ) ) {
+			return;
+		}
+
+		foreach ( $GLOBALS['catavio_test_hooks'][ $tag ] as $hook ) {
+			call_user_func_array( $hook[0], array_slice( $args, 0, $hook[1] ) );
+		}
 	}
 }
 
@@ -459,6 +530,53 @@ if ( ! function_exists( 'wp_unslash' ) ) {
 	 */
 	function wp_unslash( $value ) {
 		return is_string( $value ) ? stripslashes( $value ) : $value;
+	}
+}
+
+$GLOBALS['catavio_test_taxonomies'] = array();
+$GLOBALS['catavio_test_terms']      = array();
+
+if ( ! function_exists( 'taxonomy_exists' ) ) {
+	/**
+	 * Taxonomy stub: exists when a test lists it.
+	 *
+	 * @param string $taxonomy Taxonomy name.
+	 * @return bool
+	 */
+	function taxonomy_exists( $taxonomy ) {
+		return in_array( $taxonomy, $GLOBALS['catavio_test_taxonomies'], true );
+	}
+}
+
+if ( ! function_exists( 'get_the_terms' ) ) {
+	/**
+	 * Term stub: returns the terms a test assigned, or false.
+	 *
+	 * @param int    $post_id  Post ID.
+	 * @param string $taxonomy Taxonomy name.
+	 * @return object[]|false
+	 */
+	function get_the_terms( $post_id, $taxonomy ) {
+		return isset( $GLOBALS['catavio_test_terms'][ $post_id ][ $taxonomy ] ) ? $GLOBALS['catavio_test_terms'][ $post_id ][ $taxonomy ] : false;
+	}
+}
+
+if ( ! function_exists( 'wp_list_pluck' ) ) {
+	/**
+	 * Pluck stub.
+	 *
+	 * @param array<int, object|array> $items Items.
+	 * @param string                   $field Field name.
+	 * @return array<int, mixed>
+	 */
+	function wp_list_pluck( $items, $field ) {
+		$values = array();
+
+		foreach ( $items as $item ) {
+			$values[] = is_object( $item ) ? $item->$field : $item[ $field ];
+		}
+
+		return $values;
 	}
 }
 

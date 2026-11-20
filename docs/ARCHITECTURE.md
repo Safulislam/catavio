@@ -331,9 +331,10 @@ reason.
 
 ## 10. Check rules and product-type awareness
 
-Thirteen checks, run in registry order. A check that does not apply to a product
-is excluded entirely: neither failed nor passed, and it will not affect the
-Phase 4 score.
+Sixteen checks, run in registry order; the last three in the table are optional
+(off until turned on, see `OptionalCheckInterface`). A check that does not apply
+to a product is excluded entirely: neither failed nor passed, and it will not
+affect the Phase 4 score.
 
 | Check id | Severity | Applies to |
 |---|---|---|
@@ -350,6 +351,9 @@ Phase 4 score.
 | `missing_variation_attributes` | critical | variable only |
 | `missing_external_url` | critical | external only |
 | `missing_downloadable_files` | critical | downloadable only |
+| `missing_gallery_images` | info, optional | all except grouped and virtual |
+| `missing_gtin` | info, optional | simple and external, WooCommerce 9.1+ |
+| `missing_brand` | info, optional | all except grouped, when `product_brand` exists |
 
 Decisions worth keeping, each verified against a real WooCommerce catalog:
 
@@ -761,7 +765,72 @@ as its own `<link>` tag. Checking for one produces a false negative; check the
 
 ## 13. Extension boundary
 
-`Checks\Registry` exposes the check list through the
-`catavio_checks` filter. This is the seam a future Pro version would
-use. Free V1 contains no reference to Pro: no locked UI, no disabled controls, no
-upsell surface.
+Everything below is public and documented so that any plugin can extend Catavio.
+Free contains no reference to any particular extension: no locked UI, no disabled
+controls, no upsell surface. Every filter result is re-validated, and response
+filters can add keys but never change or remove Catavio's own, so a faulty
+extension cannot break a scan, a score or a screen.
+
+### PHP actions (1.1.0)
+
+| Action | Fires | Arguments |
+|---|---|---|
+| `catavio_scan_started` | `Scanner::start()` | `int $total` |
+| `catavio_product_scanned` | after a result is stored, by a full scan or Check again | `int $product_id, Result $result` |
+| `catavio_scan_completed` | a full scan ran to the end and its summary is saved (not on cancel) | `array $summary` |
+| `catavio_scan_cancelled` | the store owner stopped a scan | — |
+| `catavio_settings_saved` | the set of turned-off checks changed | `string[] $disabled` |
+
+### PHP filters
+
+| Filter | Since | Purpose |
+|---|---|---|
+| `catavio_checks` | 1.0.0 | Add checks (`CheckInterface`). Optional extras: `GroupedCheckInterface`, `OptionalCheckInterface`. |
+| `catavio_capability` | 1.0.0 | Capability for every screen, route and ability. |
+| `catavio_batch_size` | 1.0.0 | Products per batch, clamped to 1–200. |
+| `catavio_scanned_statuses` | 1.0.0 | Post statuses a scan covers. |
+| `catavio_snapshot_data` | 1.1.0 | Attach data to `ProductSnapshot::$extra` (args: `$extra, $product, $snapshot`). Read everything your checks need here, once per product. |
+| `catavio_check_groups` | 1.1.0 | Add check groups (`id => label`). Built-in groups and `other` cannot be changed. |
+| `catavio_severity_penalties` | 1.1.0 | Points per severity, each clamped to 0–100. Scores and explanations use the same values. |
+| `catavio_rest_summary_response` | 1.1.0 | Add keys to `GET /summary`. |
+| `catavio_rest_product_response` | 1.1.0 | Add keys to a product report (args: `$response, $product, $snapshot|null`). |
+| `catavio_rest_product_row` | 1.1.0 | Add keys to a product list row (args: `$row, $post`). Runs per row: keep it cheap. |
+| `catavio_admin_views` | 1.1.0 | Add tabs (`id => label`) after Catavio's own; rendered by the JS filter `catavio.views`. |
+| `catavio_admin_bootstrap_data` | 1.1.0 | Add keys to `window.catavioAdmin`. Printed into the page: never add secrets. |
+
+### JavaScript filters (`@wordpress/hooks`)
+
+Defined in `src/extensions.jsx`. Each receives and returns an array of
+`{ key, label?, render }`; malformed entries are dropped and each entry renders
+in its own error boundary.
+
+| Filter | Extra filter args | `render()` receives |
+|---|---|---|
+| `catavio.views` | — (object of view id → component) | `{ settings }` as props |
+| `catavio.dashboard.cards` | `summary` | `{ summary }` |
+| `catavio.productList.columns` (label required) | `data` | `{ product }` |
+| `catavio.productReport.issueActions` | `issue, product` | `{ issue, product, reload }` |
+| `catavio.productReport.panels` | `product` | `{ product, reload }` |
+| `catavio.settings.sections` | — | nothing |
+
+`reload()` fetches the stored report again and returns it, so an action that
+changes a product can refresh the screen.
+
+### Optional checks and settings storage
+
+`Settings` stores only differences from each check's default:
+`disabled_checks` (default-on checks turned off) and `enabled_checks` (optional
+checks turned on). Settings saved by 1.0 have no `enabled_checks` and read
+unchanged. Adding an optional check in an update therefore never lowers an
+existing store's scores. `Scanner::get_disabled_checks()` is the one place
+that combines the two with the registry's defaults.
+
+### Abilities (WordPress 6.9+)
+
+`Catavio\Abilities` registers category `catavio` and three read-only abilities:
+`catavio/get-catalog-health`, `catavio/list-products-by-health`,
+`catavio/get-product-health`. Each runs the matching `catavio/v1` GET route
+through `rest_do_request()`, so permissions, validation and output are the
+REST API's. They are annotated `readonly`, marked `show_in_rest` and public for
+MCP, and need the same capability as the screens (verified: logged out returns
+`ability_invalid_permissions`). Nothing registers below WordPress 6.9.

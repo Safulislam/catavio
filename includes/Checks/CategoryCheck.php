@@ -39,6 +39,15 @@ class CategoryCheck extends AbstractCheck {
 	 *
 	 * @return string
 	 */
+	public function get_group() {
+		return Registry::GROUP_CONTENT;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @return string
+	 */
 	public function get_label() {
 		return __( 'Product category', 'catavio' );
 	}

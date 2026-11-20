@@ -101,6 +101,20 @@ class Scanner {
 	}
 
 	/**
+	 * Get the identifiers of every check that is turned off.
+	 *
+	 * Combines the store owner's choices with each check's default, so an
+	 * optional check counts as off until it is turned on.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return string[]
+	 */
+	public function get_disabled_checks() {
+		return $this->settings->get_disabled_checks( $this->registry->get_default_off_ids() );
+	}
+
+	/**
 	 * Get the catalog summary storage.
 	 *
 	 * @return Summary
@@ -192,7 +206,18 @@ class Scanner {
 	 * @return array<string, mixed> The new job state.
 	 */
 	public function start() {
-		return $this->state->start( $this->count_products(), $this->get_batch_size() );
+		$state = $this->state->start( $this->count_products(), $this->get_batch_size() );
+
+		/**
+		 * Fires when a full scan begins.
+		 *
+		 * @since 1.1.0
+		 *
+		 * @param int $total Products the scan expects to cover.
+		 */
+		do_action( 'catavio_scan_started', (int) $state['total'] );
+
+		return $state;
 	}
 
 	/**
@@ -215,7 +240,20 @@ class Scanner {
 			// The summary is written only here, when a job has genuinely run to
 			// the end, so the dashboard never shows figures from a half
 			// finished scan.
-			$this->summary->save( $this->summary->build_from_state( $finished ) );
+			$summary = $this->summary->build_from_state( $finished );
+
+			$this->summary->save( $summary );
+
+			/**
+			 * Fires when a full scan has run to the end and its summary is saved.
+			 *
+			 * Not fired for a cancelled scan, whose figures are discarded.
+			 *
+			 * @since 1.1.0
+			 *
+			 * @param array<string, mixed> $summary The saved catalog summary.
+			 */
+			do_action( 'catavio_scan_completed', $summary );
 
 			return $finished;
 		}
@@ -251,6 +289,8 @@ class Scanner {
 			$result = $this->scan_product( $product, $scanned_at );
 
 			$this->repository->save( $result );
+
+			$this->fire_product_scanned( $result );
 
 			$bucket = $result->get_bucket();
 
@@ -302,7 +342,28 @@ class Scanner {
 		$this->repository->save( $result );
 		$this->summary->mark_rechecked();
 
+		$this->fire_product_scanned( $result );
+
 		return $result;
+	}
+
+	/**
+	 * Announce a stored result.
+	 *
+	 * @param Result $result The result just stored.
+	 * @return void
+	 */
+	private function fire_product_scanned( Result $result ) {
+		/**
+		 * Fires after a product's result is stored, by a full scan or by
+		 * checking one product again.
+		 *
+		 * @since 1.1.0
+		 *
+		 * @param int    $product_id Product ID.
+		 * @param Result $result     The stored result.
+		 */
+		do_action( 'catavio_product_scanned', $result->get_product_id(), $result );
 	}
 
 	/**
@@ -319,7 +380,7 @@ class Scanner {
 		$issues = array();
 		$passed = array();
 
-		$disabled = $this->settings->get_disabled_checks();
+		$disabled = $this->get_disabled_checks();
 
 		foreach ( $this->registry->get_checks() as $check ) {
 			// A check the store owner turned off is left out entirely, exactly
@@ -359,7 +420,18 @@ class Scanner {
 	 * @return array<string, mixed>
 	 */
 	public function cancel() {
-		return $this->state->finish( ScanState::STATUS_CANCELLED );
+		$state = $this->state->finish( ScanState::STATUS_CANCELLED );
+
+		if ( array() !== $state ) {
+			/**
+			 * Fires when the store owner stops a scan.
+			 *
+			 * @since 1.1.0
+			 */
+			do_action( 'catavio_scan_cancelled' );
+		}
+
+		return $state;
 	}
 
 	/**

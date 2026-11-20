@@ -24,6 +24,7 @@ import { useCallback, useEffect, useRef, useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 
 import { errorMessage, getProduct, recheckProduct } from '../api';
+import { ExtensionEntry, getExtensions } from '../extensions';
 import HealthMeter from '../components/HealthMeter';
 import IssueList from '../components/IssueList';
 import ScoreBadge from '../components/ScoreBadge';
@@ -115,6 +116,16 @@ export default function ProductDetail( { productId } ) {
 			heading.current.focus();
 		}
 	}, [ product ] );
+
+	// Handed to extensions, so a panel or issue action that changes something
+	// can show the stored report again without a page load.
+	const reload = useCallback( async () => {
+		const data = await getProduct( productId );
+
+		setProduct( data );
+
+		return data;
+	}, [ productId ] );
 
 	const recheck = useCallback( async () => {
 		setRechecking( true );
@@ -433,7 +444,11 @@ export default function ProductDetail( { productId } ) {
 					</h3>
 				</CardHeader>
 				<CardBody className="catavio-card__body">
-					<IssueList issues={ product.issues } />
+					<IssueList
+						issues={ product.issues }
+						product={ product }
+						reload={ reload }
+					/>
 				</CardBody>
 			</Card>
 
@@ -469,6 +484,18 @@ export default function ProductDetail( { productId } ) {
 					/>
 				</CardBody>
 			</Card>
+
+			{ getExtensions(
+				'catavio.productReport.panels',
+				false,
+				product
+			).map( ( panel ) => (
+				<ExtensionEntry
+					key={ panel.key }
+					entry={ panel }
+					args={ { product, reload } }
+				/>
+			) ) }
 		</div>
 	);
 }

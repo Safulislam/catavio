@@ -45,6 +45,9 @@ defined( 'ABSPATH' ) || exit;
  *
  * Every score is therefore explainable from the issues shown beside it, which
  * is the property the product detail screen depends on.
+ *
+ * Extensions may change the three penalties through the
+ * catavio_severity_penalties filter; see penalties().
  */
 class HealthScore {
 
@@ -105,6 +108,13 @@ class HealthScore {
 	const BUCKET_CRITICAL = 'critical';
 
 	/**
+	 * Resolved penalties, see penalties().
+	 *
+	 * @var array<string, int>|null
+	 */
+	private static $penalties = null;
+
+	/**
 	 * Get every bucket, most severe first.
 	 *
 	 * @return string[]
@@ -120,19 +130,70 @@ class HealthScore {
 	 * @return int
 	 */
 	public static function penalty_for( $severity ) {
-		if ( Issue::SEVERITY_CRITICAL === $severity ) {
-			return self::PENALTY_CRITICAL;
+		$penalties = self::penalties();
+
+		return isset( $penalties[ $severity ] ) ? $penalties[ $severity ] : 0;
+	}
+
+	/**
+	 * Get the points deducted per severity.
+	 *
+	 * The defaults are the documented rules above. An extension may change
+	 * them; every score and every explanation then uses the changed values, so
+	 * the product report still adds up. Scores already stored keep the values
+	 * they were calculated with until the next scan, exactly as when checks are
+	 * turned on or off.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return array<string, int> Points keyed by severity, each 0 to 100.
+	 */
+	public static function penalties() {
+		if ( null !== self::$penalties ) {
+			return self::$penalties;
 		}
 
-		if ( Issue::SEVERITY_WARNING === $severity ) {
-			return self::PENALTY_WARNING;
+		$defaults = array(
+			Issue::SEVERITY_CRITICAL => self::PENALTY_CRITICAL,
+			Issue::SEVERITY_WARNING  => self::PENALTY_WARNING,
+			Issue::SEVERITY_INFO     => self::PENALTY_INFO,
+		);
+
+		/**
+		 * Filters the points deducted for each issue severity.
+		 *
+		 * Missing or invalid entries fall back to the default, and every value
+		 * is kept between 0 and 100.
+		 *
+		 * @since 1.1.0
+		 *
+		 * @param array<string, int> $penalties Points keyed by severity.
+		 */
+		$filtered = apply_filters( 'catavio_severity_penalties', $defaults );
+		$filtered = is_array( $filtered ) ? $filtered : array();
+
+		$penalties = array();
+
+		foreach ( $defaults as $severity => $default ) {
+			$value = isset( $filtered[ $severity ] ) && is_numeric( $filtered[ $severity ] ) ? (int) $filtered[ $severity ] : $default;
+
+			$penalties[ $severity ] = max( 0, min( self::STARTING_SCORE, $value ) );
 		}
 
-		if ( Issue::SEVERITY_INFO === $severity ) {
-			return self::PENALTY_INFO;
-		}
+		self::$penalties = $penalties;
 
-		return 0;
+		return self::$penalties;
+	}
+
+	/**
+	 * Forget the resolved penalties, so the filter is read again.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return void
+	 */
+	public static function reset_penalties() {
+		self::$penalties = null;
 	}
 
 	/**

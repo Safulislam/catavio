@@ -6,8 +6,13 @@
  * leaves it out of future scans and out of every score; it never edits a
  * product, and it never starts a scan on its own.
  *
- * Plain checkboxes in a fieldset per severity: the severity is the group's
- * name, so it is announced with each choice rather than inferred from colour.
+ * Plain checkboxes in a fieldset per topic, such as "Content" or "Images". The
+ * topic is the fieldset's name; each check's severity, and whether it is an
+ * optional check that starts turned off, is its description. Both are
+ * announced with the choice rather than inferred from colour.
+ *
+ * Extensions add sections below the checks with the "catavio.settings.sections"
+ * filter.
  */
 
 import { speak } from '@wordpress/a11y';
@@ -24,8 +29,40 @@ import { __ } from '@wordpress/i18n';
 import { addQueryArgs } from '@wordpress/url';
 
 import { errorMessage, getSettings, saveSettings } from '../api';
+import { ExtensionEntry, getExtensions } from '../extensions';
 
 const SEVERITIES = [ 'critical', 'warning', 'info' ];
+
+/**
+ * Arrange checks into fieldsets.
+ *
+ * By topic when the server describes topics, otherwise by severity.
+ *
+ * @param {Object[]}      checks Checks as the server describes them.
+ * @param {Object[]|null} groups Topics as the server describes them.
+ * @return {Object[]} Fieldsets, each `{ key, legend, items }`.
+ */
+function arrange( checks, groups ) {
+	if ( Array.isArray( groups ) && groups.length > 0 ) {
+		return groups
+			.map( ( group ) => ( {
+				key: group.group,
+				legend: group.label,
+				items: checks.filter( ( item ) => item.group === group.group ),
+			} ) )
+			.filter( ( group ) => group.items.length > 0 );
+	}
+
+	return SEVERITIES.map( ( severity ) => {
+		const items = checks.filter( ( item ) => item.severity === severity );
+
+		return {
+			key: severity,
+			legend: items.length > 0 ? items[ 0 ].severityLabel : '',
+			items,
+		};
+	} ).filter( ( group ) => group.items.length > 0 );
+}
 
 /**
  * The identifiers of the checks that are turned off.
@@ -41,6 +78,7 @@ function disabledIn( checks ) {
 
 export default function Settings( { settings } ) {
 	const [ checks, setChecks ] = useState( null );
+	const [ groups, setGroups ] = useState( null );
 	const [ saved, setSaved ] = useState( [] );
 	const [ loadError, setLoadError ] = useState( '' );
 	const [ saveError, setSaveError ] = useState( '' );
@@ -54,6 +92,7 @@ export default function Settings( { settings } ) {
 			.then( ( data ) => {
 				if ( ! cancelled ) {
 					setChecks( data.checks );
+					setGroups( data.groups || null );
 					setSaved( disabledIn( data.checks ) );
 				}
 			} )
@@ -145,10 +184,8 @@ export default function Settings( { settings } ) {
 			? addQueryArgs( settings.adminUrl, { page: settings.page } )
 			: '';
 
-	const groups = SEVERITIES.map( ( severity ) => ( {
-		severity,
-		items: checks.filter( ( check ) => check.severity === severity ),
-	} ) ).filter( ( group ) => group.items.length > 0 );
+	const fieldsets = arrange( checks, groups );
+	const sections = getExtensions( 'catavio.settings.sections' );
 
 	return (
 		<form className="catavio-settings" onSubmit={ save }>
@@ -166,16 +203,17 @@ export default function Settings( { settings } ) {
 						) }
 					</p>
 
-					{ groups.map( ( group ) => (
+					{ fieldsets.map( ( fieldset ) => (
 						<fieldset
-							key={ group.severity }
-							className={ `catavio-settings__group catavio-settings__group--${ group.severity }` }
+							key={ fieldset.key }
+							className={ `catavio-settings__group catavio-settings__group--${ fieldset.key }` }
 						>
 							<legend className="catavio-settings__legend">
-								{ group.items[ 0 ].severityLabel }
+								{ fieldset.legend }
 							</legend>
-							{ group.items.map( ( check ) => {
+							{ fieldset.items.map( ( check ) => {
 								const id = `catavio-check-${ check.check }`;
+								const about = `${ id }-about`;
 
 								return (
 									<p
@@ -185,6 +223,7 @@ export default function Settings( { settings } ) {
 										<input
 											type="checkbox"
 											id={ id }
+											aria-describedby={ about }
 											checked={ check.enabled }
 											onChange={ ( event ) =>
 												toggle(
@@ -196,6 +235,24 @@ export default function Settings( { settings } ) {
 										<label htmlFor={ id }>
 											{ check.label }
 										</label>
+										<span
+											id={ about }
+											className="catavio-settings__about"
+										>
+											<span
+												className={ `catavio-settings__severity catavio-settings__severity--${ check.severity }` }
+											>
+												{ check.severityLabel }
+											</span>
+											{ check.optional ? (
+												<span className="catavio-settings__optional">
+													{ __(
+														'Optional, off until turned on',
+														'catavio'
+													) }
+												</span>
+											) : null }
+										</span>
 									</p>
 								);
 							} ) }
@@ -249,6 +306,14 @@ export default function Settings( { settings } ) {
 					</div>
 				</CardBody>
 			</Card>
+
+			{ sections.map( ( section ) => (
+				<ExtensionEntry
+					key={ section.key }
+					entry={ section }
+					args={ {} }
+				/>
+			) ) }
 		</form>
 	);
 }

@@ -127,6 +127,10 @@ class Plugin {
 		// is_admin() guard below or the routes never register.
 		add_action( 'rest_api_init', array( $this, 'register_rest_routes' ) );
 
+		// Abilities are listed to REST and agent clients, so they register on
+		// every request type, like the routes they run.
+		( new Abilities() )->register();
+
 		if ( ! is_admin() ) {
 			return;
 		}

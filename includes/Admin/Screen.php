@@ -76,7 +76,47 @@ class Screen {
 	 * @return string[]
 	 */
 	public static function views() {
-		return array( self::VIEW_DASHBOARD, self::VIEW_PRODUCTS, self::VIEW_SETTINGS );
+		return array_merge(
+			array( self::VIEW_DASHBOARD, self::VIEW_PRODUCTS, self::VIEW_SETTINGS ),
+			array_keys( self::extension_views() )
+		);
+	}
+
+	/**
+	 * Get the views extensions add, after Catavio's own.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return array<string, string> Tab labels keyed by view identifier.
+	 */
+	public static function extension_views() {
+		/**
+		 * Filters the extra views shown as tabs after Catavio's own.
+		 *
+		 * Each view is rendered by the admin bundle; register its screen with
+		 * the JavaScript filter "catavio.views". A view uses the same page and
+		 * capability as the rest of Catalog Health. Catavio's own views cannot
+		 * be replaced.
+		 *
+		 * @since 1.1.0
+		 *
+		 * @param array<string, string> $views Tab labels keyed by view identifier.
+		 */
+		$filtered = apply_filters( 'catavio_admin_views', array() );
+		$builtin  = array( self::VIEW_DASHBOARD, self::VIEW_PRODUCTS, self::VIEW_SETTINGS );
+		$views    = array();
+
+		foreach ( (array) $filtered as $id => $label ) {
+			$id = sanitize_key( (string) $id );
+
+			if ( '' === $id || in_array( $id, $builtin, true ) || ! is_string( $label ) || '' === trim( $label ) ) {
+				continue;
+			}
+
+			$views[ $id ] = $label;
+		}
+
+		return $views;
 	}
 
 	/**
@@ -110,6 +150,12 @@ class Screen {
 	 * @return string
 	 */
 	public static function page_title( $view ) {
+		$extensions = self::extension_views();
+
+		if ( isset( $extensions[ $view ] ) ) {
+			return $extensions[ $view ];
+		}
+
 		if ( self::VIEW_PRODUCTS === $view ) {
 			return __( 'Product Health', 'catavio' );
 		}
@@ -161,6 +207,12 @@ class Screen {
 	 * @return string
 	 */
 	public static function menu_title( $view ) {
+		$extensions = self::extension_views();
+
+		if ( isset( $extensions[ $view ] ) ) {
+			return $extensions[ $view ];
+		}
+
 		if ( self::VIEW_PRODUCTS === $view ) {
 			return __( 'Product Health', 'catavio' );
 		}

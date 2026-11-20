@@ -11,9 +11,43 @@
 
 import { __ } from '@wordpress/i18n';
 
+import { ExtensionEntry, getExtensions } from '../extensions';
 import SeverityTag from './SeverityTag';
 
-export default function IssueList( { issues } ) {
+/**
+ * Actions extensions offer for one issue, such as a fix.
+ *
+ * @param {Object}   props         Component props.
+ * @param {Object}   props.issue   The issue.
+ * @param {Object}   props.product The product report.
+ * @param {Function} props.reload  Reloads the report.
+ */
+function IssueActions( { issue, product, reload } ) {
+	const actions = getExtensions(
+		'catavio.productReport.issueActions',
+		false,
+		issue,
+		product
+	);
+
+	if ( actions.length === 0 ) {
+		return null;
+	}
+
+	return (
+		<span className="catavio-detail__issue-actions">
+			{ actions.map( ( action ) => (
+				<ExtensionEntry
+					key={ action.key }
+					entry={ action }
+					args={ { issue, product, reload } }
+				/>
+			) ) }
+		</span>
+	);
+}
+
+export default function IssueList( { issues, product = null, reload } ) {
 	if ( issues.length === 0 ) {
 		return (
 			<p className="catavio-detail__none">
@@ -57,6 +91,13 @@ export default function IssueList( { issues } ) {
 								<span className="catavio-detail__issue-message">
 									{ issue.message }
 								</span>
+								{ product ? (
+									<IssueActions
+										issue={ issue }
+										product={ product }
+										reload={ reload }
+									/>
+								) : null }
 							</li>
 						) ) }
 					</ul>

@@ -393,6 +393,12 @@
 			],
 			"Unknown screen.": [
 				"Unbekannter Bildschirm."
+			],
+			"This section could not be displayed.": [
+				"Dieser Bereich konnte nicht angezeigt werden."
+			],
+			"Optional, off until turned on": [
+				"Optional, aus bis zum Einschalten"
 			]
 		}
 	}

@@ -40,6 +40,15 @@ class PriceCheck extends AbstractCheck {
 	 *
 	 * @return string
 	 */
+	public function get_group() {
+		return Registry::GROUP_COMMERCE;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @return string
+	 */
 	public function get_label() {
 		return __( 'Price', 'catavio' );
 	}

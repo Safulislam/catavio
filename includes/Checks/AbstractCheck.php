@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Base class providing the defaults most checks want.
  */
-abstract class AbstractCheck implements CheckInterface {
+abstract class AbstractCheck implements CheckInterface, GroupedCheckInterface, OptionalCheckInterface {
 
 	/**
 	 * Severity reported when the check fails.
@@ -31,6 +31,28 @@ abstract class AbstractCheck implements CheckInterface {
 		unset( $snapshot );
 
 		return Issue::SEVERITY_WARNING;
+	}
+
+	/**
+	 * Built-in checks name their group; this is the fallback.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return string
+	 */
+	public function get_group() {
+		return Registry::GROUP_OTHER;
+	}
+
+	/**
+	 * Checks run unless the store owner turns them off.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return bool
+	 */
+	public function is_enabled_by_default() {
+		return true;
 	}
 
 	/**

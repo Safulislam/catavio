@@ -4,6 +4,29 @@
 **Goal:** give Free more standalone value and add the public seams that Pro (or any
 developer) needs. Free still contains **no reference to Pro**.
 
+> **Status (2026-11-20): implemented on branch `version-1.1.0`.** The authoritative
+> hook reference is `docs/ARCHITECTURE.md` §13. Differences from this plan:
+>
+> - **Tabs:** PHP filter `catavio_admin_views` (tabs are rendered server side) plus
+>   JS filter `catavio.views` (view id → component). There is no `catavio.tabs`.
+> - **Extra filter:** `catavio_rest_product_row` for list rows, separate from the
+>   report filter.
+> - **All three new checks are optional (off by default)**, not just GTIN. Otherwise
+>   every existing store's scores would drop on the first scan after updating.
+>   Settings now stores `enabled_checks` next to `disabled_checks`.
+> - **GTIN** applies to simple and external products only. Variation-level GTINs are
+>   left for later, because checking variations one by one would multiply scan cost.
+>   The field exists from WooCommerce **9.1** (not 9.2).
+> - **Gallery** check also skips virtual products.
+> - **Groups:** content, media, commerce, identifiers, structure, and other. Settings
+>   is grouped by topic. The product report stays grouped by severity (worst
+>   first), and each issue carries `group` / `groupLabel`.
+> - Response filters can **add** keys but never change Catavio's own keys.
+>
+> Verified: 144 PHP and 82 JS tests, PHPCS, PHP 7.4 compatibility, and a live run on
+> the dev site (WP 7.1.5, WC 11.3.0, 18 products): actions fire, abilities execute,
+> and abilities refuse logged-out users.
+
 ---
 
 ## 1. PHP hooks

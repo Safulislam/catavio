@@ -1404,6 +1404,23 @@
 	color: var(--catavio-ink-muted);
 }
 
+/* Actions other plugins add to an issue, such as a fix. */
+.catavio-detail__issue-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-top: 8px;
+}
+
+/* Shown in place of an extension that failed to render. */
+.catavio-extension-error {
+	margin: 0 0 16px;
+	padding: 8px 12px;
+	border-left: 3px solid var(--catavio-attention);
+	background: var(--catavio-plane);
+	color: var(--catavio-ink-muted);
+}
+
 .catavio-detail__checks {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -1694,6 +1711,42 @@
 
 .catavio-settings__check input[type="checkbox"] {
 	margin: 0;
+}
+
+/* Severity and "optional" sit after the label as quiet facts; they are the
+   checkbox's description, so screen readers hear them with the choice. */
+.catavio-settings__about {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	font-size: 12px;
+	color: var(--catavio-ink-faint);
+}
+
+.catavio-settings__severity {
+	padding: 0 6px;
+	border-left: 3px solid var(--catavio-border-strong);
+	line-height: 18px;
+}
+
+.catavio-settings__severity--critical {
+	border-left-color: var(--catavio-critical);
+}
+
+.catavio-settings__severity--warning {
+	border-left-color: var(--catavio-attention);
+}
+
+.catavio-settings__severity--info {
+	border-left-color: var(--catavio-info);
+}
+
+.catavio-settings__optional {
+	padding: 0 6px;
+	border-radius: var(--catavio-radius-sm);
+	background: var(--catavio-accent-wash);
+	color: var(--catavio-accent);
+	line-height: 18px;
 }
 
 .catavio-settings .components-notice {

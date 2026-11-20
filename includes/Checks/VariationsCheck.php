@@ -33,6 +33,15 @@ class VariationsCheck extends AbstractCheck {
 	 *
 	 * @return string
 	 */
+	public function get_group() {
+		return Registry::GROUP_STRUCTURE;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @return string
+	 */
 	public function get_label() {
 		return __( 'Variations', 'catavio' );
 	}

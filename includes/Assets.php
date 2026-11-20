@@ -156,7 +156,7 @@ class Assets {
 	 * @return array<string, mixed>
 	 */
 	private function get_bootstrap_data( $view ) {
-		return array(
+		$data = array(
 			'screen'   => $view,
 			'screens'  => array(
 				'dashboard' => Screen::VIEW_DASHBOARD,
@@ -168,5 +168,20 @@ class Assets {
 			'adminUrl' => admin_url( 'admin.php' ),
 			'version'  => CATAVIO_VERSION,
 		);
+
+		/**
+		 * Filters the data handed to the admin bundle as window.catavioAdmin.
+		 *
+		 * Add data under your own key. Existing keys cannot be changed. The
+		 * value is printed into the page, so never add anything secret.
+		 *
+		 * @since 1.1.0
+		 *
+		 * @param array<string, mixed> $data Bootstrap data.
+		 * @param string               $view The view being rendered.
+		 */
+		$filtered = apply_filters( 'catavio_admin_bootstrap_data', $data, $view );
+
+		return is_array( $filtered ) ? array_merge( $filtered, $data ) : $data;
 	}
 }

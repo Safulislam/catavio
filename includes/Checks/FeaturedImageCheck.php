@@ -33,6 +33,15 @@ class FeaturedImageCheck extends AbstractCheck {
 	 *
 	 * @return string
 	 */
+	public function get_group() {
+		return Registry::GROUP_MEDIA;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @return string
+	 */
 	public function get_label() {
 		return __( 'Featured image', 'catavio' );
 	}

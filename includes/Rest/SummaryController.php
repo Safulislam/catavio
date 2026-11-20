@@ -108,7 +108,18 @@ class SummaryController extends Controller {
 			'scan'            => $this->describe_scan(),
 		);
 
-		return rest_ensure_response( $response );
+		/**
+		 * Filters the dashboard summary, as returned by GET /catavio/v1/summary.
+		 *
+		 * Add fields under your own key. Existing fields cannot be changed.
+		 *
+		 * @since 1.1.0
+		 *
+		 * @param array<string, mixed> $response Summary.
+		 */
+		$filtered = apply_filters( 'catavio_rest_summary_response', $response );
+
+		return rest_ensure_response( is_array( $filtered ) ? array_merge( $filtered, $response ) : $response );
 	}
 
 	/**
@@ -170,6 +181,8 @@ class SummaryController extends Controller {
 				'severity'      => $severity,
 				'severityLabel' => self::severity_label( $severity ),
 				'count'         => (int) $count,
+				'group'         => $this->registry->get_group_id( $check ),
+				'groupLabel'    => $this->registry->get_group_label( $check ),
 			);
 		}
 

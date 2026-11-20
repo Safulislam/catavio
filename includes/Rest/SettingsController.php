@@ -118,8 +118,9 @@ class SettingsController extends Controller {
 	 * @return \WP_REST_Response|\WP_Error
 	 */
 	public function update_settings( $request ) {
-		$known    = $this->registry->get_check_ids();
-		$disabled = array_values( array_intersect( (array) $request['disabledChecks'], $known ) );
+		$known       = $this->registry->get_check_ids();
+		$default_off = $this->registry->get_default_off_ids();
+		$disabled    = array_values( array_intersect( (array) $request['disabledChecks'], $known ) );
 
 		if ( count( $disabled ) >= count( $known ) ) {
 			return new \WP_Error(
@@ -129,7 +130,7 @@ class SettingsController extends Controller {
 			);
 		}
 
-		$this->settings->set_disabled_checks( $disabled, $known );
+		$this->settings->set_disabled_checks( $disabled, $known, $default_off );
 
 		return rest_ensure_response( $this->describe() );
 	}
@@ -140,8 +141,9 @@ class SettingsController extends Controller {
 	 * @return array<string, mixed>
 	 */
 	private function describe() {
-		$disabled = $this->settings->get_disabled_checks();
-		$checks   = array();
+		$default_off = $this->registry->get_default_off_ids();
+		$disabled    = $this->settings->get_disabled_checks( $default_off );
+		$checks      = array();
 
 		// Severity is read from a blank snapshot, as on the dashboard: this
 		// describes the check itself rather than any one product's result.
@@ -156,11 +158,24 @@ class SettingsController extends Controller {
 				'severity'      => $severity,
 				'severityLabel' => SummaryController::severity_label( $severity ),
 				'enabled'       => ! in_array( $check->get_id(), $disabled, true ),
+				'optional'      => in_array( $check->get_id(), $default_off, true ),
+				'group'         => $this->registry->get_group_id( $check ),
+				'groupLabel'    => $this->registry->get_group_label( $check ),
+			);
+		}
+
+		$groups = array();
+
+		foreach ( $this->registry->get_groups() as $id => $label ) {
+			$groups[] = array(
+				'group' => $id,
+				'label' => $label,
 			);
 		}
 
 		return array(
 			'checks'    => $checks,
+			'groups'    => $groups,
 			'updatedAt' => $this->settings->get_updated_at(),
 		);
 	}

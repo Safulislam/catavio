@@ -11,6 +11,7 @@ import { useCallback, useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { addQueryArgs, getQueryArgs } from '@wordpress/url';
 
+import { ExtensionEntry, getExtensions } from '../extensions';
 import EmptyState from '../components/EmptyState';
 import HealthMeter from '../components/HealthMeter';
 import Filters, { sortOptions } from '../components/Filters';
@@ -139,6 +140,9 @@ export default function ProductList( { settings } ) {
 	const filtered =
 		!! query.search || !! query.health || !! query.issue || !! query.type;
 
+	// Columns added by extensions sit between "Last checked" and "Actions".
+	const columns = getExtensions( 'catavio.productList.columns', true, data );
+
 	return (
 		<div className="catavio-products">
 			<Card className="catavio-card">
@@ -204,6 +208,11 @@ export default function ProductList( { settings } ) {
 									<th scope="col">
 										{ __( 'Last checked', 'catavio' ) }
 									</th>
+									{ columns.map( ( column ) => (
+										<th scope="col" key={ column.key }>
+											{ column.label }
+										</th>
+									) ) }
 									<th scope="col">
 										{ __( 'Actions', 'catavio' ) }
 									</th>
@@ -270,6 +279,14 @@ export default function ProductList( { settings } ) {
 												</span>
 											) : null }
 										</td>
+										{ columns.map( ( column ) => (
+											<td key={ column.key }>
+												<ExtensionEntry
+													entry={ column }
+													args={ { product } }
+												/>
+											</td>
+										) ) }
 										<td>
 											{ /* get_edit_post_link() returns nothing when the viewer
 										     cannot edit that particular product. A link with an

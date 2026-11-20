@@ -269,7 +269,7 @@ class ProductsController extends Controller {
 		);
 
 		if ( ! $response['scanned'] ) {
-			return $response;
+			return $this->filter_report( $response, $product, null );
 		}
 
 		$bucket                  = (string) get_post_meta( $product_id, Repository::META_BUCKET, true );
@@ -301,6 +301,8 @@ class ProductsController extends Controller {
 				'severityLabel' => SummaryController::severity_label( $severity ),
 				'message'       => $check->get_message( $snapshot ),
 				'penalty'       => HealthScore::penalty_for( $severity ),
+				'group'         => $this->registry->get_group_id( $check ),
+				'groupLabel'    => $this->registry->get_group_label( $check ),
 			);
 		}
 
@@ -317,6 +319,7 @@ class ProductsController extends Controller {
 			$response['passed'][] = array(
 				'check' => $check_id,
 				'label' => $check->get_label(),
+				'group' => $this->registry->get_group_id( $check ),
 			);
 		}
 
@@ -327,7 +330,7 @@ class ProductsController extends Controller {
 		// product as it is now, keeps the lists consistent with each other and
 		// with the score.
 		$applicable = array_merge( $failed, $passed );
-		$disabled   = $this->scanner->get_settings()->get_disabled_checks();
+		$disabled   = $this->scanner->get_disabled_checks();
 
 		foreach ( $this->registry->get_checks() as $check ) {
 			if ( in_array( $check->get_id(), $applicable, true ) ) {
@@ -339,10 +342,42 @@ class ProductsController extends Controller {
 			$response[ $group ][] = array(
 				'check' => $check->get_id(),
 				'label' => $check->get_label(),
+				'group' => $this->registry->get_group_id( $check ),
 			);
 		}
 
-		return $response;
+		return $this->filter_report( $response, $product, $snapshot );
+	}
+
+	/**
+	 * Let extensions add to one product's report.
+	 *
+	 * The fields Catavio itself sets cannot be changed or removed, so the
+	 * report screen can rely on them.
+	 *
+	 * @param array<string, mixed> $response Report built so far.
+	 * @param \WC_Product          $product  The loaded product.
+	 * @param ProductSnapshot|null $snapshot Snapshot of the product, null when
+	 *                                       it has not been scanned.
+	 * @return array<string, mixed>
+	 */
+	private function filter_report( array $response, $product, $snapshot ) {
+		/**
+		 * Filters one product's health report, as returned by
+		 * GET /catavio/v1/products/<id> and POST /catavio/v1/products/<id>/scan.
+		 *
+		 * Add fields under your own key. Existing fields cannot be changed.
+		 *
+		 * @since 1.1.0
+		 *
+		 * @param array<string, mixed> $response Report.
+		 * @param \WC_Product          $product  The product.
+		 * @param ProductSnapshot|null $snapshot Snapshot, or null when the
+		 *                                       product has not been scanned.
+		 */
+		$filtered = apply_filters( 'catavio_rest_product_response', $response, $product, $snapshot );
+
+		return is_array( $filtered ) ? array_merge( $filtered, $response ) : $response;
 	}
 
 	/**
@@ -606,7 +641,7 @@ class ProductsController extends Controller {
 			}
 		}
 
-		return array(
+		$row = array(
 			'id'              => $product_id,
 			'name'            => get_the_title( $post ),
 			'type'            => $type,
@@ -622,6 +657,23 @@ class ProductsController extends Controller {
 			'editUrl'         => (string) get_edit_post_link( $product_id, 'raw' ),
 			'detailUrl'       => $this->get_detail_url( $product_id ),
 		);
+
+		/**
+		 * Filters one row of the product health list, as returned by
+		 * GET /catavio/v1/products.
+		 *
+		 * Add fields under your own key. Existing fields cannot be changed.
+		 * Runs once per row, so keep it cheap: the post, its meta and its terms
+		 * are already cached.
+		 *
+		 * @since 1.1.0
+		 *
+		 * @param array<string, mixed> $row  List row.
+		 * @param \WP_Post             $post Product post.
+		 */
+		$filtered = apply_filters( 'catavio_rest_product_row', $row, $post );
+
+		return is_array( $filtered ) ? array_merge( $filtered, $row ) : $row;
 	}
 
 	/**

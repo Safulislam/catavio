@@ -46,7 +46,7 @@ Opening the Dashboard never starts a scan and never walks the catalog. Figures c
 
 = What it checks =
 
-Thirteen rules, each of which can be turned off in Settings. A rule that does not apply to a product type is skipped, not failed — so a simple product is never marked down for having no variations, a grouped product is not expected to have its own price, and alt text is only checked when a featured image exists.
+Sixteen rules. Thirteen run from the start and three are optional, off until you turn them on in Settings; any rule can be turned off there too. A rule that does not apply to a product type is skipped, not failed — so a simple product is never marked down for having no variations, a grouped product is not expected to have its own price, and alt text is only checked when a featured image exists.
 
 **Critical** — information a customer typically cannot do without:
 
@@ -69,6 +69,12 @@ Thirteen rules, each of which can be turned off in Settings. A rule that does no
 **Info** — accessibility of the listing image:
 
 * Featured image alt text (only when a featured image is present, so a missing image is not counted twice)
+
+**Optional, Info** — off until you turn them on, because not every store uses them:
+
+* Gallery images (at least one besides the featured image; skipped for grouped and virtual products)
+* GTIN, UPC, EAN or ISBN, in WooCommerce’s own field (WooCommerce 9.1 or newer; simple and external products)
+* Brand, from WooCommerce’s built-in Brands (skipped for grouped products)
 
 Empty markup does not count as a description. A description that is only an empty paragraph or a non-breaking space is treated as missing.
 
@@ -177,7 +183,7 @@ Results are from the last check. Open the product’s report and press **Check a
 
 = My store does not use SKUs. Can I stop those warnings? =
 
-Yes. Open **Catalog Health → Settings** and turn off the SKU check. Any of the thirteen checks can be turned off; at least one must stay on. Run a scan afterwards to apply the change to every product.
+Yes. Open **Catalog Health → Settings** and turn off the SKU check. Any check can be turned off; at least one must stay on. The three optional checks (gallery images, GTIN and brand) start turned off, so a store that does not use them never sees them. Run a scan afterwards to apply the change to every product.
 
 = What if a scan is interrupted? =
 
@@ -205,6 +211,10 @@ Deleting the plugin removes all of that on every site in a multisite network. De
 
 One menu item: **Catalog Health**. No extra submenu duplicates, no dashboard widgets, no upsells, no review requests. Assets load only on that screen.
 
+= Can other plugins or AI agents use the results? =
+
+Developers can add checks, check groups, report panels, list columns, dashboard cards, settings sections and tabs through documented PHP and JavaScript hooks, and react to scans through actions. On WordPress 6.9 and newer, Catavio also registers three read-only abilities (catalog health, products by health, one product’s report) for the WordPress Abilities API, so an AI agent you connect to your own site can read your results. They require the same permission as the Catalog Health screens, never change anything, and make no external requests.
+
 == Screenshots ==
 
 1. Dashboard — average completeness, healthy / needs attention / critical split, and the issues affecting the most products.
@@ -213,6 +223,13 @@ One menu item: **Catalog Health**. No extra submenu duplicates, no dashboard wid
 4. A scan in progress — running count, percentage, and the option to stop.
 
 == Changelog ==
+
+= 1.1.0 =
+* Added three optional checks, off until turned on in Settings: gallery images, GTIN/UPC/EAN/ISBN (WooCommerce’s built-in field), and brand (WooCommerce’s built-in Brands).
+* Settings now lists checks by topic (Content, Images, Price and stock, Brand and identifiers, Product type setup), with each check’s severity beside it.
+* Added read-only abilities for the WordPress Abilities API (WordPress 6.9+), so AI agents connected to your site can read catalog health.
+* Added developer hooks: scan actions, snapshot data, check groups, severity penalties, REST response filters, extra tabs, and JavaScript slots on every screen.
+* German translation updated for every new string.
 
 = 1.0.3 =
 * Added “Check again” to the product report: check one product after editing it, without rescanning the whole catalog.

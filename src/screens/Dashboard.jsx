@@ -23,6 +23,7 @@ import { __, _x, sprintf } from '@wordpress/i18n';
 import { addQueryArgs } from '@wordpress/url';
 
 import { errorMessage, getSummary } from '../api';
+import { ExtensionEntry, getExtensions } from '../extensions';
 import DistributionBar from '../components/DistributionBar';
 import EmptyState from '../components/EmptyState';
 import FirstRunWizard from '../components/FirstRunWizard';
@@ -484,6 +485,16 @@ export default function Dashboard( { settings } ) {
 					) }
 				</CardBody>
 			</Card>
+
+			{ getExtensions( 'catavio.dashboard.cards', false, summary ).map(
+				( card ) => (
+					<ExtensionEntry
+						key={ card.key }
+						entry={ card }
+						args={ { summary } }
+					/>
+				)
+			) }
 
 			<Card className="catavio-card catavio-card--scan">
 				<CardHeader className="catavio-card__header">

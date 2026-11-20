@@ -30,3 +30,16 @@ Use the files sequentially with Claude Code. Complete and test one phase before 
 
 - `12-RELEASE-1.0.4-PLAN.md` — next maintenance release: integration tests,
   refreshed WordPress.org screenshots, translations, compatibility pass, release checklist.
+
+## Pro plan (Free → Pro, SEO · AEO · AI)
+
+Start with `pro/00-PRO-MASTER-PLAN.md`: decisions, Free/Pro boundary, feature matrix,
+release map. Then, in order:
+
+1. `pro/01-FREE-1.1-EXTENSIBILITY.md` — hooks, snapshot extension, UI slots, new checks, read-only abilities (ships in Free)
+2. `pro/02-PRO-FOUNDATION.md` — `catavio-pro` add-on, licensing, data tables, fixes engine with undo
+3. `pro/03-AUTOMATION-HISTORY.md` — scheduled scans, history, digest, export, rules, WP-CLI, template fixes
+4. `pro/04-SEO-PACK.md` — SEO plugin adapters, SEO checks, structured-data validation
+5. `pro/05-AEO-PACK.md` — answer-engine / AI-agent readiness checks, AI crawler access, product FAQ
+6. `pro/06-AI-PACK.md` — AI drafts via WordPress core AI Client, guardrails, bulk AI, agent abilities
+7. `pro/07-QA-LAUNCH.md` — compatibility matrix, budgets, security, privacy, launch gates

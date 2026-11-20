@@ -44,7 +44,7 @@ Core question:
 | 11 | `11-PHASE-11-FINAL-AUDIT.md` | Final submission audit |
 
 ## Future Pro boundary
-Future Pro may add advanced checks, bulk fixes, scheduled scans, reports, AI assistance and historical analysis. Do not implement those in Free V1.
+Future Pro may add advanced checks, bulk fixes, scheduled scans, reports, AI assistance and historical analysis. Do not implement those in Free V1. The full plan is in `pro/00-PRO-MASTER-PLAN.md`.
 
 ## Completion rule
 Do not claim WordPress.org approval. Approval is determined by the WordPress.org review process.
